@@ -1,2 +1,0 @@
-import { liveQuery } from 'dexie';
-

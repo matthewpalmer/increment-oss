@@ -1,7 +1,8 @@
-import type { Project } from "../domain/types";
+import { BuildNewSyncEvent, type Project } from "../domain/types";
 import { db } from "./persistence/db";
 import { keys } from "./queries"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { syncBus } from "./sync-bus";
 
 export function useProjectsList() {
     return useQuery({
@@ -21,8 +22,12 @@ export function useCreateProject() {
             const id = await db.projects.add(project)
             return db.projects.get(id)
         },
-        onSuccess: () => {
+        onSuccess: (project: Project | undefined) => {
             queryClient.invalidateQueries({ queryKey: keys.projects.list() })
+            
+            syncBus.addEvent(BuildNewSyncEvent(
+                { type: 'create', data: project }
+            ))
         }
     })
 }
@@ -32,10 +37,16 @@ export function useDeleteProject() {
 
     return useMutation({
         mutationFn: async (project: Project) => {
-            return await db.projects.delete(project.id);
+            await db.projects.delete(project.id);
+            return project.id;
         },
-        onSuccess: () => {
+        onSuccess: (projectId) => {
             queryClient.invalidateQueries({ queryKey: keys.projects.list() })
+            
+            syncBus.addEvent(BuildNewSyncEvent({
+                type: 'delete',
+                data: projectId
+            }))
         }
     })
 }

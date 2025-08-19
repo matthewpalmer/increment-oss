@@ -1,4 +1,5 @@
-import { SYNC_EVENT_NOT_STARTED, SyncEventTimeNow, type SyncEvent } from "../domain/types";
+import { IncrementDateTimeNow } from "../domain/time-utils";
+import { SYNC_EVENT_NOT_STARTED, type SyncEvent } from "../domain/types";
 import { db } from "./persistence/db";
 
 type SyncBusListener = (event: SyncEvent) => Promise<any>
@@ -6,16 +7,16 @@ type SyncBusListener = (event: SyncEvent) => Promise<any>
 export class SyncBus {
     listeners: SyncBusListener[] = []
 
-    async addEvent(event: SyncEvent) {
+    async dispatchEvent(event: SyncEvent) {
         await db.syncEvents.add(event);
-        this.distributeEvents();
+        this.processWaitingEvents();
     }
 
     addEventListener(listener: SyncBusListener) {
         this.listeners.push(listener)
     }
 
-    async distributeEvents() {
+    private async processWaitingEvents() {
         const events = await db.syncEvents
             .where('startedAt')
             .equals(SYNC_EVENT_NOT_STARTED)
@@ -23,7 +24,7 @@ export class SyncBus {
         
         for (let event of events) {
             await db.syncEvents.update(event.id, { 
-                startedAt: SyncEventTimeNow(),
+                startedAt: IncrementDateTimeNow(),
                 status: 'in-progress',
                 attempts: (event.attempts || 0) + 1
             });
@@ -37,13 +38,13 @@ export class SyncBus {
                     const result = await listener(updated);
 
                     await db.syncEvents.update(event.id, { 
-                        completedAt: SyncEventTimeNow(),
+                        completedAt: IncrementDateTimeNow(),
                         status: 'success',
                         result: result
                     });
                 } catch (err: any) {
                     await db.syncEvents.update(event.id, { 
-                        completedAt: SyncEventTimeNow(),
+                        completedAt: IncrementDateTimeNow(),
                         status: 'failure',
                         result: err,
                         statusMessage: err.message || 'A sync error occcured'

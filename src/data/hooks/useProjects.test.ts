@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { resetDb } from '../test/dbTestUtils';
-import { db } from './persistence/db';
-import { useProjectsList, useCreateProject, useDeleteProject } from './useProjects';
-import { TestQueryClientProvider } from '../test/TestQueryClientProvider';
+import { resetDb } from '../../test/dbTestUtils';
+import { db } from '../persistence/db';
+import { useProjectsList, useCreateProject, useDeleteProject } from '../hooks/useProjects';
+import { TestQueryClientProvider } from '../../test/TestQueryClientProvider';
 
 describe('useProjects hooks', () => {
     beforeEach(async () => {

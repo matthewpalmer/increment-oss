@@ -1,69 +1,43 @@
-# React + TypeScript + Vite
+# Increment
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Powerful goal and progress tracker with highly customizable goal
+settings and extensive UI configuration.**
 
-Currently, two official plugins are available:
+## Running
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Install dependencies:
 
-## Expanding the ESLint configuration
+`npm install`
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Run locally:
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+`npm run dev`
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+Test:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+`npm test`
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Technical Features
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+* Built to be offline-first with a pluggable sync engine architecture (using CloudKit
+  for cross-device sync in production) with optimistic updates, conflict resolution,
+  automatic retries, and graceful failure
+* Built with React, Tailwind, TanStack Router, TanStack Query,
+  IndexedDB (Dexie), and Vite
+* Thorough unit and integration test coverage
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Product features
+
+* Cross-platform goal and progress syncing (only web UI is open source)
+* Advanced goal and achievement history
+* Tracks daily, weekly, monthly goals 
+* Support for rest days and weekends
+* Customizable dashboard displays and theming
+* Support for levels and thresholds
+* Many advanced dashboard widgets
+  * Calendar
+  * Streaks
+  * Time until goal
+  * Levels
+  * Total time
+

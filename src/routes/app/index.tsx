@@ -1,7 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { useCreateProject, useProjectsList } from '../../data/useProjects';
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { useCreateProject, useProjectsList } from '../../data/hooks/useProjects';
 
-export const Route = createFileRoute('/app/dashboard')({
+export const Route = createFileRoute('/app/')({
     component: RouteComponent
 })
 
@@ -28,7 +28,14 @@ function RouteComponent() {
 
             {
                 data.map(project => {
-                    return <p key={project.id} className='text-purple-700'>– {project.name}</p>
+                    return (
+                        <p key={project.id} className='text-purple-700'>
+                            <Link to="/app/projects/$projectId"
+                                params={{ projectId: project.id }}>
+                                {project.name}
+                            </Link>
+                        </p>
+                    )
                 })
             }
 

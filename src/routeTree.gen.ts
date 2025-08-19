@@ -10,20 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
-import { Route as AppRouteRouteImport } from './routes/app/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AppDashboardRouteImport } from './routes/app/dashboard'
-import { Route as AppProjectsIndexRouteImport } from './routes/app/projects/index'
-import { Route as AppProjectsProjectIdRouteImport } from './routes/app/projects/$projectId'
+import { Route as AppIndexRouteImport } from './routes/app/index'
+import { Route as AppProjectsProjectIdIndexRouteImport } from './routes/app/projects/$projectId/index'
+import { Route as AppProjectsProjectIdGoalsGoalIdRouteImport } from './routes/app/projects/$projectId/goals/$goalId'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AppRouteRoute = AppRouteRouteImport.update({
-  id: '/app',
-  path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -31,78 +25,76 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppDashboardRoute = AppDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AppRouteRoute,
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/app/',
+  path: '/app/',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppProjectsIndexRoute = AppProjectsIndexRouteImport.update({
-  id: '/projects/',
-  path: '/projects/',
-  getParentRoute: () => AppRouteRoute,
-} as any)
-const AppProjectsProjectIdRoute = AppProjectsProjectIdRouteImport.update({
-  id: '/projects/$projectId',
-  path: '/projects/$projectId',
-  getParentRoute: () => AppRouteRoute,
-} as any)
+const AppProjectsProjectIdIndexRoute =
+  AppProjectsProjectIdIndexRouteImport.update({
+    id: '/app/projects/$projectId/',
+    path: '/app/projects/$projectId/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AppProjectsProjectIdGoalsGoalIdRoute =
+  AppProjectsProjectIdGoalsGoalIdRouteImport.update({
+    id: '/app/projects/$projectId/goals/$goalId',
+    path: '/app/projects/$projectId/goals/$goalId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/app': typeof AppRouteRouteWithChildren
   '/about': typeof AboutRoute
-  '/app/dashboard': typeof AppDashboardRoute
-  '/app/projects/$projectId': typeof AppProjectsProjectIdRoute
-  '/app/projects': typeof AppProjectsIndexRoute
+  '/app': typeof AppIndexRoute
+  '/app/projects/$projectId': typeof AppProjectsProjectIdIndexRoute
+  '/app/projects/$projectId/goals/$goalId': typeof AppProjectsProjectIdGoalsGoalIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/app': typeof AppRouteRouteWithChildren
   '/about': typeof AboutRoute
-  '/app/dashboard': typeof AppDashboardRoute
-  '/app/projects/$projectId': typeof AppProjectsProjectIdRoute
-  '/app/projects': typeof AppProjectsIndexRoute
+  '/app': typeof AppIndexRoute
+  '/app/projects/$projectId': typeof AppProjectsProjectIdIndexRoute
+  '/app/projects/$projectId/goals/$goalId': typeof AppProjectsProjectIdGoalsGoalIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/app': typeof AppRouteRouteWithChildren
   '/about': typeof AboutRoute
-  '/app/dashboard': typeof AppDashboardRoute
-  '/app/projects/$projectId': typeof AppProjectsProjectIdRoute
-  '/app/projects/': typeof AppProjectsIndexRoute
+  '/app/': typeof AppIndexRoute
+  '/app/projects/$projectId/': typeof AppProjectsProjectIdIndexRoute
+  '/app/projects/$projectId/goals/$goalId': typeof AppProjectsProjectIdGoalsGoalIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/app'
     | '/about'
-    | '/app/dashboard'
+    | '/app'
     | '/app/projects/$projectId'
-    | '/app/projects'
+    | '/app/projects/$projectId/goals/$goalId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/app'
     | '/about'
-    | '/app/dashboard'
+    | '/app'
     | '/app/projects/$projectId'
-    | '/app/projects'
+    | '/app/projects/$projectId/goals/$goalId'
   id:
     | '__root__'
     | '/'
-    | '/app'
     | '/about'
-    | '/app/dashboard'
-    | '/app/projects/$projectId'
-    | '/app/projects/'
+    | '/app/'
+    | '/app/projects/$projectId/'
+    | '/app/projects/$projectId/goals/$goalId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AppRouteRoute: typeof AppRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
+  AppIndexRoute: typeof AppIndexRoute
+  AppProjectsProjectIdIndexRoute: typeof AppProjectsProjectIdIndexRoute
+  AppProjectsProjectIdGoalsGoalIdRoute: typeof AppProjectsProjectIdGoalsGoalIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -114,13 +106,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/app': {
-      id: '/app'
-      path: '/app'
-      fullPath: '/app'
-      preLoaderRoute: typeof AppRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -128,50 +113,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/app/dashboard': {
-      id: '/app/dashboard'
-      path: '/dashboard'
-      fullPath: '/app/dashboard'
-      preLoaderRoute: typeof AppDashboardRouteImport
-      parentRoute: typeof AppRouteRoute
+    '/app/': {
+      id: '/app/'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/app/projects/': {
-      id: '/app/projects/'
-      path: '/projects'
-      fullPath: '/app/projects'
-      preLoaderRoute: typeof AppProjectsIndexRouteImport
-      parentRoute: typeof AppRouteRoute
-    }
-    '/app/projects/$projectId': {
-      id: '/app/projects/$projectId'
-      path: '/projects/$projectId'
+    '/app/projects/$projectId/': {
+      id: '/app/projects/$projectId/'
+      path: '/app/projects/$projectId'
       fullPath: '/app/projects/$projectId'
-      preLoaderRoute: typeof AppProjectsProjectIdRouteImport
-      parentRoute: typeof AppRouteRoute
+      preLoaderRoute: typeof AppProjectsProjectIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/projects/$projectId/goals/$goalId': {
+      id: '/app/projects/$projectId/goals/$goalId'
+      path: '/app/projects/$projectId/goals/$goalId'
+      fullPath: '/app/projects/$projectId/goals/$goalId'
+      preLoaderRoute: typeof AppProjectsProjectIdGoalsGoalIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface AppRouteRouteChildren {
-  AppDashboardRoute: typeof AppDashboardRoute
-  AppProjectsProjectIdRoute: typeof AppProjectsProjectIdRoute
-  AppProjectsIndexRoute: typeof AppProjectsIndexRoute
-}
-
-const AppRouteRouteChildren: AppRouteRouteChildren = {
-  AppDashboardRoute: AppDashboardRoute,
-  AppProjectsProjectIdRoute: AppProjectsProjectIdRoute,
-  AppProjectsIndexRoute: AppProjectsIndexRoute,
-}
-
-const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
-  AppRouteRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AppRouteRoute: AppRouteRouteWithChildren,
   AboutRoute: AboutRoute,
+  AppIndexRoute: AppIndexRoute,
+  AppProjectsProjectIdIndexRoute: AppProjectsProjectIdIndexRoute,
+  AppProjectsProjectIdGoalsGoalIdRoute: AppProjectsProjectIdGoalsGoalIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

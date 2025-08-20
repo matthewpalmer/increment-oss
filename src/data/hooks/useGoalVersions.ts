@@ -28,7 +28,7 @@ export function useCreateGoalVersion() {
             queryClient.invalidateQueries({ queryKey: keys.goalVersions.listInGoal(goalVersion.goalId) })
             
             syncBus.dispatchEvent(BuildNewSyncEvent(
-                { type: 'create', data: goalVersion }
+                { type: 'create', data: goalVersion, table: 'goalVersions' }
             ))
         }
     })

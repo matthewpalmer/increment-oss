@@ -38,8 +38,28 @@ export function useCreateGoal() {
             queryClient.invalidateQueries({ queryKey: keys.goals.listInProject(goal.projectId) })
             
             syncBus.dispatchEvent(BuildNewSyncEvent(
-                { type: 'create', data: goal }
+                { type: 'create', data: goal, table: 'goals' }
             ))
+        }
+    })
+}
+
+export function useDeleteGoal() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: async (goal: Goal) => {
+            await db.goals.delete(goal.id);
+            return goal;
+        },
+        onSuccess: (goal) => {
+            queryClient.invalidateQueries({ queryKey: keys.goals.listInProject(goal.projectId) })
+
+            syncBus.dispatchEvent(BuildNewSyncEvent({
+                type: 'delete',
+                data: goal,
+                table: 'goals'
+            }))
         }
     })
 }

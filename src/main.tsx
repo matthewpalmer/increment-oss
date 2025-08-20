@@ -5,10 +5,11 @@ import './index.css'
 
 import { routeTree } from './routeTree.gen'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { SyncRuntime } from './data/sync/sync-engine'
-import { OfflineSyncEngine } from './data/sync/no-sync-engine'
+import { SyncRuntime } from './data/sync/sync-runtime'
+import { fakeSyncEngine } from './data/sync/fake-sync-engine'
 import { syncBus } from './data/sync-bus'
-import { dexieApplier } from './data/sync/dexie-applier'
+import { createDexieApplier, dexieInverseCalculator } from './data/sync/dexie-applier'
+import { SyncBusScheduler } from './data/sync-bus-scheduler'
 
 const queryClient = new QueryClient()
 
@@ -25,8 +26,11 @@ declare module '@tanstack/react-router' {
     }
 }
 
-const syncRuntime = new SyncRuntime(new OfflineSyncEngine(), syncBus, dexieApplier);
+const syncRuntime = new SyncRuntime(fakeSyncEngine, syncBus, createDexieApplier(queryClient), dexieInverseCalculator);
 syncRuntime.start();
+
+const syncBusScheduler = new SyncBusScheduler(syncBus);
+syncBusScheduler.start();
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>

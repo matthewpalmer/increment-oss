@@ -28,7 +28,7 @@ export function useCreateTimeBlock() {
             queryClient.invalidateQueries({ queryKey: keys.timeBlocks.listInProject(timeBlock.projectId) })
             
             syncBus.dispatchEvent(BuildNewSyncEvent(
-                { type: 'create', data: timeBlock }
+                { type: 'create', data: timeBlock, table: 'timeBlocks' }
             ))
         }
     })

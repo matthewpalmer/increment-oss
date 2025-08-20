@@ -51,36 +51,44 @@ export interface GoalVersion {
 
 export type SyncEventType = 'create' | 'update' | 'delete';
 
-export type SyncEvenStatus = 'success' | 'failure' | 'in-progress' | 'waiting';
+export type SyncEvenStatus = 'pending' | 'in-progress' | 'retry-scheduled' | 'done' | 'failed';
 
 export const SYNC_EVENT_NOT_STARTED = -1;
 
 export interface SyncEvent {
     id: UUID;
     type: SyncEventType;
+    table: Table;
     data?: any;
     result?: any;
     addedAt: IncrementTimestamp;
     startedAt: IncrementTimestamp;
+    nextAttemptAt: IncrementTimestamp;
     completedAt: IncrementTimestamp;
     status: SyncEvenStatus;
     statusMessage?: string;
     attempts: number;
 }
 
-export function BuildNewSyncEvent(args: Pick<SyncEvent, "type" | "data">): SyncEvent {
+export function BuildNewSyncEvent(args: Pick<SyncEvent, "type" | "data" | "table">): SyncEvent {
     return {
         id: CreateUUID(),
         type: args.type,
+        table: args.table,
         data: args.data,
         addedAt: IncrementDateTimeNow(),
+        nextAttemptAt: IncrementDateTimeNow(),
         startedAt: SYNC_EVENT_NOT_STARTED,
         completedAt: SYNC_EVENT_NOT_STARTED,
-        status: 'waiting',
+        status: 'pending',
         attempts: 0
     }
 }
 
 export function CreateUUID(): UUID {
     return uuidv4();
+}
+
+export function DisplayUUID(uuid: UUID): string {
+    return uuid.split('-')[0]
 }

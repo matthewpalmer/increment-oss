@@ -1,6 +1,7 @@
 import { createRootRouteWithContext, Link, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { QueryClient } from '@tanstack/react-query'
+import { FakeSyncEngineControlPanel } from '../components/fake-sync-engine-control-panel'
 
 export interface AppRouterContext {
     queryClient: QueryClient
@@ -17,6 +18,7 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
             <hr />
             <Outlet />
             <TanStackRouterDevtools />
+            <FakeSyncEngineControlPanel />
         </>
     )
 })

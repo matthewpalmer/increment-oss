@@ -1,11 +1,16 @@
 import { IncrementDateTimeNow } from "../domain/time-utils";
-import { SYNC_EVENT_NOT_STARTED, type SyncEvent } from "../domain/types";
+import { DisplayUUID, SYNC_EVENT_NOT_STARTED, type SyncEvent } from "../domain/types";
 import { db } from "./persistence/db";
+import { calculateBackoff } from "./sync/retry";
 
 type SyncBusListener = (event: SyncEvent) => Promise<any>
+type SyncBusRollbackListener = (event: SyncEvent) => Promise<any>
+
+const SYNC_EVENT_MAX_ATTEMPTS = 5;
 
 export class SyncBus {
-    listeners: SyncBusListener[] = []
+    private listener?: SyncBusListener
+    private rollbackListener?: SyncBusRollbackListener
 
     async dispatchEvent(event: SyncEvent) {
         await db.syncEvents.add(event);
@@ -13,45 +18,105 @@ export class SyncBus {
     }
 
     addEventListener(listener: SyncBusListener) {
-        this.listeners.push(listener)
+        this.listener = listener;
     }
 
-    private async processWaitingEvents() {
+    addRollbackListener(listener: SyncBusRollbackListener) {
+        this.rollbackListener = listener;
+    }
+
+    async processWaitingEvents() {
+        const now = IncrementDateTimeNow();
+
         const events = await db.syncEvents
-            .where('startedAt')
-            .equals(SYNC_EVENT_NOT_STARTED)
+            .where('nextAttemptAt')
+            .belowOrEqual(now)
+            .and(e => e.status === 'pending' || e.status === 'retry-scheduled')
             .toArray();
-        
+
         for (let event of events) {
-            await db.syncEvents.update(event.id, { 
-                startedAt: IncrementDateTimeNow(),
-                status: 'in-progress',
-                attempts: (event.attempts || 0) + 1
+            // Claim this event in Dexie to prevent other tabs from trying to process it.
+            const claimed = await db.transaction('rw', db.syncEvents, async () => {
+                const latest = await db.syncEvents.get(event.id);
+
+                if (!latest || latest.startedAt !== SYNC_EVENT_NOT_STARTED) return null;
+
+                await db.syncEvents.update(event.id, {
+                    startedAt: IncrementDateTimeNow(),
+                    status: 'in-progress'
+                })
+
+                return await db.syncEvents.get(event.id);
             });
 
-            const updated = await db.syncEvents.get(event.id);
+            if (!claimed) continue;
+            if (!this.listener) continue;
 
-            if (!updated) throw new Error('Invalid event bus state');
+            let result: any = null;
+            let lastError: any = null;
 
-            for (let listener of this.listeners) {
-                try {
-                    const result = await listener(updated);
+            try {
+                result = await this.listener(claimed);
+            } catch (err: any) {
+                lastError = err;
+            }
 
-                    await db.syncEvents.update(event.id, { 
+            if (!lastError) {
+                await db.syncEvents.update(claimed.id, {
+                    status: 'done',
+                    result: result,
+                    completedAt: IncrementDateTimeNow()
+                })
+
+                continue;
+            }
+
+            // Listener threw an error. Decide if we want to retry after a backoff.
+            const failureResult = await db.transaction('rw', db.syncEvents, async () => {
+                const latest = await db.syncEvents.get(event.id);
+                if (!latest) return;
+
+                const nextAttempt = (latest?.attempts || 0) + 1;
+                
+                if (nextAttempt >= SYNC_EVENT_MAX_ATTEMPTS) {
+                    // Mark as failed then process the rollback outside the transaction
+                    await db.syncEvents.update(event.id, {
+                        attempts: nextAttempt,
+                        status: 'failed',
                         completedAt: IncrementDateTimeNow(),
-                        status: 'success',
-                        result: result
-                    });
-                } catch (err: any) {
-                    await db.syncEvents.update(event.id, { 
-                        completedAt: IncrementDateTimeNow(),
-                        status: 'failure',
-                        result: err,
-                        statusMessage: err.message || 'A sync error occcured'
-                    });
+                        nextAttemptAt: Number.MAX_SAFE_INTEGER,
+                        result: lastError
+                    })
+
+                    return { 
+                        __needsRollback: true,
+                        id: latest.id
+                    }
+                } else {
+                    await this.rescheduleEventWithBackoff(latest, nextAttempt, lastError);
+                }
+            })
+
+            if (failureResult && failureResult.__needsRollback) {
+                const latest = await db.syncEvents.get(failureResult.id)
+
+                if (this.rollbackListener && latest) {
+                    await this.rollbackListener(latest);
                 }
             }
         }
+    }
+
+    private async rescheduleEventWithBackoff(event: SyncEvent, attemptCount: number, lastError: any) {
+        const backoff = calculateBackoff(attemptCount);
+
+        await db.syncEvents.update(event.id, {
+            attempts: attemptCount,
+            status: 'retry-scheduled',
+            startedAt: SYNC_EVENT_NOT_STARTED,
+            nextAttemptAt: IncrementDateTimeNow() + backoff,
+            result: lastError
+        })
     }
 }
 

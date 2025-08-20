@@ -3,7 +3,7 @@ import { useCreateTimeBlock, useTimeBlocks } from '../../../../data/hooks/useTim
 import { CreateUUID } from '../../../../domain/types';
 import { IncrementDateTimeNow, TimeDurationToString, TimestampToLocalDate, TimestampToLocalTime } from '../../../../domain/time-utils';
 import { useProject } from '../../../../data/hooks/useProjects';
-import { useCreateGoal, useGoals } from '../../../../data/hooks/useGoals';
+import { useCreateGoal, useDeleteGoal, useGoals } from '../../../../data/hooks/useGoals';
 
 export const Route = createFileRoute('/app/projects/$projectId/')({
     component: ProjectDetails
@@ -34,21 +34,34 @@ function TimeBlocksList({ projectId }: { projectId: string }) {
     }
 
     return (
-        <ul>
+        <table className='border-collapse border border-gray-400'>
+            <thead>
+                <tr>
+                    <th className='border border-gray-300'>ID</th>
+                    <th className='border border-gray-300'>Amount</th>
+                    <th className='border border-gray-300'>Time</th>
+                    <th className='border border-gray-300'>Date</th>
+                    <th className='border border-gray-300'>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
             {
                 timeBlocks.map(timeBlock => {
 
 
                     return (
-                        <li key={timeBlock.id}>
-                            {TimeDurationToString(timeBlock.amount)},
-                            {TimestampToLocalTime(timeBlock.createdAt)}, {TimestampToLocalDate(timeBlock.createdAt)},
-                            {timeBlock.notes}
-                        </li>
+                        <tr key={timeBlock.id}>
+                            <td className="p-2 border border-gray-300">{timeBlock.id.split('-')[0]}</td>
+                            <td className="p-2 border border-gray-300">{TimeDurationToString(timeBlock.amount)}</td>
+                            <td className="p-2 border border-gray-300">{TimestampToLocalTime(timeBlock.createdAt)}</td>
+                            <td className="p-2 border border-gray-300">{TimestampToLocalDate(timeBlock.createdAt)}</td>
+                            <td className="p-2 border border-gray-300">{timeBlock.notes}</td>
+                        </tr>
                     )
                 })
             }
-        </ul>
+            </tbody>
+        </table>
     )
 }
 
@@ -74,6 +87,8 @@ function ProjectInfo({ projectId }: { projectId: string }) {
 }
 
 function GoalsList({ projectId }: { projectId: string }) {
+    const deleteGoal = useDeleteGoal();
+
     const {
         data: goals = [],
         isLoading,
@@ -91,20 +106,31 @@ function GoalsList({ projectId }: { projectId: string }) {
 
     return (
         <div>
-            <h2>Goals</h2>
+            <h2 className='text-3xl font-extrabold mt-4'>Goals</h2>
 
             <div>
                 {
                     goals.map(goal => {
                         return (
-                            <div key={goal.id}>
-                                <h3>{ goal.name }</h3>
+                            <div key={goal.id} className='p-4 border-2 m-4 rounded-md border-gray-300'>
+                                <h3 className='font-bold text-lg'>{ goal.name }</h3>
                                 <Link 
-                                    className="text-blue-800 underline"
+                                    className="text-blue-800 bg-blue-100 rounded-sm p-2 m-2 text-sm hover:cursor-pointer hover:bg-blue-200"
                                     to="/app/projects/$projectId/goals/$goalId" 
                                     params={{projectId: projectId, goalId: goal.id}}>
                                         Edit
                                 </Link>
+
+                                <button 
+                                    className='text-red-800 bg-red-100 rounded-sm p-2 m-2 text-sm hover:cursor-pointer hover:bg-red-200'
+                                    onClick={() => {
+                                        console.log('starting the delete....')
+                                        deleteGoal.mutate(goal);
+                                        console.log('done the delete....');
+                                    }}>
+                                    Delete Goal
+                                </button>
+
                                 <pre>
                                     {goal.id} | 
                                     {goal.color} |
@@ -133,8 +159,26 @@ function ProjectDetails() {
             <ProjectInfo projectId={projectId} />
 
             <GoalsList projectId={projectId} />
+            <button
+                className='rounded-sm bg-blue-300 p-4 m-4'
+                onClick={() => {
+                    const id = CreateUUID();
 
-            <h2>Time Blocks</h2>
+                    createGoal.mutate({
+                        id: id,
+                        projectId: projectId,
+                        name: 'New Goal ' + (Math.floor(Math.random() * 100)),
+                        color: '',
+                        createdAt: IncrementDateTimeNow(),
+                        unit: 'seconds',
+                        cadence: 'daily',
+                        aggregation: 'sum',
+                    })
+                }}>
+                Add Goal
+            </button>
+
+            <h2 className='text-3xl font-extrabold mt-8'>Time Blocks</h2>
             <TimeBlocksList projectId={projectId} />
 
             <button
@@ -154,28 +198,6 @@ function ProjectDetails() {
                 Add Time Block
             </button>
 
-            <br />
-            <br />
-            <br />
-
-            <button
-                className='rounded-sm bg-blue-300 p-4 m-4'
-                onClick={() => {
-                    const id = CreateUUID();
-
-                    createGoal.mutate({
-                        id: id,
-                        projectId: projectId,
-                        name: 'New Goal ' + (Math.floor(Math.random() * 100)),
-                        color: '',
-                        createdAt: IncrementDateTimeNow(),
-                        unit: 'seconds',
-                        cadence: 'daily',
-                        aggregation: 'sum',
-                    })
-                }}>
-                Add Goal
-            </button>
         </div>
     )
 }

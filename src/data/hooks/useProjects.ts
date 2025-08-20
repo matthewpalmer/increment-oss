@@ -36,7 +36,7 @@ export function useCreateProject() {
             queryClient.invalidateQueries({ queryKey: keys.projects.list() })
             
             syncBus.dispatchEvent(BuildNewSyncEvent(
-                { type: 'create', data: project }
+                { type: 'create', data: project, table: 'projects' }
             ))
         }
     })
@@ -55,7 +55,8 @@ export function useDeleteProject() {
             
             syncBus.dispatchEvent(BuildNewSyncEvent({
                 type: 'delete',
-                data: projectId
+                data: projectId,
+                table: 'projects'
             }))
         }
     })

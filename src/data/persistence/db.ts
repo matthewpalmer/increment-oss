@@ -11,9 +11,9 @@ const db = new Dexie('IncrementDatabase') as Dexie & {
     goalVersions: EntityTable<GoalVersion, 'id'>;
 }
 
-db.version(4).stores({
+db.version(5).stores({
     projects: 'id, name',
-    syncEvents: 'id, type, completedAt, startedAt',
+    syncEvents: 'id, type, completedAt, startedAt, nextAttemptAt',
     timeBlocks: 'id, projectId',
     goals: 'id, projectId',
     goalVersions: 'id, goalId',

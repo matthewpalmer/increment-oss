@@ -3,6 +3,14 @@
 **Powerful goal and progress tracker with highly customizable goal
 settings and extensive UI configuration.**
 
+Tech Stack
+* React
+* Tailwind
+* TanStack Router
+* TanStack Query
+* IndexedDB (Dexie)
+* Vite
+
 ## Running
 
 Install dependencies:
@@ -19,11 +27,10 @@ Test:
 
 ## Technical Features
 
-* Built to be offline-first with a pluggable sync engine architecture (using CloudKit
-  for cross-device sync in production) with optimistic updates, conflict resolution,
-  automatic retries, and graceful failure
-* Built with React, Tailwind, TanStack Router, TanStack Query,
-  IndexedDB (Dexie), and Vite
+* Offline first single page web app 
+* Custom sync engine plug-in architecture (using CloudKit in production)
+* Optimistic updates for super fast UI, graceful sync failure 
+* Sync conflict and race condition handling
 * Thorough unit and integration test coverage
 
 ## Product features
@@ -40,4 +47,3 @@ Test:
   * Time until goal
   * Levels
   * Total time
-

@@ -11,7 +11,16 @@ import { syncBus } from './data/sync-bus'
 import { createDexieApplier, dexieInverseCalculator } from './data/sync/dexie-applier'
 import { SyncBusScheduler } from './data/sync-bus-scheduler'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            networkMode: 'always'
+        },
+        mutations: {
+            networkMode: 'always'
+        }
+    }
+})
 
 const router = createRouter({
     routeTree,

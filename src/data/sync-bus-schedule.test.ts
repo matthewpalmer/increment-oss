@@ -7,11 +7,19 @@ import { SyncBusScheduler } from './sync-bus-scheduler';
 import { db } from './persistence/db';
 import { IncrementDateTimeNow } from '../domain/time-utils';
 
+function setOnline(value: boolean) {
+    Object.defineProperty(navigator, 'onLine', {
+        configurable: true,
+        get: () => value,
+    });
+}
+
 describe('sync bus scheduler', () => {
     let syncBus: SyncBus;
 
     beforeEach(async () => {
         await resetDb();
+        setOnline(true);
 
         syncBus = new SyncBus();
 
@@ -144,7 +152,7 @@ describe('sync bus scheduler', () => {
 
         await db.syncEvents.add(event1);
         await db.syncEvents.add(event2);
-        
+
         const syncBusScheduler = new SyncBusScheduler(syncBus);
 
         vi.useFakeTimers();
@@ -162,6 +170,56 @@ describe('sync bus scheduler', () => {
         await vi.advanceTimersByTimeAsync(2000);
         await vi.runAllTicks();
         expect(syncBus.processWaitingEvents as Mock).toHaveBeenCalledTimes(3);
-
     })
+
+    it('should handle online and offline states', async () => {
+        const project: Project = {
+            id: CreateUUID(),
+            name: 'My first project'
+        };
+
+        const syncBusScheduler = new SyncBusScheduler(syncBus);
+
+        const now = IncrementDateTimeNow();
+
+        const event: SyncEvent = {
+            id: CreateUUID(),
+            type: 'create',
+            table: 'projects',
+            data: project,
+            result: undefined,
+            addedAt: now,
+            startedAt: SYNC_EVENT_NOT_STARTED,
+            nextAttemptAt: SYNC_EVENT_NOT_STARTED,
+            completedAt: SYNC_EVENT_NOT_STARTED,
+            status: 'pending',
+            statusMessage: undefined,
+            attempts: 1,
+        };
+
+        await db.syncEvents.add(event);
+
+        vi.useFakeTimers();
+        setOnline(false);
+        window.dispatchEvent(new Event('offline'));
+
+        syncBusScheduler.start();
+        await vi.runAllTicks();
+
+        // Don't sync while offline
+        expect(syncBus.processWaitingEvents as Mock).toHaveBeenCalledTimes(0)
+
+        // Still offline (testing offline poll wait time)
+        await vi.advanceTimersByTimeAsync(45000);
+        await vi.runAllTicks();
+        expect(syncBus.processWaitingEvents as Mock).toHaveBeenCalledTimes(0)
+
+        // Go online -- immediately should request sync
+        setOnline(true);
+        window.dispatchEvent(new Event('online'));
+
+        await vi.advanceTimersByTimeAsync(1000);
+        await vi.runAllTicks();
+        expect(syncBus.processWaitingEvents as Mock).toHaveBeenCalledTimes(1)
+    });
 });

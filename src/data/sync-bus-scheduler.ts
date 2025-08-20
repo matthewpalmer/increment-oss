@@ -3,27 +3,56 @@ import { db } from "./persistence/db";
 import type { SyncBus } from "./sync-bus";
 
 const SYNC_BUS_SCHEDULER_HEARTBEAT = 15 * 1000;
+const SYNC_BUS_SCHEDULER_OFFLINE_POLL = 30 * 1000;
 
 export class SyncBusScheduler {
     bus: SyncBus;
     isProcessing: boolean = false;
-    timer: any | null = null; 
+    timer: any | null = null;
 
     constructor(bus: SyncBus) {
         this.bus = bus;
     }
 
     start() {
-        this.processAndReschedule()
+        window.addEventListener('online', this.handleOnlineEvent);
+        window.addEventListener('offline', this.handleOfflineEvent);
 
-        // TODO: Add online/offline handling
-        // TODO: Add tab visible/focus handling
+        this.processAndReschedule()
     }
+
+    stop() {
+        this.clearTimer();
+        window.removeEventListener('online', this.handleOnlineEvent);
+        window.removeEventListener('offline', this.handleOfflineEvent);
+    }
+
+    private clearTimer() {
+        if (this.timer) clearTimeout(this.timer);
+        this.timer = null;
+    }
+
+    private handleOnlineEvent = () => {
+        if (this.isProcessing) return;
+        this.clearTimer();
+        this.processAndReschedule();
+    };
+
+    private handleOfflineEvent = () => {
+        this.clearTimer();
+        this.processAndReschedule();
+    };
 
     private async processAndReschedule() {
         // Process the sync bus and then reschedule
         // for the next shortest retry time.
         if (this.isProcessing) return;
+
+        if (!navigator.onLine) {
+            // We are offline -- wait and try again.
+            this.scheduleNextRun(this.addJitter(SYNC_BUS_SCHEDULER_OFFLINE_POLL));
+            return;
+        }
 
         this.isProcessing = true;
 

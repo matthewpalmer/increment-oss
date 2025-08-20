@@ -14,8 +14,9 @@ describe('sync bus', () => {
     beforeEach(async () => {
         await resetDb();
 
-        // TODO: In the future, and if the current tests are flaky,
-        // switch to vitest's timer mocks. See the tests for the sync
+        // TODO: These tests are flaky because we aren't doing `sleep`
+        // correctly. We should mock the system timer/clocks.
+        // Switch to vitest's timer mocks. See the tests for the sync
         // bus scheduler which use these to test timings.
 
         vi.mock('./sync/retry', () => ({

@@ -4,6 +4,7 @@ import { resetDb } from '../../test/dbTestUtils';
 import { db } from '../persistence/db';
 import { useProjectsList, useCreateProject, useDeleteProject } from '../hooks/useProjects';
 import { TestQueryClientProvider } from '../../test/TestQueryClientProvider';
+import { IncrementDateTimeNow } from '../../domain/time-utils';
 
 describe('useProjects hooks', () => {
     beforeEach(async () => {
@@ -12,8 +13,8 @@ describe('useProjects hooks', () => {
 
     it('lists projects', async () => {
         await db.projects.bulkPut([
-            { id: 'a', name: 'A' },
-            { id: 'b', name: 'B' },
+            { id: 'a', name: 'A', createdAt: IncrementDateTimeNow() },
+            { id: 'b', name: 'B', createdAt: IncrementDateTimeNow() },
         ]);
 
         const { result } = renderHook(useProjectsList, { wrapper: TestQueryClientProvider() });
@@ -35,7 +36,7 @@ describe('useProjects hooks', () => {
         expect(list.current.data?.length).toBe(0);
 
         await act(async () => {
-            await create.current.mutateAsync({ id: 'one', name: 'P1' })
+            await create.current.mutateAsync({ id: 'one', name: 'P1', createdAt: IncrementDateTimeNow() })
         })
 
         await waitFor(() => expect(list.current?.data?.length).toBe(1));
@@ -55,8 +56,8 @@ describe('useProjects hooks', () => {
         expect(list.current.data?.length).toBe(0);
 
         await act(async () => {
-            await create.current.mutateAsync({ id: 'one', name: 'P1' })
-            await create.current.mutateAsync({ id: 'two', name: 'P2' })
+            await create.current.mutateAsync({ id: 'one', name: 'P1', createdAt: IncrementDateTimeNow() })
+            await create.current.mutateAsync({ id: 'two', name: 'P2', createdAt: IncrementDateTimeNow() })
         })
 
         await waitFor(() => expect(list.current?.data?.length).toBe(2));
@@ -65,7 +66,7 @@ describe('useProjects hooks', () => {
         expect((list.current.data || [])[1].id).toEqual('two');
 
         await act(async () => {
-            await deleteProject.current.mutateAsync({ id: 'one', name: 'P1' })
+            await deleteProject.current.mutateAsync({ id: 'one', name: 'P1', createdAt: IncrementDateTimeNow() })
         })
 
         await waitFor(() => expect(list.current?.data?.length).toBe(1));

@@ -8,7 +8,7 @@ export function useProjectsList() {
     return useQuery({
         queryKey: keys.projects.list(),
         queryFn: () => {
-            return db.projects.toArray()
+            return db.projects.orderBy('createdAt').toArray()
         },
         staleTime: Infinity
     })

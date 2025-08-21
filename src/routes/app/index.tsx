@@ -43,20 +43,7 @@ function RouteComponent() {
                 })
             }
 
-            <button
-                className='rounded-sm bg-blue-300 p-4 m-4'
-                onClick={() => {
-                    const ts = (new Date).getTime();
-
-                    createProject.mutate({
-                        id: 'test-' + ts,
-                        name: 'Project ' + ts
-                    })
-
-                }}>Create new project</button>
-
             <Text>Hello from Radix Themes!</Text>
-            <Button>Let's go</Button>
 
             <Dialog.Root open={projectDialogOpen} onOpenChange={setProjectDialogOpen}>
                 <Dialog.Trigger>

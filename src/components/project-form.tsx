@@ -8,12 +8,13 @@ import { ZodError } from "zod";
 import { useCreateProject, useUpdateProject } from "../data/hooks/useProjects";
 import { ErrorsList } from "./errors-list";
 import { userColorsList } from "./colors";
+import { IncrementDateTimeNow } from "../domain/time-utils";
 
 export type ProjectFormProps =
     | { mode: 'create', onFormSaved: () => void }
     | { mode: 'edit'; project: Project, onFormSaved: () => void }
 
-const zNewProjectInput = zProject.omit({ id: true });
+const zNewProjectInput = zProject.omit({ id: true, createdAt: true });
 const zEditProjectInput = zProject.omit({ id: true }).partial();
 
 export function ProjectForm(props: ProjectFormProps) {
@@ -42,7 +43,12 @@ export function ProjectForm(props: ProjectFormProps) {
                 return setError(parsed.error);
             }
 
-            createProject.mutate({ id: CreateUUID(), ...parsed.data })
+            createProject.mutate({ 
+                id: CreateUUID(),
+                createdAt: IncrementDateTimeNow(),
+                ...parsed.data
+            })
+            
             return props.onFormSaved();
         }
 

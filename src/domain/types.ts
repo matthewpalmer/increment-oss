@@ -61,6 +61,7 @@ export type SyncEventStatus = z.infer<typeof zSyncEventStatus>
 export const zProject = z.object({
     id: zUUID,
     name: zNonEmpty,
+    createdAt: zTimestamp,
     icon: z.string().optional(),
     color: z.string().optional(),
 })

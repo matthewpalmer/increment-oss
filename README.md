@@ -6,9 +6,10 @@ settings and extensive UI configuration.**
 Tech Stack
 * React
 * Tailwind
+* Radix UI
+* IndexedDB (Dexie)
 * TanStack Router
 * TanStack Query
-* IndexedDB (Dexie)
 * Vite
 
 ## Running

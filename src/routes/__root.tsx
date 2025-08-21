@@ -2,7 +2,7 @@ import { createRootRouteWithContext, Link, Outlet } from '@tanstack/react-router
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { QueryClient } from '@tanstack/react-query'
 import { FakeSyncEngineControlPanel } from '../components/fake-sync-engine-control-panel'
-
+import { Theme } from "@radix-ui/themes";
 export interface AppRouterContext {
     queryClient: QueryClient
 }
@@ -10,6 +10,7 @@ export interface AppRouterContext {
 export const Route = createRootRouteWithContext<AppRouterContext>()({
     component: () => (
         <>
+            <Theme>
             <div className="p-2 flex gap-2">
                 <Link to="/" className="[&.active]:font-bold">Home</Link>
                 <Link to="/about" className="[&.active]:font-bold">About</Link>
@@ -19,6 +20,7 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
             <Outlet />
             <TanStackRouterDevtools />
             <FakeSyncEngineControlPanel />
+            </Theme>
         </>
     )
 })

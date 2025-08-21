@@ -1,94 +1,180 @@
-import { v4 as uuidv4 } from 'uuid';
-import { IncrementDateTimeNow } from './time-utils';
+// types.ts
+import { z } from "zod"
+import { v4 as uuidv4 } from "uuid"
+import { IncrementDateTimeNow } from "./time-utils"
 
-export type UUID = string;
-export type IncrementTimestamp = number;
-export type IncrementDuration = number;
+// ───────────────────────────────────────────────────────────────────────────────
+// Primitives & constants
+// ───────────────────────────────────────────────────────────────────────────────
 
-export const INCREMENT_TIMESTAMP_FOREVER = -1;
+export type UUID = string
+export type IncrementTimestamp = number // ms since epoch (or -1 sentinel)
+export type IncrementDuration = number
 
-export type Table = 'projects' | 'goals' | 'goalVersions' | 'timeBlocks';
+export const INCREMENT_TIMESTAMP_FOREVER = -1 as const
+export const SYNC_EVENT_NOT_STARTED = -1 as const
 
-export interface Project {
-    id: UUID;
-    name: string;
-    icon?: string;
-    color?: string;
+// Reusable validators
+export const zUUID = z.string().uuid()
+export const zTimestamp = z
+    .number()
+    .int()
+    .refine(
+        (n) => n === INCREMENT_TIMESTAMP_FOREVER || n >= 0,
+        { message: "Timestamp must be >= 0 or -1 (sentinel)" }
+    )
+export const zDuration = z.number().int().min(0)
+export const zNonEmpty = z.string().trim().min(1)
+
+// ───────────────────────────────────────────────────────────────────────────────
+// Enums
+// ───────────────────────────────────────────────────────────────────────────────
+
+export const zTable = z.enum(["projects", "goals", "goalVersions", "timeBlocks"])
+export type Table = z.infer<typeof zTable>
+
+export const zGoalUnit = z.enum(["seconds", "count", "meters"])
+export type GoalUnit = z.infer<typeof zGoalUnit>
+
+export const zGoalCadence = z.enum(["daily", "weekly", "monthly", "lifetime"])
+export type GoalCadence = z.infer<typeof zGoalCadence>
+
+export const zGoalAggregation = z.enum(["sum", "count", "max"])
+export type GoalAggregation = z.infer<typeof zGoalAggregation>
+
+export const zSyncEventType = z.enum(["create", "update", "delete"])
+export type SyncEventType = z.infer<typeof zSyncEventType>
+
+export const zSyncEventStatus = z.enum([
+    "pending",
+    "in-progress",
+    "retry-scheduled",
+    "done",
+    "failed",
+])
+export type SyncEventStatus = z.infer<typeof zSyncEventStatus>
+
+// ───────────────────────────────────────────────────────────────────────────────
+// Schemas & Types
+// ───────────────────────────────────────────────────────────────────────────────
+
+export const zProject = z.object({
+    id: zUUID,
+    name: zNonEmpty,
+    icon: z.string().optional(),
+    color: z.string().optional(),
+})
+export type Project = z.infer<typeof zProject>
+
+export const zTimeBlock = z.object({
+    id: zUUID,
+    projectId: zUUID,
+    amount: zDuration, // IncrementDuration
+    createdAt: zTimestamp,
+    startedAt: zTimestamp,
+    notes: z.string().default(""),
+})
+export type TimeBlock = z.infer<typeof zTimeBlock>
+
+export const zGoal = z.object({
+    id: zUUID,
+    projectId: zUUID,
+    name: zNonEmpty,
+    color: zNonEmpty,
+    createdAt: zTimestamp,
+    unit: zGoalUnit,
+    cadence: zGoalCadence,
+    aggregation: zGoalAggregation,
+})
+export type Goal = z.infer<typeof zGoal>
+
+export const zGoalVersion = z
+    .object({
+        id: zUUID,
+        goalId: zUUID,
+        target: z.number(),
+        validFrom: zTimestamp,
+        validTo: zTimestamp,
+        notes: z.string().default(""),
+    })
+    .superRefine((v, ctx) => {
+        if (v.validTo !== INCREMENT_TIMESTAMP_FOREVER && v.validTo < v.validFrom) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "validTo must be >= validFrom (or -1)",
+                path: ["validTo"],
+            })
+        }
+    })
+export type GoalVersion = z.infer<typeof zGoalVersion>
+
+export const zSyncEvent = z.object({
+    id: zUUID,
+    type: zSyncEventType,
+    table: zTable,
+    data: z.unknown().optional(),
+    result: z.unknown().optional(),
+    addedAt: zTimestamp,
+    startedAt: zTimestamp,
+    nextAttemptAt: zTimestamp,
+    completedAt: zTimestamp,
+    status: zSyncEventStatus,
+    statusMessage: z.string().optional(),
+    attempts: z.number().int().min(0),
+})
+export type SyncEvent = z.infer<typeof zSyncEvent>
+
+// ───────────────────────────────────────────────────────────────────────────────
+/** Input-only schemas (omit system-populated fields) */
+// ───────────────────────────────────────────────────────────────────────────────
+
+export const zNewSyncEventInput = z.object({
+    type: zSyncEventType,
+    table: zTable,
+    data: z.unknown().optional(),
+})
+export type NewSyncEventInput = z.infer<typeof zNewSyncEventInput>
+
+// (Add similar "input" schemas for Project/Goal/etc. if you want builders)
+
+// ───────────────────────────────────────────────────────────────────────────────
+// Builders & utilities
+// ───────────────────────────────────────────────────────────────────────────────
+
+export function CreateUUID(): UUID {
+    return uuidv4()
 }
 
-export interface TimeBlock {
-    id: UUID;
-    projectId: UUID;
-    amount: IncrementDuration;
-    createdAt: IncrementTimestamp;
-    startedAt: IncrementTimestamp;
-    notes: string;
+export function DisplayUUID(uuid: UUID): string {
+    return uuid.split("-")[0]
 }
 
-type GoalUnit = 'seconds' | 'count' | 'meters';
-type GoalCadence = 'daily' | 'weekly' | 'monthly' | 'lifetime';
-type GoalAggregation = 'sum' | 'count' | 'max';
-
-export interface Goal {
-    id: UUID;
-    projectId: UUID;
-    name: string;
-    color: string;
-    createdAt: IncrementTimestamp;
-    unit: GoalUnit;
-    cadence: GoalCadence;
-    aggregation: GoalAggregation;
-}
-
-export interface GoalVersion {
-    id: UUID;
-    goalId: UUID;
-    target: number;
-    validFrom: IncrementTimestamp;
-    validTo: IncrementTimestamp;
-    notes: string;
-}
-
-export type SyncEventType = 'create' | 'update' | 'delete';
-
-export type SyncEvenStatus = 'pending' | 'in-progress' | 'retry-scheduled' | 'done' | 'failed';
-
-export const SYNC_EVENT_NOT_STARTED = -1;
-
-export interface SyncEvent {
-    id: UUID;
-    type: SyncEventType;
-    table: Table;
-    data?: any;
-    result?: any;
-    addedAt: IncrementTimestamp;
-    startedAt: IncrementTimestamp;
-    nextAttemptAt: IncrementTimestamp;
-    completedAt: IncrementTimestamp;
-    status: SyncEvenStatus;
-    statusMessage?: string;
-    attempts: number;
-}
-
-export function BuildNewSyncEvent(args: Pick<SyncEvent, "type" | "data" | "table">): SyncEvent {
-    return {
+/** Backward-compatible builder that returns a validated SyncEvent */
+export function BuildNewSyncEvent(args: NewSyncEventInput): SyncEvent {
+    const now = IncrementDateTimeNow()
+    const obj: SyncEvent = {
         id: CreateUUID(),
         type: args.type,
         table: args.table,
         data: args.data,
-        addedAt: IncrementDateTimeNow(),
-        nextAttemptAt: IncrementDateTimeNow(),
+        result: undefined,
+        addedAt: now,
+        nextAttemptAt: now,
         startedAt: SYNC_EVENT_NOT_STARTED,
         completedAt: SYNC_EVENT_NOT_STARTED,
-        status: 'pending',
-        attempts: 0
+        status: "pending",
+        statusMessage: undefined,
+        attempts: 0,
     }
+    return zSyncEvent.parse(obj)
 }
 
-export function CreateUUID(): UUID {
-    return uuidv4();
-}
+// ───────────────────────────────────────────────────────────────────────────────
+// Convenience guards (optional)
+// ───────────────────────────────────────────────────────────────────────────────
 
-export function DisplayUUID(uuid: UUID): string {
-    return uuid.split('-')[0]
-}
+export const isProject = (v: unknown): v is Project => zProject.safeParse(v).success
+export const isTimeBlock = (v: unknown): v is TimeBlock => zTimeBlock.safeParse(v).success
+export const isGoal = (v: unknown): v is Goal => zGoal.safeParse(v).success
+export const isGoalVersion = (v: unknown): v is GoalVersion => zGoalVersion.safeParse(v).success
+export const isSyncEvent = (v: unknown): v is SyncEvent => zSyncEvent.safeParse(v).success

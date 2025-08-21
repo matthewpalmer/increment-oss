@@ -4,6 +4,9 @@ import { CreateUUID } from '../../../../domain/types';
 import { IncrementDateTimeNow, TimeDurationToString, TimestampToLocalDate, TimestampToLocalTime } from '../../../../domain/time-utils';
 import { useProject } from '../../../../data/hooks/useProjects';
 import { useCreateGoal, useDeleteGoal, useGoals } from '../../../../data/hooks/useGoals';
+import { Button, Dialog, Flex, Heading } from '@radix-ui/themes';
+import { ProjectForm } from '../../../../components/project-form';
+import { useState } from 'react';
 
 export const Route = createFileRoute('/app/projects/$projectId/')({
     component: ProjectDetails
@@ -73,16 +76,29 @@ function ProjectInfo({ projectId }: { projectId: string }) {
         error
     } = useProject(projectId);
 
+    const [projectDialogOpen, setProjectDialogOpen] = useState(false);
+
     if (isLoading) return <p>Loading…</p>
 
     if (isError) return <p>An error occurred {error.message}</p>
 
+    if (!project) return <p>Unable to load project</p>
+
     return (
-        <>
-            <h1>{ project?.name }</h1>
-            <h1>{ project?.color }</h1>
-            <h1>{ project?.icon }</h1>
-        </>
+        <Flex direction={"row"} justify={"between"} align={"center"} mt="4">
+            <Heading size="8" style={{color: project.color || 'black' }}>{ project.name }</Heading>
+
+            <Dialog.Root open={projectDialogOpen} onOpenChange={setProjectDialogOpen}>
+                <Dialog.Trigger>
+                    <Button variant="soft" size="2">Edit Project</Button>
+                </Dialog.Trigger>
+
+                <Dialog.Content>
+                    <Dialog.Title size="6">{ project?.name }</Dialog.Title>
+                    <ProjectForm mode="edit" onFormSaved={() => setProjectDialogOpen(false)} project={project}></ProjectForm>
+                </Dialog.Content>
+            </Dialog.Root>
+        </Flex>
     )
 }
 
@@ -150,7 +166,6 @@ function GoalsList({ projectId }: { projectId: string }) {
 
 function ProjectDetails() {
     const { projectId } = Route.useParams();
-    
     const createTimeBlock = useCreateTimeBlock();
     const createGoal = useCreateGoal();
 

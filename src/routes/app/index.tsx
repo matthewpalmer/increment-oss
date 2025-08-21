@@ -1,5 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useCreateProject, useProjectsList } from '../../data/hooks/useProjects';
+import { Flex, Text, Button, Dialog } from "@radix-ui/themes";
+import { ProjectForm } from '../../components/project-form';
+import { useState } from 'react';
 
 export const Route = createFileRoute('/app/')({
     component: RouteComponent
@@ -9,6 +12,7 @@ function RouteComponent() {
     const { data = [], isLoading, error } = useProjectsList();
     const createProject = useCreateProject();
 
+    const [projectDialogOpen, setProjectDialogOpen] = useState(false);
 
     if (isLoading) {
         return (<p className='text-gray-400'>Loading…</p>)
@@ -50,6 +54,20 @@ function RouteComponent() {
                     })
 
                 }}>Create new project</button>
+
+            <Text>Hello from Radix Themes!</Text>
+            <Button>Let's go</Button>
+
+            <Dialog.Root open={projectDialogOpen} onOpenChange={setProjectDialogOpen}>
+                <Dialog.Trigger>
+                    <Button size="3">New Project</Button>
+                </Dialog.Trigger>
+
+                <Dialog.Content>
+                    <Dialog.Title size="6">New Project</Dialog.Title>
+                    <ProjectForm mode="create" onFormSaved={() => setProjectDialogOpen(false)}></ProjectForm>
+                </Dialog.Content>
+            </Dialog.Root>
         </div>
     )
 }

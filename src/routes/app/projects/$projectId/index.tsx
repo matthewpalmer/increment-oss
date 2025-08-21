@@ -7,6 +7,7 @@ import { useCreateGoal, useDeleteGoal, useGoals } from '../../../../data/hooks/u
 import { Button, Dialog, Flex, Heading } from '@radix-ui/themes';
 import { ProjectForm } from '../../../../components/project-form';
 import { useState } from 'react';
+import { getNameForColor } from '../../../../components/colors';
 
 export const Route = createFileRoute('/app/projects/$projectId/')({
     component: ProjectDetails
@@ -86,11 +87,11 @@ function ProjectInfo({ projectId }: { projectId: string }) {
 
     return (
         <Flex direction={"row"} justify={"between"} align={"center"} mt="4">
-            <Heading size="8" style={{color: project.color || 'black' }}>{ project.name }</Heading>
+            <Heading size="8" color={getNameForColor(project.color)}>{ project.name }</Heading>
 
             <Dialog.Root open={projectDialogOpen} onOpenChange={setProjectDialogOpen}>
                 <Dialog.Trigger>
-                    <Button variant="soft" size="2">Edit Project</Button>
+                    <Button color={getNameForColor(project.color)} variant="soft" size="2">Edit Project</Button>
                 </Dialog.Trigger>
 
                 <Dialog.Content>

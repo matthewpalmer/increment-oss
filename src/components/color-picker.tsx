@@ -1,19 +1,5 @@
 import { Flex, Box } from "@radix-ui/themes";
-import { useCallback } from "react";
-
-export const ColorPickerColors = [
-    "#3E63DD", // Cobalt (default)
-    "#E5484D", // Red
-    "#F76B15", // Orange
-    "#F5D90A", // Yellow
-    "#46A758", // Green
-    "#2BB0ED", // Blue
-    "#1D4ED8", // Dark Blue
-    "#0090A7", // Teal
-    "#8E4EC6", // Purple
-    "#E93D82", // Pink
-    "#9BA1A6", // Neutral (Gray)
-];
+import { userColorsList } from "./colors";
 
 export interface ColorPickerProps {
     selectedColor: string;
@@ -22,19 +8,19 @@ export interface ColorPickerProps {
 
 export function ColorPicker(props: ColorPickerProps) {
     return (
-        <Flex py="1">
+        <Flex py="1" wrap={"wrap"} maxWidth={"400px"}>
             {
-                ColorPickerColors.map(color => {
-                    const isSelected = props.selectedColor === color;
+                userColorsList.map(color => {
+                    const isSelected = props.selectedColor === color.hex;
                     
-                    const colorTabStyle: any = { backgroundColor: color };
-                    const containerStyle: any = { borderColor: isSelected ? color : 'transparent' }
+                    const colorTabStyle: any = { backgroundColor: color.hex };
+                    const containerStyle: any = { borderColor: isSelected ? color.hex : 'transparent' }
 
                     return (
-                        <Box key={color} 
+                        <Box key={color.hex} 
                             style={containerStyle}
                             className={`rounded-[5px] border-2 w-9 h-9 p-0.5`}
-                            onClick={() => props.colorChanged(color)}>
+                            onClick={() => props.colorChanged(color.hex)}>
                                 <div className="rounded-[2px] w-full h-full" style={colorTabStyle}>
 
                                 </div>

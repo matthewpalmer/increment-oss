@@ -1,12 +1,13 @@
 import { Button, Flex, TextField } from "@radix-ui/themes";
 import { Label } from "radix-ui";
 import { useState } from "react";
-import { ColorPicker, ColorPickerColors } from "./color-picker";
+import { ColorPicker } from "./color-picker";
 import { CreateUUID, zProject, type Project } from "../domain/types";
 
 import { ZodError } from "zod";
 import { useCreateProject, useUpdateProject } from "../data/hooks/useProjects";
 import { ErrorsList } from "./errors-list";
+import { userColorsList } from "./colors";
 
 export type ProjectFormProps =
     | { mode: 'create', onFormSaved: () => void }
@@ -79,7 +80,7 @@ export function ProjectForm(props: ProjectFormProps) {
                     </Label.Root>
 
                     <ColorPicker
-                        selectedColor={values.color || ColorPickerColors[0]}
+                        selectedColor={values.color || userColorsList[0].hex}
                         colorChanged={(color) => {
                             setValues({ ...values, color: color })
                         }} />

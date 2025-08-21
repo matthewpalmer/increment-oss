@@ -5,10 +5,11 @@ import { ColorPicker } from "./color-picker";
 import { CreateUUID, zProject, type Project } from "../domain/types";
 
 import { ZodError } from "zod";
-import { useCreateProject, useUpdateProject } from "../data/hooks/useProjects";
+import { useCreateProject, useDeleteProject, useUpdateProject } from "../data/hooks/useProjects";
 import { ErrorsList } from "./errors-list";
 import { userColorsList } from "./colors";
 import { IncrementDateTimeNow } from "../domain/time-utils";
+import { useNavigate } from "@tanstack/react-router";
 
 export type ProjectFormProps =
     | { mode: 'create', onFormSaved: () => void }
@@ -22,6 +23,9 @@ export function ProjectForm(props: ProjectFormProps) {
 
     const createProject = useCreateProject();
     const updateProject = useUpdateProject();
+    const deleteProject = useDeleteProject();
+
+    const navigate = useNavigate();
 
     const [values, setValues] = useState(() => {
         if (isNewProject) {
@@ -43,12 +47,12 @@ export function ProjectForm(props: ProjectFormProps) {
                 return setError(parsed.error);
             }
 
-            createProject.mutate({ 
+            createProject.mutate({
                 id: CreateUUID(),
                 createdAt: IncrementDateTimeNow(),
                 ...parsed.data
             })
-            
+
             return props.onFormSaved();
         }
 
@@ -63,6 +67,16 @@ export function ProjectForm(props: ProjectFormProps) {
         props.onFormSaved();
     };
 
+    const handleDeleteProject = () => {
+        if (props.mode === 'create') return;
+
+        const proceed = confirm('Are you sure you want to delete this project?');
+        if (!proceed) return;
+
+        deleteProject.mutate(props.project);
+        navigate({ to: '/app' })
+    };
+
     return (
         <form onSubmit={handleSave} autoComplete="off">
             <Flex direction="column" gap="4">
@@ -71,9 +85,9 @@ export function ProjectForm(props: ProjectFormProps) {
                         Project Name
                     </Label.Root>
 
-                    <TextField.Root 
+                    <TextField.Root
                         id="name" size="3" placeholder="My project…"
-                        value={values.name} 
+                        value={values.name}
                         onChange={(e) => {
                             setValues({ ...values, name: e.target.value })
                         }}>
@@ -92,18 +106,31 @@ export function ProjectForm(props: ProjectFormProps) {
                         }} />
                 </Flex>
 
-                <Button style={{ alignSelf: "flex-start" }} type="submit" size="3">
+                <Flex direction="row" justify="between" align="center">
+                    <Button type="submit" size="3">
+                        {
+                            isNewProject
+                                ? 'Create Project'
+                                : 'Save Project'
+                        }
+                    </Button>
+
                     {
                         isNewProject
-                            ? 'Create Project'
-                            : 'Save Project'
+                            ? null
+                            : (
+                                <Button variant="soft" color="red" onClick={(e) => {
+                                    e.preventDefault();
+                                    handleDeleteProject();
+                                }}>Delete</Button>
+                            )
                     }
-                </Button>
+                </Flex>
 
                 {
                     error
-                    ? <ErrorsList error={error} />
-                    : null
+                        ? <ErrorsList error={error} />
+                        : null
                 }
             </Flex>
         </form>

@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { getNameForColor } from '../../../../components/colors';
 import { GoalForm } from '../../../../components/goal-form';
 import { GoalsListWidget } from '../../../../components/dashboard-widgets/goals-list-widget';
+import { Widget, WidgetGrid } from '../../../../components/widget-grid';
 
 export const Route = createFileRoute('/app/projects/$projectId/')({
     component: ProjectDetails
@@ -51,21 +52,21 @@ function TimeBlocksList({ projectId }: { projectId: string }) {
                 </tr>
             </thead>
             <tbody>
-            {
-                timeBlocks.map(timeBlock => {
+                {
+                    timeBlocks.map(timeBlock => {
 
 
-                    return (
-                        <tr key={timeBlock.id}>
-                            <td className="p-2 border border-gray-300">{timeBlock.id.split('-')[0]}</td>
-                            <td className="p-2 border border-gray-300">{TimeDurationToString(timeBlock.amount)}</td>
-                            <td className="p-2 border border-gray-300">{TimestampToLocalTime(timeBlock.createdAt)}</td>
-                            <td className="p-2 border border-gray-300">{TimestampToLocalDate(timeBlock.createdAt)}</td>
-                            <td className="p-2 border border-gray-300">{timeBlock.notes}</td>
-                        </tr>
-                    )
-                })
-            }
+                        return (
+                            <tr key={timeBlock.id}>
+                                <td className="p-2 border border-gray-300">{timeBlock.id.split('-')[0]}</td>
+                                <td className="p-2 border border-gray-300">{TimeDurationToString(timeBlock.amount)}</td>
+                                <td className="p-2 border border-gray-300">{TimestampToLocalTime(timeBlock.createdAt)}</td>
+                                <td className="p-2 border border-gray-300">{TimestampToLocalDate(timeBlock.createdAt)}</td>
+                                <td className="p-2 border border-gray-300">{timeBlock.notes}</td>
+                            </tr>
+                        )
+                    })
+                }
             </tbody>
         </table>
     )
@@ -88,8 +89,8 @@ function ProjectInfo({ projectId }: { projectId: string }) {
     if (!project) return <p>Unable to load project</p>
 
     return (
-        <Flex direction={"row"} justify={"between"} align={"center"} mt="4">
-            <Heading size="8" color={getNameForColor(project.color)}>{ project.name }</Heading>
+        <Flex direction="row" justify="between" align="center" mt="2" mb="6" pb="4" className='border-b-2 border-dotted' style={{ borderColor: project.color }}>
+            <Heading size="8" color={getNameForColor(project.color)}>{project.name}</Heading>
 
             <Dialog.Root open={projectDialogOpen} onOpenChange={setProjectDialogOpen}>
                 <Dialog.Trigger>
@@ -97,7 +98,7 @@ function ProjectInfo({ projectId }: { projectId: string }) {
                 </Dialog.Trigger>
 
                 <Dialog.Content>
-                    <Dialog.Title size="6">{ project?.name }</Dialog.Title>
+                    <Dialog.Title size="6">{project?.name}</Dialog.Title>
                     <ProjectForm mode="edit" onFormSaved={() => setProjectDialogOpen(false)} project={project}></ProjectForm>
                 </Dialog.Content>
             </Dialog.Root>
@@ -110,31 +111,60 @@ function ProjectDetails() {
     const createTimeBlock = useCreateTimeBlock();
 
     return (
-        <div>
-            <ProjectInfo projectId={projectId} />
+        <div className='bg-white w-screen h-screen'>
+            <div className='max-w-4xl m-auto px-2'>
+                <ProjectInfo projectId={projectId} />
 
-            <GoalsListWidget projectId={projectId} />
+                <WidgetGrid>
+                    <Widget size={{ columns: 2, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
+                        <GoalsListWidget projectId={projectId} />
+                    </Widget>
 
-            <h2 className='text-3xl font-extrabold mt-8'>Time Blocks</h2>
-            <TimeBlocksList projectId={projectId} />
+                    <Widget size={{ columns: 2, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
+                        <h2>Test</h2>
+                    </Widget>
 
-            <button
-                className='rounded-sm bg-blue-300 p-4 m-4'
-                onClick={() => {
-                    const id = CreateUUID();
+                    <Widget size={{ columns: 4, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
+                        <h2>Test</h2>
+                    </Widget>
 
-                    createTimeBlock.mutate({
-                        id: id,
-                        notes: 'Time block ' + id,
-                        projectId: projectId,
-                        amount: Math.floor(Math.random() * 7200),
-                        createdAt: IncrementDateTimeNow(),
-                        startedAt: IncrementDateTimeNow()
-                    })
-                }}>
-                Add Time Block
-            </button>
+                    <Widget size={{ columns: 1, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
+                        <h2>Test</h2>
+                    </Widget>
 
+                    <Widget size={{ columns: 3, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
+                        <h2>Test</h2>
+                    </Widget>
+
+                    <Widget size={{ columns: 3, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
+                        <h2>Test</h2>
+                    </Widget>
+
+                    <Widget size={{ columns: 4, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
+                        <h2>Test</h2>
+                    </Widget>
+                </WidgetGrid>
+
+                <h2 className='text-3xl font-extrabold mt-8'>Time Blocks</h2>
+                <TimeBlocksList projectId={projectId} />
+
+                <button
+                    className='rounded-sm bg-blue-300 p-4 m-4'
+                    onClick={() => {
+                        const id = CreateUUID();
+
+                        createTimeBlock.mutate({
+                            id: id,
+                            notes: 'Time block ' + id,
+                            projectId: projectId,
+                            amount: Math.floor(Math.random() * 7200),
+                            createdAt: IncrementDateTimeNow(),
+                            startedAt: IncrementDateTimeNow()
+                        })
+                    }}>
+                    Add Time Block
+                </button>
+            </div>
         </div>
     )
 }

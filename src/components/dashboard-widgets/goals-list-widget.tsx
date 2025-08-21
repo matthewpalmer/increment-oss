@@ -17,8 +17,8 @@ export function GoalsListWidget(props: GoalsListWidgetProps) {
 
     return (
         <Box>
-            <Flex direction="column">
-                <Flex direction="row" justify="between" align="center">
+            <Flex direction="column" pb="2">
+                <Flex direction="row" justify="between" align="center" mb="4">
                     <Heading size="5">My Goals</Heading>
 
                     <Dialog.Root open={newGoalDialogOpen} onOpenChange={setNewGoalDialogOpen}>
@@ -41,17 +41,17 @@ export function GoalsListWidget(props: GoalsListWidgetProps) {
                 {isLoading ? <p>Loading goals…</p> : null}
                 {isError ? <p>Unable to load goals</p> : null}
 
-                <Flex direction="column">
+                <Flex direction="column" gap="4">
                     {
                         data?.map(goal => {
                             return (
                                 <Flex key={goal.id} direction="row" justify={"between"} align={"center"}>
                                     <Text weight="bold">{goal.name}</Text>
 
-                                    <Button variant="ghost" size="1" onClick={() => {
+                                    <Button color="gray" variant="ghost" size="1" onClick={() => {
                                         setEditingGoal(goal);
                                         setEditGoalDialogOpen(true);
-                                    }}><Pencil1Icon />&nbsp;</Button>
+                                    }}><Pencil1Icon /></Button>
                                 </Flex>
                             )
                         })

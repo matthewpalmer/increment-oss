@@ -1,2 +1,7 @@
 @import "tailwindcss";
 @import "@radix-ui/themes/styles.css";
+
+.widget {
+    grid-column: span var(--c);
+    grid-row: span var(--r);
+}

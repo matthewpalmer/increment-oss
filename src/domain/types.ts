@@ -81,7 +81,6 @@ export const zGoal = z.object({
     id: zUUID,
     projectId: zUUID,
     name: zNonEmpty,
-    color: zNonEmpty,
     createdAt: zTimestamp,
     unit: zGoalUnit,
     cadence: zGoalCadence,

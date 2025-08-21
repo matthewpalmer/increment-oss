@@ -8,6 +8,8 @@ import { Button, Dialog, Flex, Heading } from '@radix-ui/themes';
 import { ProjectForm } from '../../../../components/project-form';
 import { useState } from 'react';
 import { getNameForColor } from '../../../../components/colors';
+import { GoalForm } from '../../../../components/goal-form';
+import { GoalsListWidget } from '../../../../components/dashboard-widgets/goals-list-widget';
 
 export const Route = createFileRoute('/app/projects/$projectId/')({
     component: ProjectDetails
@@ -103,96 +105,15 @@ function ProjectInfo({ projectId }: { projectId: string }) {
     )
 }
 
-function GoalsList({ projectId }: { projectId: string }) {
-    const deleteGoal = useDeleteGoal();
-
-    const {
-        data: goals = [],
-        isLoading,
-        isError,
-        error
-    } = useGoals(projectId);
-
-    if (isLoading) {
-        return <p>Loading goals…</p>
-    }
-
-    if (isError) {
-        return <p>Error loading goals: {error.message}</p>
-    }
-
-    return (
-        <div>
-            <h2 className='text-3xl font-extrabold mt-4'>Goals</h2>
-
-            <div>
-                {
-                    goals.map(goal => {
-                        return (
-                            <div key={goal.id} className='p-4 border-2 m-4 rounded-md border-gray-300'>
-                                <h3 className='font-bold text-lg'>{ goal.name }</h3>
-                                <Link 
-                                    className="text-blue-800 bg-blue-100 rounded-sm p-2 m-2 text-sm hover:cursor-pointer hover:bg-blue-200"
-                                    to="/app/projects/$projectId/goals/$goalId" 
-                                    params={{projectId: projectId, goalId: goal.id}}>
-                                        Edit
-                                </Link>
-
-                                <button 
-                                    className='text-red-800 bg-red-100 rounded-sm p-2 m-2 text-sm hover:cursor-pointer hover:bg-red-200'
-                                    onClick={() => {
-                                        console.log('starting the delete....')
-                                        deleteGoal.mutate(goal);
-                                        console.log('done the delete....');
-                                    }}>
-                                    Delete Goal
-                                </button>
-
-                                <pre>
-                                    {goal.id} | 
-                                    {goal.color} |
-                                    {goal.projectId} |
-                                    {goal.aggregation} |
-                                    {goal.cadence} |
-                                    {goal.unit} |
-                                </pre>
-                            </div>
-                        )
-                    })
-                }
-            </div>
-        </div>
-    )
-}
-
 function ProjectDetails() {
     const { projectId } = Route.useParams();
     const createTimeBlock = useCreateTimeBlock();
-    const createGoal = useCreateGoal();
 
     return (
         <div>
             <ProjectInfo projectId={projectId} />
 
-            <GoalsList projectId={projectId} />
-            <button
-                className='rounded-sm bg-blue-300 p-4 m-4'
-                onClick={() => {
-                    const id = CreateUUID();
-
-                    createGoal.mutate({
-                        id: id,
-                        projectId: projectId,
-                        name: 'New Goal ' + (Math.floor(Math.random() * 100)),
-                        color: '',
-                        createdAt: IncrementDateTimeNow(),
-                        unit: 'seconds',
-                        cadence: 'daily',
-                        aggregation: 'sum',
-                    })
-                }}>
-                Add Goal
-            </button>
+            <GoalsListWidget projectId={projectId} />
 
             <h2 className='text-3xl font-extrabold mt-8'>Time Blocks</h2>
             <TimeBlocksList projectId={projectId} />

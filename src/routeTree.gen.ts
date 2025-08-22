@@ -13,7 +13,6 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as AppProjectsProjectIdIndexRouteImport } from './routes/app/projects/$projectId/index'
-import { Route as AppProjectsProjectIdGoalsGoalIdRouteImport } from './routes/app/projects/$projectId/goals/$goalId'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
@@ -36,26 +35,18 @@ const AppProjectsProjectIdIndexRoute =
     path: '/app/projects/$projectId/',
     getParentRoute: () => rootRouteImport,
   } as any)
-const AppProjectsProjectIdGoalsGoalIdRoute =
-  AppProjectsProjectIdGoalsGoalIdRouteImport.update({
-    id: '/app/projects/$projectId/goals/$goalId',
-    path: '/app/projects/$projectId/goals/$goalId',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/app': typeof AppIndexRoute
   '/app/projects/$projectId': typeof AppProjectsProjectIdIndexRoute
-  '/app/projects/$projectId/goals/$goalId': typeof AppProjectsProjectIdGoalsGoalIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/app': typeof AppIndexRoute
   '/app/projects/$projectId': typeof AppProjectsProjectIdIndexRoute
-  '/app/projects/$projectId/goals/$goalId': typeof AppProjectsProjectIdGoalsGoalIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -63,30 +54,13 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/app/': typeof AppIndexRoute
   '/app/projects/$projectId/': typeof AppProjectsProjectIdIndexRoute
-  '/app/projects/$projectId/goals/$goalId': typeof AppProjectsProjectIdGoalsGoalIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/about'
-    | '/app'
-    | '/app/projects/$projectId'
-    | '/app/projects/$projectId/goals/$goalId'
+  fullPaths: '/' | '/about' | '/app' | '/app/projects/$projectId'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/about'
-    | '/app'
-    | '/app/projects/$projectId'
-    | '/app/projects/$projectId/goals/$goalId'
-  id:
-    | '__root__'
-    | '/'
-    | '/about'
-    | '/app/'
-    | '/app/projects/$projectId/'
-    | '/app/projects/$projectId/goals/$goalId'
+  to: '/' | '/about' | '/app' | '/app/projects/$projectId'
+  id: '__root__' | '/' | '/about' | '/app/' | '/app/projects/$projectId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -94,7 +68,6 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AppIndexRoute: typeof AppIndexRoute
   AppProjectsProjectIdIndexRoute: typeof AppProjectsProjectIdIndexRoute
-  AppProjectsProjectIdGoalsGoalIdRoute: typeof AppProjectsProjectIdGoalsGoalIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -127,13 +100,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProjectsProjectIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/app/projects/$projectId/goals/$goalId': {
-      id: '/app/projects/$projectId/goals/$goalId'
-      path: '/app/projects/$projectId/goals/$goalId'
-      fullPath: '/app/projects/$projectId/goals/$goalId'
-      preLoaderRoute: typeof AppProjectsProjectIdGoalsGoalIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -142,7 +108,6 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AppIndexRoute: AppIndexRoute,
   AppProjectsProjectIdIndexRoute: AppProjectsProjectIdIndexRoute,
-  AppProjectsProjectIdGoalsGoalIdRoute: AppProjectsProjectIdGoalsGoalIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

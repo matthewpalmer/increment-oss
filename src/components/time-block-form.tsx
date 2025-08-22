@@ -1,12 +1,13 @@
-import { Button, Flex, Select, Text, TextField } from "@radix-ui/themes";
+import { Button, Flex, Select, TextField } from "@radix-ui/themes";
 import { Label } from "radix-ui";
-import { CreateUUID, zGoal, zTimeBlock, type Goal, type TimeBlock, type TimeBlockType, type UUID } from "../domain/types";
+import { CreateUUID, zGoal, zTimeBlock, type Goal, type IncrementDuration, type TimeBlock, type TimeBlockType, type UUID } from "../domain/types";
 import { useState } from "react";
-import { convertDurationToHoursMinutes, convertHoursMinutesToDuration, IncrementDateTimeNow } from "../domain/time-utils";
+import { IncrementDateTimeNow } from "../domain/time-utils";
 import { ZodError } from "zod";
 import { ErrorsList } from "./errors-list";
 import { useCreateTimeBlock, useUpdateTimeBlock } from "../data/hooks/useTimeBlocks";
 import { DatePicker } from "./date-picker";
+import { TimeInput } from "./time-input";
 
 export type TimeBlockFormProps =
     | { mode: 'create', projectId: UUID, onFormSaved: () => void }
@@ -21,9 +22,6 @@ export function TimeBlockForm(props: TimeBlockFormProps) {
     const createTimeBlock = useCreateTimeBlock();
     const updateTimeBlock = useUpdateTimeBlock();
 
-    const [timeHours, setTimeHours] = useState('');
-    const [timeMinutes, setTimeMinutes] = useState('');
-
     const [values, setValues] = useState(() => {
         if (isNewTimeBlock) {
             return {
@@ -35,15 +33,7 @@ export function TimeBlockForm(props: TimeBlockFormProps) {
                 notes: ''
             }
         } else {
-            const initial = { ...props.timeBlock }
-
-            if (initial.type === 'time') {
-                const { hours, minutes } = convertDurationToHoursMinutes(initial.amount);
-                setTimeHours(hours);
-                setTimeMinutes(minutes);
-            }
-
-            return initial
+            return { ...props.timeBlock }
         }
     });
 
@@ -52,14 +42,8 @@ export function TimeBlockForm(props: TimeBlockFormProps) {
     const handleSave = (event: React.FormEvent) => {
         event.preventDefault();
 
-        const valuesCopy = { ...values };
-
-        if (valuesCopy.type === 'time') {
-            valuesCopy.amount = convertHoursMinutesToDuration(timeHours, timeMinutes);
-        }
-
         if (isNewTimeBlock) {
-            const parsed = zNewTimeBlockInput.safeParse(valuesCopy);
+            const parsed = zNewTimeBlockInput.safeParse(values);
 
             if (!parsed.success) {
                 return setError(parsed.error);
@@ -74,7 +58,7 @@ export function TimeBlockForm(props: TimeBlockFormProps) {
             return props.onFormSaved();
         }
 
-        const parsed = zEditTimeBlockInput.safeParse(valuesCopy);
+        const parsed = zEditTimeBlockInput.safeParse(values);
         if (!parsed.success) return setError(parsed.error);
 
         updateTimeBlock.mutate({
@@ -91,6 +75,10 @@ export function TimeBlockForm(props: TimeBlockFormProps) {
         } else {
             setValues({ ...values, type: 'count', amount: 1 })
         }
+    };
+
+    const handleTimeChanged = (time: IncrementDuration) => {
+        setValues({ ...values, amount: time });
     };
 
     return (
@@ -117,31 +105,7 @@ export function TimeBlockForm(props: TimeBlockFormProps) {
 
                     {
                         values.type === 'time'
-                            ? (
-                                <Flex direction="row" align="center" gap="3">
-                                    <Flex direction="row" align="center" gap="1" width="72px">
-                                        <TextField.Root
-                                            id="timeHours" size="3"
-                                            value={timeHours}
-                                            onChange={(e) => {
-                                                setTimeHours(e.target.value);
-                                            }}>
-                                        </TextField.Root>
-                                        <Text color="gray">h</Text>
-                                    </Flex>
-
-                                    <Flex direction="row" align="center" gap="1" width="72px">
-                                        <TextField.Root
-                                            id="timeMinutes" size="3"
-                                            value={timeMinutes}
-                                            onChange={(e) => {
-                                                setTimeMinutes(e.target.value);
-                                            }}>
-                                        </TextField.Root>
-                                        <Text color="gray">m</Text>
-                                    </Flex>
-                                </Flex>
-                            )
+                            ? <TimeInput onTimeChanged={handleTimeChanged} initialTime={values.amount} />
                             : (
                                 <TextField.Root
                                     id="countAmount" size="3"

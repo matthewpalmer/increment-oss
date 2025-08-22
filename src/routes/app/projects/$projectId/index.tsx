@@ -96,11 +96,11 @@ function ProjectInfo({ project }: { project: Project }) {
 
                 <Dialog.Root open={timeBlockDialogOpen} onOpenChange={setTimeBlockDialogOpen}>
                     <Dialog.Trigger>
-                        <Button variant="soft" size="2"><PlusIcon /> Add Time</Button>
+                        <Button variant="soft" size="2"><PlusIcon /> Add Event</Button>
                     </Dialog.Trigger>
 
                     <Dialog.Content>
-                        <Dialog.Title size="6">Add Time</Dialog.Title>
+                        <Dialog.Title size="6">Add Event</Dialog.Title>
                         <TimeBlockForm mode="create" onFormSaved={() => setTimeBlockDialogOpen(false)} projectId={project.id}></TimeBlockForm>
                     </Dialog.Content>
                 </Dialog.Root>

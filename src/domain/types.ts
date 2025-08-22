@@ -23,7 +23,7 @@ export const zTimestamp = z
         (n) => n === INCREMENT_TIMESTAMP_FOREVER || n >= 0,
         { message: "Timestamp must be >= 0 or -1 (sentinel)" }
     )
-export const zTimeBlockAmount = z.number().int().min(0)
+export const zTimeBlockAmount = z.number().int().min(1)
 export const zNonEmpty = z.string().trim().min(1)
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -86,9 +86,6 @@ export const zGoal = z.object({
     projectId: zUUID,
     name: zNonEmpty,
     createdAt: zTimestamp,
-    unit: zGoalUnit,
-    cadence: zGoalCadence,
-    aggregation: zGoalAggregation,
 })
 export type Goal = z.infer<typeof zGoal>
 
@@ -96,9 +93,12 @@ export const zGoalVersion = z
     .object({
         id: zUUID,
         goalId: zUUID,
-        target: z.number(),
+        target: zTimeBlockAmount,
         validFrom: zTimestamp,
         validTo: zTimestamp,
+        unit: zGoalUnit,
+        cadence: zGoalCadence,
+        aggregation: zGoalAggregation,
         notes: z.string().default(""),
     })
     .superRefine((v, ctx) => {

@@ -19,8 +19,8 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
                 </div>
                 
                 <Outlet />
-                <TanStackRouterDevtools />
-                <FakeSyncEngineControlPanel />
+                {/* <TanStackRouterDevtools /> */}
+                {/* <FakeSyncEngineControlPanel /> */}
             </Theme>
         </div>
     )

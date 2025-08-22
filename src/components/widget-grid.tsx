@@ -19,13 +19,15 @@ export interface WidgetProps {
     children: ReactNode;
     size: { columns: number, rows: number };
     className?: string;
+    borderColor?: string;
 }
 
 export function Widget(props: WidgetProps) {
     return (
         <div className={`widget ${props.className || ''}`} style={{
             "--c": props.size.columns,
-            "--r": props.size.rows
+            "--r": props.size.rows,
+            "borderColor": props.borderColor || ''
         } as CSSProperties}>
             { props.children }
         </div>

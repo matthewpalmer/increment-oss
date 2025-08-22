@@ -1,16 +1,18 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useCreateTimeBlock, useTimeBlocks } from '../../../../data/hooks/useTimeBlocks';
-import { CreateUUID } from '../../../../domain/types';
+import { CreateUUID, type Project } from '../../../../domain/types';
 import { IncrementDateTimeNow, TimeDurationToString, TimestampToLocalDate, TimestampToLocalTime } from '../../../../domain/time-utils';
 import { useProject } from '../../../../data/hooks/useProjects';
 import { useCreateGoal, useDeleteGoal, useGoals } from '../../../../data/hooks/useGoals';
-import { Button, Dialog, Flex, Heading } from '@radix-ui/themes';
+import { Button, Dialog, Flex, Heading, Theme } from '@radix-ui/themes';
 import { ProjectForm } from '../../../../components/project-form';
 import { useState } from 'react';
 import { getNameForColor } from '../../../../components/colors';
 import { GoalForm } from '../../../../components/goal-form';
 import { GoalsListWidget } from '../../../../components/dashboard-widgets/goals-list-widget';
 import { Widget, WidgetGrid } from '../../../../components/widget-grid';
+import { TimeBlockForm } from '../../../../components/time-block-form';
+import { PlusIcon } from '@radix-ui/react-icons';
 
 export const Route = createFileRoute('/app/projects/$projectId/')({
     component: ProjectDetails
@@ -60,8 +62,8 @@ function TimeBlocksList({ projectId }: { projectId: string }) {
                             <tr key={timeBlock.id}>
                                 <td className="p-2 border border-gray-300">{timeBlock.id.split('-')[0]}</td>
                                 <td className="p-2 border border-gray-300">{TimeDurationToString(timeBlock.amount)}</td>
-                                <td className="p-2 border border-gray-300">{TimestampToLocalTime(timeBlock.createdAt)}</td>
-                                <td className="p-2 border border-gray-300">{TimestampToLocalDate(timeBlock.createdAt)}</td>
+                                <td className="p-2 border border-gray-300">{TimestampToLocalTime(timeBlock.startedAt)}</td>
+                                <td className="p-2 border border-gray-300">{TimestampToLocalDate(timeBlock.startedAt)}</td>
                                 <td className="p-2 border border-gray-300">{timeBlock.notes}</td>
                             </tr>
                         )
@@ -72,36 +74,37 @@ function TimeBlocksList({ projectId }: { projectId: string }) {
     )
 }
 
-function ProjectInfo({ projectId }: { projectId: string }) {
-    const {
-        data: project,
-        isLoading,
-        isError,
-        error
-    } = useProject(projectId);
-
+function ProjectInfo({ project }: { project: Project }) {
     const [projectDialogOpen, setProjectDialogOpen] = useState(false);
-
-    if (isLoading) return <p>Loading…</p>
-
-    if (isError) return <p>An error occurred {error.message}</p>
-
-    if (!project) return <p>Unable to load project</p>
+    const [timeBlockDialogOpen, setTimeBlockDialogOpen] = useState(false);
 
     return (
         <Flex direction="row" justify="between" align="center" mt="2" mb="6" pb="4" className='border-b-2 border-dotted' style={{ borderColor: project.color }}>
             <Heading size="8" color={getNameForColor(project.color)}>{project.name}</Heading>
 
-            <Dialog.Root open={projectDialogOpen} onOpenChange={setProjectDialogOpen}>
-                <Dialog.Trigger>
-                    <Button color={getNameForColor(project.color)} variant="soft" size="2">Edit Project</Button>
-                </Dialog.Trigger>
+            <Flex direction="row" align="center" gap="4">
+                <Dialog.Root open={projectDialogOpen} onOpenChange={setProjectDialogOpen}>
+                    <Dialog.Trigger>
+                        <Button variant="ghost" size="2">Edit Project</Button>
+                    </Dialog.Trigger>
 
-                <Dialog.Content>
-                    <Dialog.Title size="6">{project?.name}</Dialog.Title>
-                    <ProjectForm mode="edit" onFormSaved={() => setProjectDialogOpen(false)} project={project}></ProjectForm>
-                </Dialog.Content>
-            </Dialog.Root>
+                    <Dialog.Content>
+                        <Dialog.Title size="6">{project?.name}</Dialog.Title>
+                        <ProjectForm mode="edit" onFormSaved={() => setProjectDialogOpen(false)} project={project}></ProjectForm>
+                    </Dialog.Content>
+                </Dialog.Root>
+
+                <Dialog.Root open={timeBlockDialogOpen} onOpenChange={setTimeBlockDialogOpen}>
+                    <Dialog.Trigger>
+                        <Button variant="soft" size="2"><PlusIcon /> Add Time</Button>
+                    </Dialog.Trigger>
+
+                    <Dialog.Content>
+                        <Dialog.Title size="6">Add Time</Dialog.Title>
+                        <TimeBlockForm mode="create" onFormSaved={() => setTimeBlockDialogOpen(false)} projectId={project.id}></TimeBlockForm>
+                    </Dialog.Content>
+                </Dialog.Root>
+            </Flex>
         </Flex>
     )
 }
@@ -110,45 +113,59 @@ function ProjectDetails() {
     const { projectId } = Route.useParams();
     const createTimeBlock = useCreateTimeBlock();
 
+    const {
+        data: project,
+        isLoading,
+        isError,
+        error
+    } = useProject(projectId);
+
+    if (isLoading) return <p>Loading…</p>
+
+    if (isError) return <p>An error occurred {error.message}</p>
+
+    if (!project) return <p>Unable to load project</p>
+
     return (
         <div className='bg-white w-screen h-screen'>
             <div className='max-w-4xl m-auto px-2'>
-                <ProjectInfo projectId={projectId} />
+                <Theme accentColor={getNameForColor(project.color)}>
+                    <ProjectInfo project={project} />
 
-                <WidgetGrid>
-                    <Widget size={{ columns: 2, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
-                        <GoalsListWidget projectId={projectId} />
-                    </Widget>
+                    <WidgetGrid>
+                        <Widget size={{ columns: 2, rows: 1 }} className='bg-white border-0 p-4 rounded-lg' borderColor={project.color}>
+                            <GoalsListWidget projectId={project.id} />
+                        </Widget>
 
-                    <Widget size={{ columns: 2, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
-                        <h2>Test</h2>
-                    </Widget>
+                        <Widget size={{ columns: 2, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
+                            <h2>Test</h2>
+                        </Widget>
 
-                    <Widget size={{ columns: 4, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
-                        <h2>Test</h2>
-                    </Widget>
+                        <Widget size={{ columns: 4, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
+                            <h2>Test</h2>
+                        </Widget>
 
-                    <Widget size={{ columns: 1, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
-                        <h2>Test</h2>
-                    </Widget>
+                        <Widget size={{ columns: 1, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
+                            <h2>Test</h2>
+                        </Widget>
 
-                    <Widget size={{ columns: 3, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
-                        <h2>Test</h2>
-                    </Widget>
+                        <Widget size={{ columns: 3, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
+                            <h2>Test</h2>
+                        </Widget>
 
-                    <Widget size={{ columns: 3, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
-                        <h2>Test</h2>
-                    </Widget>
+                        <Widget size={{ columns: 3, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
+                            <h2>Test</h2>
+                        </Widget>
 
-                    <Widget size={{ columns: 4, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
-                        <h2>Test</h2>
-                    </Widget>
-                </WidgetGrid>
-
+                        <Widget size={{ columns: 4, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
+                            <h2>Test</h2>
+                        </Widget>
+                    </WidgetGrid>
+                </Theme>
                 <h2 className='text-3xl font-extrabold mt-8'>Time Blocks</h2>
                 <TimeBlocksList projectId={projectId} />
 
-                <button
+                {/* <button
                     className='rounded-sm bg-blue-300 p-4 m-4'
                     onClick={() => {
                         const id = CreateUUID();
@@ -163,7 +180,7 @@ function ProjectDetails() {
                         })
                     }}>
                     Add Time Block
-                </button>
+                </button> */}
             </div>
         </div>
     )

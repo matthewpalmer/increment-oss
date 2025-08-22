@@ -4,7 +4,7 @@ import { CreateUUID, zGoal, type Goal, type UUID } from "../domain/types";
 import { useState } from "react";
 import { IncrementDateTimeNow } from "../domain/time-utils";
 import { ZodError } from "zod";
-import { useCreateGoal, useUpdateGoal } from "../data/hooks/useGoals";
+import { useCreateGoal, useDeleteGoal, useUpdateGoal } from "../data/hooks/useGoals";
 import { ErrorsList } from "./errors-list";
 
 export type GoalFormProps =
@@ -19,6 +19,7 @@ export function GoalForm(props: GoalFormProps) {
 
     const createGoal = useCreateGoal();
     const updateGoal = useUpdateGoal();
+    const deleteGoal = useDeleteGoal();
 
     const [values, setValues] = useState(() => {
         if (isNewGoal) {
@@ -49,12 +50,12 @@ export function GoalForm(props: GoalFormProps) {
                 return setError(parsed.error);
             }
 
-            createGoal.mutate({ 
+            createGoal.mutate({
                 id: CreateUUID(),
                 createdAt: IncrementDateTimeNow(),
                 ...parsed.data
             })
-            
+
             return props.onFormSaved();
         }
 
@@ -69,6 +70,16 @@ export function GoalForm(props: GoalFormProps) {
         props.onFormSaved();
     };
 
+    const handleDeleteGoal = () => {
+        if (props.mode === 'create') return;
+
+        const proceed = confirm('Are you sure you want to delete this goal?');
+        if (!proceed) return;
+
+        deleteGoal.mutate(props.goal);
+        props.onFormSaved();
+    };
+
     return (
         <form onSubmit={handleSave} autoComplete="off">
             <Flex direction="column" gap="4">
@@ -77,27 +88,40 @@ export function GoalForm(props: GoalFormProps) {
                         Goal Name
                     </Label.Root>
 
-                    <TextField.Root 
+                    <TextField.Root
                         id="name" size="3" placeholder="My project…"
-                        value={values.name} 
+                        value={values.name}
                         onChange={(e) => {
                             setValues({ ...values, name: e.target.value })
                         }}>
                     </TextField.Root>
                 </Flex>
 
-                <Button style={{ alignSelf: "flex-start" }} type="submit" size="3">
+                <Flex direction="row" justify="between" align="center">
+                    <Button style={{ alignSelf: "flex-start" }} type="submit" size="3">
+                        {
+                            isNewGoal
+                                ? 'Create Goal'
+                                : 'Save Goal'
+                        }
+                    </Button>
+                    
                     {
                         isNewGoal
-                            ? 'Create Goal'
-                            : 'Save Goal'
+                            ? null
+                            : (
+                                <Button variant="soft" color="red" onClick={(e) => {
+                                    e.preventDefault();
+                                    handleDeleteGoal();
+                                }}>Delete</Button>
+                            )
                     }
-                </Button>
+                </Flex>
 
                 {
                     error
-                    ? <ErrorsList error={error} />
-                    : null
+                        ? <ErrorsList error={error} />
+                        : null
                 }
             </Flex>
         </form>

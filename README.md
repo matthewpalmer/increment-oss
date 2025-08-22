@@ -48,3 +48,8 @@ Test:
   * Time until goal
   * Levels
   * Total time
+
+## Still need to add
+
+* Need to add proper time zone support (everything operates off UTC time currently)
+

@@ -1,7 +1,16 @@
 @import "tailwindcss";
 @import "@radix-ui/themes/styles.css";
+@import "react-day-picker/style.css";
 
 .widget {
     grid-column: span var(--c);
     grid-row: span var(--r);
+}
+
+.rdp-root {
+    --rdp-accent-color: #0190ff;
+    --rdp-day-width: 30px;
+    --rdp-day-height: 30px;
+    --rdp-day_button-height: 30px;
+    --rdp-day_button-width: 30px;
 }

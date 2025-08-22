@@ -23,7 +23,7 @@ export const zTimestamp = z
         (n) => n === INCREMENT_TIMESTAMP_FOREVER || n >= 0,
         { message: "Timestamp must be >= 0 or -1 (sentinel)" }
     )
-export const zDuration = z.number().int().min(0)
+export const zTimeBlockAmount = z.number().int().min(0)
 export const zNonEmpty = z.string().trim().min(1)
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -41,6 +41,9 @@ export type GoalCadence = z.infer<typeof zGoalCadence>
 
 export const zGoalAggregation = z.enum(["sum", "count", "max"])
 export type GoalAggregation = z.infer<typeof zGoalAggregation>
+
+export const zTimeBlockType = z.enum(["time", "count"])
+export type TimeBlockType = z.infer<typeof zTimeBlockType>
 
 export const zSyncEventType = z.enum(["create", "update", "delete"])
 export type SyncEventType = z.infer<typeof zSyncEventType>
@@ -70,7 +73,8 @@ export type Project = z.infer<typeof zProject>
 export const zTimeBlock = z.object({
     id: zUUID,
     projectId: zUUID,
-    amount: zDuration, // IncrementDuration
+    type: zTimeBlockType,
+    amount: zTimeBlockAmount, // Varies based on `type`, either seconds or count
     createdAt: zTimestamp,
     startedAt: zTimestamp,
     notes: z.string().default(""),

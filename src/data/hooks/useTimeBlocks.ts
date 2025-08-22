@@ -1,4 +1,4 @@
-import { BuildNewSyncEvent, type TimeBlock } from "../../domain/types";
+import { BuildNewSyncEvent, type TimeBlock, type UUID } from "../../domain/types";
 import { db } from "../persistence/db";
 import { keys } from "../queries"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -30,6 +30,23 @@ export function useCreateTimeBlock() {
             syncBus.dispatchEvent(BuildNewSyncEvent(
                 { type: 'create', data: timeBlock, table: 'timeBlocks' }
             ))
+        }
+    })
+}
+
+export function useUpdateTimeBlock() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: async ({ id, patch }: { id: UUID, patch: Partial<TimeBlock>}) => {
+            await db.timeBlocks.update(id, patch);
+            return db.timeBlocks.get(id)
+        },
+        onSuccess: (timeBlock: TimeBlock | undefined) => {
+            queryClient.invalidateQueries({ queryKey: keys.goals.list() })
+
+            // TODO: invalidate the correct queries (only this ID?)
+            // TODO: Dispatch an event to the sync bus
         }
     })
 }

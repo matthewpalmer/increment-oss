@@ -51,5 +51,6 @@ Test:
 
 ## Still need to add
 
-* Need to add proper time zone support (everything operates off UTC time currently)
+* Proper time zone support (everything operates off UTC time currently)
+* User configurable default units
 

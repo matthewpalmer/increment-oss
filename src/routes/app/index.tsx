@@ -55,7 +55,7 @@ function RouteComponent() {
                     </div>)
                 : null}
 
-            <Flex direction="column" wrap="wrap" gap="2">
+            <Flex direction="column" gap="2">
                 {
                     data.map(project => {
                         return (
@@ -66,9 +66,8 @@ function RouteComponent() {
                                 className='overflow-ellipsis min-w-64 border-b-2 border-dotted pb-2 mb-4'
                                 style={{ borderColor: project.color || '#0091ff'}}>
 
-                                <Flex justify="between" align="center" style={{ color: project.color || '#0091ff' }}>
+                                <Flex direction={"column"} justify="between" style={{ color: project.color || '#0091ff' }}>
                                     <Heading size="6" color={getNameForColor(project.color)}>{project.name}</Heading>
-                                    <ArrowRightIcon />
                                 </Flex>
                             </Link>
                         )

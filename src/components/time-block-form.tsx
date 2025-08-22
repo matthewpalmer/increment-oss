@@ -1,6 +1,6 @@
 import { Button, Flex, Select, Text, TextField } from "@radix-ui/themes";
 import { Label } from "radix-ui";
-import { CreateUUID, zGoal, zTimeBlock, type Goal, type TimeBlock, type UUID } from "../domain/types";
+import { CreateUUID, zGoal, zTimeBlock, type Goal, type TimeBlock, type TimeBlockType, type UUID } from "../domain/types";
 import { useState } from "react";
 import { convertDurationToHoursMinutes, convertHoursMinutesToDuration, IncrementDateTimeNow } from "../domain/time-utils";
 import { ZodError } from "zod";
@@ -85,7 +85,7 @@ export function TimeBlockForm(props: TimeBlockFormProps) {
         props.onFormSaved();
     };
 
-    const handleTypeChanged = (newValue: string) => {
+    const handleTypeChanged = (newValue: TimeBlockType) => {
         if (newValue === 'time') {
             setValues({ ...values, type: 'time', amount: 0 })
         } else {

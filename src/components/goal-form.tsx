@@ -1,6 +1,6 @@
-import { Button, Flex, TextField } from "@radix-ui/themes";
+import { Button, Flex, Select, TextField } from "@radix-ui/themes";
 import { Label } from "radix-ui";
-import { CreateUUID, zGoal, type Goal, type UUID } from "../domain/types";
+import { CreateUUID, zGoal, type Goal, type GoalAggregation, type GoalCadence, type GoalUnit, type UUID } from "../domain/types";
 import { useState } from "react";
 import { IncrementDateTimeNow } from "../domain/time-utils";
 import { ZodError } from "zod";
@@ -80,6 +80,18 @@ export function GoalForm(props: GoalFormProps) {
         props.onFormSaved();
     };
 
+    const handleUnitChanged = (newValue: GoalUnit) => {
+        setValues({ ...values, unit: newValue })
+    };
+
+    const handleCadenceChanged = (newValue: GoalCadence) => {
+        setValues({ ...values, cadence: newValue })
+    }
+
+    const handleAggregationChanged = (newValue: GoalAggregation) => {
+        setValues({ ...values, aggregation: newValue })
+    };
+
     return (
         <form onSubmit={handleSave} autoComplete="off">
             <Flex direction="column" gap="4">
@@ -97,7 +109,58 @@ export function GoalForm(props: GoalFormProps) {
                     </TextField.Root>
                 </Flex>
 
-                <Flex direction="row" justify="between" align="center">
+                <Flex direction="row" justify="between" wrap="wrap" gap="2">
+                    <Flex direction="row" justify="between" align="center" gap="2">
+                        <Label.Root className="text-sm text-gray-500" htmlFor="type">
+                            Type
+                        </Label.Root>
+
+                        <Select.Root size="3" value={values.unit} defaultValue={values.unit} onValueChange={handleUnitChanged}>
+                            <Select.Trigger />
+                            <Select.Content>
+                                <Select.Item value="seconds">Time</Select.Item>
+                                <Select.Item value="count">Count</Select.Item>
+                                <Select.Item value="meters">Distance</Select.Item>
+                            </Select.Content>
+                        </Select.Root>
+                    </Flex>
+
+                    <Flex direction="row" justify="between" align="center" gap="2">
+                        <Label.Root className="text-sm text-gray-500" htmlFor="cadence">
+                            Period
+                        </Label.Root>
+
+                        <Select.Root size="3" value={values.cadence} defaultValue={values.cadence} onValueChange={handleCadenceChanged}>
+                            <Select.Trigger />
+
+                            <Select.Content>
+                                <Select.Item value="daily">Daily</Select.Item>
+                                <Select.Item value="weekly">Weekly</Select.Item>
+                                <Select.Item value="monthly">Monthly</Select.Item>
+                                <Select.Item value="lifetime">Lifetime</Select.Item>
+                            </Select.Content>
+                        </Select.Root>
+                    </Flex>
+
+                    <Flex direction="row" justify="between" align="center" gap="2">
+                        <Label.Root className="text-sm text-gray-500" htmlFor="aggregation">
+                            Aggregation
+                        </Label.Root>
+
+                        <Select.Root size="3" value={values.aggregation} defaultValue={values.aggregation} onValueChange={handleAggregationChanged}>
+                            <Select.Trigger />
+
+                            <Select.Content>
+                                <Select.Item value="sum">Sum</Select.Item>
+                                <Select.Item value="count">Sessions</Select.Item>
+                                <Select.Item value="max">Maximum</Select.Item>
+                            </Select.Content>
+                        </Select.Root>
+                    </Flex>
+
+                </Flex>
+
+                <Flex direction="row" justify="between" align="center" mt="2">
                     <Button style={{ alignSelf: "flex-start" }} type="submit" size="3">
                         {
                             isNewGoal
@@ -105,7 +168,7 @@ export function GoalForm(props: GoalFormProps) {
                                 : 'Save Goal'
                         }
                     </Button>
-                    
+
                     {
                         isNewGoal
                             ? null

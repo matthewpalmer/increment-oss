@@ -89,8 +89,8 @@ export function TimeBlockForm(props: TimeBlockFormProps) {
                         Type
                     </Label.Root>
 
-                    <Select.Root size="3" value={values.type} defaultValue={values.type} onValueChange={handleTypeChanged}>
-                        <Select.Trigger />
+                    <Select.Root size="2" value={values.type} defaultValue={values.type} onValueChange={handleTypeChanged}>
+                        <Select.Trigger style={{ minWidth: '212px' }} />
                         <Select.Content>
                             <Select.Item value="time">Time</Select.Item>
                             <Select.Item value="count">Count</Select.Item>

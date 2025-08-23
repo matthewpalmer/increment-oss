@@ -1,11 +1,6 @@
-// types.ts
 import { z } from "zod"
 import { v4 as uuidv4 } from "uuid"
 import { IncrementDateTimeNow } from "./time-utils"
-
-// ───────────────────────────────────────────────────────────────────────────────
-// Primitives & constants
-// ───────────────────────────────────────────────────────────────────────────────
 
 export type UUID = string
 export type IncrementTimestamp = number // ms since epoch (or -1 sentinel)
@@ -14,7 +9,6 @@ export type IncrementDuration = number
 export const INCREMENT_TIMESTAMP_FOREVER = -1 as const
 export const SYNC_EVENT_NOT_STARTED = -1 as const
 
-// Reusable validators
 export const zUUID = z.string().uuid()
 export const zTimestamp = z
     .number()
@@ -26,11 +20,7 @@ export const zTimestamp = z
 export const zTimeBlockAmount = z.number().int().min(1)
 export const zNonEmpty = z.string().trim().min(1)
 
-// ───────────────────────────────────────────────────────────────────────────────
-// Enums
-// ───────────────────────────────────────────────────────────────────────────────
-
-export const zTable = z.enum(["projects", "goals", "goalVersions", "timeBlocks"])
+export const zTable = z.enum(["projects", "goals", "goalVersions", "timeBlocks", "dashboardWidgets"])
 export type Table = z.infer<typeof zTable>
 
 export const zGoalUnit = z.enum(["seconds", "count", "meters"])
@@ -55,11 +45,8 @@ export const zSyncEventStatus = z.enum([
     "done",
     "failed",
 ])
-export type SyncEventStatus = z.infer<typeof zSyncEventStatus>
 
-// ───────────────────────────────────────────────────────────────────────────────
-// Schemas & Types
-// ───────────────────────────────────────────────────────────────────────────────
+export type SyncEventStatus = z.infer<typeof zSyncEventStatus>
 
 export const zProject = z.object({
     id: zUUID,
@@ -68,6 +55,7 @@ export const zProject = z.object({
     icon: z.string().optional(),
     color: z.string().optional(),
 })
+
 export type Project = z.infer<typeof zProject>
 
 export const zTimeBlock = z.object({
@@ -79,6 +67,7 @@ export const zTimeBlock = z.object({
     startedAt: zTimestamp,
     notes: z.string().default(""),
 })
+
 export type TimeBlock = z.infer<typeof zTimeBlock>
 
 export const zGoal = z.object({
@@ -87,6 +76,7 @@ export const zGoal = z.object({
     name: zNonEmpty,
     createdAt: zTimestamp,
 })
+
 export type Goal = z.infer<typeof zGoal>
 
 export const zGoalVersion = z
@@ -110,7 +100,24 @@ export const zGoalVersion = z
             })
         }
     })
+
 export type GoalVersion = z.infer<typeof zGoalVersion>
+
+export const zDashboardWidgetType = z.enum(["goals-list", "progress-bar", "progress-circle"])
+export type DashboardWidgetType = z.infer<typeof zDashboardWidgetType>
+
+export const zDashboardWidget = z
+    .object({
+        id: zUUID,
+        projectId: zUUID,
+        goalId: zUUID.optional(),
+        type: zDashboardWidgetType,
+        order: z.number().optional(),
+        xSize: z.number(),
+        ySize: z.number(),
+    })
+
+export type DashboardWidget = z.infer<typeof zDashboardWidget>
 
 export const zSyncEvent = z.object({
     id: zUUID,
@@ -126,11 +133,8 @@ export const zSyncEvent = z.object({
     statusMessage: z.string().optional(),
     attempts: z.number().int().min(0),
 })
-export type SyncEvent = z.infer<typeof zSyncEvent>
 
-// ───────────────────────────────────────────────────────────────────────────────
-/** Input-only schemas (omit system-populated fields) */
-// ───────────────────────────────────────────────────────────────────────────────
+export type SyncEvent = z.infer<typeof zSyncEvent>
 
 export const zNewSyncEventInput = z.object({
     type: zSyncEventType,
@@ -138,12 +142,6 @@ export const zNewSyncEventInput = z.object({
     data: z.unknown().optional(),
 })
 export type NewSyncEventInput = z.infer<typeof zNewSyncEventInput>
-
-// (Add similar "input" schemas for Project/Goal/etc. if you want builders)
-
-// ───────────────────────────────────────────────────────────────────────────────
-// Builders & utilities
-// ───────────────────────────────────────────────────────────────────────────────
 
 export function CreateUUID(): UUID {
     return uuidv4()
@@ -153,7 +151,6 @@ export function DisplayUUID(uuid: UUID): string {
     return uuid.split("-")[0]
 }
 
-/** Backward-compatible builder that returns a validated SyncEvent */
 export function BuildNewSyncEvent(args: NewSyncEventInput): SyncEvent {
     const now = IncrementDateTimeNow()
     const obj: SyncEvent = {
@@ -172,13 +169,3 @@ export function BuildNewSyncEvent(args: NewSyncEventInput): SyncEvent {
     }
     return zSyncEvent.parse(obj)
 }
-
-// ───────────────────────────────────────────────────────────────────────────────
-// Convenience guards (optional)
-// ───────────────────────────────────────────────────────────────────────────────
-
-export const isProject = (v: unknown): v is Project => zProject.safeParse(v).success
-export const isTimeBlock = (v: unknown): v is TimeBlock => zTimeBlock.safeParse(v).success
-export const isGoal = (v: unknown): v is Goal => zGoal.safeParse(v).success
-export const isGoalVersion = (v: unknown): v is GoalVersion => zGoalVersion.safeParse(v).success
-export const isSyncEvent = (v: unknown): v is SyncEvent => zSyncEvent.safeParse(v).success

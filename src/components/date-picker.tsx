@@ -16,7 +16,7 @@ export function DatePicker(props: DatePickerProps) {
         <div>
             <Popover.Root open={datePickerOpen} onOpenChange={setDatePickerOpen}>
                 <Popover.Trigger>
-                    <Button variant="soft" size="3">
+                    <Button variant="soft" size="2">
                         <CalendarIcon />
                         { formatted }
                     </Button>

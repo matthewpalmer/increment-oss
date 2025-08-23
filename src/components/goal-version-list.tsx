@@ -1,7 +1,7 @@
-import { Button, Flex, Popover, Text } from "@radix-ui/themes";
+import { Button, Flex, Heading, Popover, Text } from "@radix-ui/themes";
 import { CreateUUID, INCREMENT_TIMESTAMP_FOREVER, type Goal, type GoalVersion, type UUID } from "../domain/types";
 import { useGoalVersions } from "../data/hooks/useGoalVersions";
-import { InfoCircledIcon, SewingPinIcon } from "@radix-ui/react-icons";
+import { ClockIcon, CounterClockwiseClockIcon, InfoCircledIcon, SewingPinIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { GoalVersionForm } from "./goal-version-form";
 import { IncrementDateTimeNow } from "../domain/time-utils";
@@ -55,15 +55,16 @@ export function GoalVersionList(props: GoalVersionListProps) {
                                 <SewingPinIcon /> Change Target
                             </Button>
 
-                            <Flex direction="row" gap="2" align="center" className="font-semibold text-gray-500 text-sm">
+                            <Flex direction="row" gap="3" align="center" className="font-semibold text-gray-500 text-sm">
                                 <GoalVersionSummary goalVersion={sortedGoalVersions[0]} />
 
                                 <Popover.Root>
                                     <Popover.Trigger>
-                                        <Button  color="gray" variant="ghost" size="1"><InfoCircledIcon /></Button>
+                                        <Button color="gray" variant="ghost" size="1"><CounterClockwiseClockIcon /></Button>
                                     </Popover.Trigger>
 
                                     <Popover.Content size="1" maxWidth="300px">
+                                        <Heading size="3">Past Targets</Heading>
                                         <ul>
                                             {
                                                 sortedGoalVersions.map(gv => {

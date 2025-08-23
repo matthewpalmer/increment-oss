@@ -18,5 +18,9 @@ export const keys = {
         list: () => ['goalVersions'],
         listInGoal: (goalId: string) => ['goalVersions', goalId],
         get: (id: string) => ['goalVersions', id]
-    }
+    },
+    dashboardWidgets: {
+        // TODO: Seems bad to have goalVersions:$goalId and goalVersions:$goalVersionId
+        listInProject: (projectId: string) => ['dashboardWidgets', projectId],
+    },
 }

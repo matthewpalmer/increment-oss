@@ -127,11 +127,7 @@ export function ProjectForm(props: ProjectFormProps) {
                     }
                 </Flex>
 
-                {
-                    error
-                        ? <ErrorsList error={error} />
-                        : null
-                }
+                { error ? <ErrorsList error={error} /> : null }
             </Flex>
         </form>
     )

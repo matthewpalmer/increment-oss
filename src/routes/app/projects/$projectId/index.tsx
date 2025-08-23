@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useCreateTimeBlock, useTimeBlocks } from '../../../../data/hooks/useTimeBlocks';
-import { CreateUUID, type Project } from '../../../../domain/types';
+import { CreateUUID, DashboardWidget, type Project } from '../../../../domain/types';
 import { IncrementDateTimeNow, TimeDurationToString, TimestampToLocalDate, TimestampToLocalTime } from '../../../../domain/time-utils';
 import { useProject } from '../../../../data/hooks/useProjects';
 import { useCreateGoal, useDeleteGoal, useGoals } from '../../../../data/hooks/useGoals';
-import { Button, Dialog, Flex, Heading, Theme } from '@radix-ui/themes';
+import { Button, Dialog, DropdownMenu, Flex, Heading, Separator, Text, Theme } from '@radix-ui/themes';
 import { ProjectForm } from '../../../../components/project-form';
 import { useState } from 'react';
 import { getNameForColor } from '../../../../components/colors';
@@ -12,7 +12,11 @@ import { GoalForm } from '../../../../components/goal-form';
 import { GoalsListWidget } from '../../../../components/dashboard-widgets/goals-list-widget';
 import { Widget, WidgetGrid } from '../../../../components/widget-grid';
 import { TimeBlockForm } from '../../../../components/time-block-form';
-import { PlusIcon } from '@radix-ui/react-icons';
+import { DashboardIcon, Pencil1Icon, PlusIcon } from '@radix-ui/react-icons';
+import { ProgressBarWidget } from '../../../../components/dashboard-widgets/progress-bar';
+import { useDashboardWidgets } from '../../../../data/hooks/useDashboardWidgets';
+import { WidgetForm } from '../../../../components/widget-form';
+import { WidgetVendor } from '../../../../components/widget-vendor';
 
 export const Route = createFileRoute('/app/projects/$projectId/')({
     component: ProjectDetails
@@ -74,33 +78,46 @@ function TimeBlocksList({ projectId }: { projectId: string }) {
     )
 }
 
-function ProjectInfo({ project }: { project: Project }) {
+function ProjectHeader({ project }: { project: Project }) {
     const [projectDialogOpen, setProjectDialogOpen] = useState(false);
     const [timeBlockDialogOpen, setTimeBlockDialogOpen] = useState(false);
+    const [widgetDialogOpen, setWidgetDialogOpen] = useState(false);
 
     return (
         <Flex direction="row" justify="between" align="center" mt="2" mb="6" pb="4" className='border-b-2 border-dotted' style={{ borderColor: project.color }}>
             <Heading size="8" color={getNameForColor(project.color)}>{project.name}</Heading>
 
-            <Flex direction="row" align="center" gap="4">
-                <Dialog.Root open={projectDialogOpen} onOpenChange={setProjectDialogOpen}>
-                    <Dialog.Trigger>
-                        <Button variant="ghost" size="2">Edit Project</Button>
-                    </Dialog.Trigger>
+            <Flex direction="row" align="center" gap="3">
+                <DropdownMenu.Root>
+                    <DropdownMenu.Trigger>
+                        <Button variant="soft">Customize <DropdownMenu.TriggerIcon /></Button>
+                    </DropdownMenu.Trigger>
 
+                    <DropdownMenu.Content>
+                        <DropdownMenu.Item onClick={() => setProjectDialogOpen(!projectDialogOpen)}><Pencil1Icon /> Edit Project</DropdownMenu.Item>
+                        <DropdownMenu.Item onClick={() => setWidgetDialogOpen(!widgetDialogOpen)}><DashboardIcon /> Add Widget</DropdownMenu.Item>
+                    </DropdownMenu.Content>
+                </DropdownMenu.Root>
+
+                <Button size="2" onClick={() => setTimeBlockDialogOpen(!timeBlockDialogOpen)}><PlusIcon /> Add Entry</Button>
+
+                <Dialog.Root open={projectDialogOpen} onOpenChange={setProjectDialogOpen}>
                     <Dialog.Content>
                         <Dialog.Title size="6">{project?.name}</Dialog.Title>
                         <ProjectForm mode="edit" onFormSaved={() => setProjectDialogOpen(false)} project={project}></ProjectForm>
                     </Dialog.Content>
                 </Dialog.Root>
 
-                <Dialog.Root open={timeBlockDialogOpen} onOpenChange={setTimeBlockDialogOpen}>
-                    <Dialog.Trigger>
-                        <Button variant="soft" size="2"><PlusIcon /> Add Event</Button>
-                    </Dialog.Trigger>
-
+                <Dialog.Root open={widgetDialogOpen} onOpenChange={setWidgetDialogOpen}>
                     <Dialog.Content>
-                        <Dialog.Title size="6">Add Event</Dialog.Title>
+                        <Dialog.Title size="6">Add Widget</Dialog.Title>
+                        <WidgetForm mode="create" projectId={project.id} onFormSaved={() => setWidgetDialogOpen(false)} />
+                    </Dialog.Content>
+                </Dialog.Root>
+
+                <Dialog.Root open={timeBlockDialogOpen} onOpenChange={setTimeBlockDialogOpen}>
+                    <Dialog.Content>
+                        <Dialog.Title size="6">Add Entry</Dialog.Title>
                         <TimeBlockForm mode="create" onFormSaved={() => setTimeBlockDialogOpen(false)} projectId={project.id}></TimeBlockForm>
                     </Dialog.Content>
                 </Dialog.Root>
@@ -111,18 +128,34 @@ function ProjectInfo({ project }: { project: Project }) {
 
 function ProjectDetails() {
     const { projectId } = Route.useParams();
-    const createTimeBlock = useCreateTimeBlock();
+    const [widgetDialogOpen, setWidgetDialogOpen] = useState(false);
+    const [editingDashboardWidget, setEditingDashboardWidget] = useState<DashboardWidget | undefined>(undefined);
 
     const {
         data: project,
-        isLoading,
-        isError,
-        error
+        isLoading: isLoadingProject,
+        isError: isErrorProject,
+        error: projectError
     } = useProject(projectId);
 
-    if (isLoading) return <p>Loading…</p>
+    const {
+        data: dashboardWidgets = [],
+        isLoading: widgetsLoading,
+        isError: widgetsHasError,
+        error: widgetsError
+    } = useDashboardWidgets(projectId);
 
-    if (isError) return <p>An error occurred {error.message}</p>
+    const {
+        data: goals = [],
+        isLoading: goalsLoading,
+        isError: goalsHasError,
+        error: goalsError
+    } = useGoals(projectId);
+
+    if (isLoadingProject || widgetsLoading || goalsLoading) return <p>Loading…</p>
+    if (isErrorProject) return <p>An error occurred the project: {projectError.message}</p>
+    if (widgetsHasError) return <p>An error occurred loading widgets: {widgetsError.message}</p>
+    if (goalsHasError) return <p>An error occurred loading goals: {goalsError.message}</p>
 
     if (!project) return <p>Unable to load project</p>
 
@@ -130,57 +163,45 @@ function ProjectDetails() {
         <div className='bg-white w-screen h-screen'>
             <div className='max-w-4xl m-auto px-2'>
                 <Theme accentColor={getNameForColor(project.color)}>
-                    <ProjectInfo project={project} />
+
+                    <ProjectHeader project={project} />
 
                     <WidgetGrid>
-                        <Widget size={{ columns: 2, rows: 1 }} className='bg-white border-0 p-4 rounded-lg' borderColor={project.color}>
-                            <GoalsListWidget projectId={project.id} />
-                        </Widget>
-
-                        <Widget size={{ columns: 2, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
-                            <h2>Test</h2>
-                        </Widget>
-
-                        <Widget size={{ columns: 4, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
-                            <h2>Test</h2>
-                        </Widget>
-
-                        <Widget size={{ columns: 1, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
-                            <h2>Test</h2>
-                        </Widget>
-
-                        <Widget size={{ columns: 3, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
-                            <h2>Test</h2>
-                        </Widget>
-
-                        <Widget size={{ columns: 3, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
-                            <h2>Test</h2>
-                        </Widget>
-
-                        <Widget size={{ columns: 4, rows: 1 }} className='bg-slate-100/80 p-4 rounded-lg'>
-                            <h2>Test</h2>
-                        </Widget>
+                        {
+                            dashboardWidgets.map((dashboardWidget) => {
+                                return (
+                                    <WidgetVendor
+                                        key={dashboardWidget.id}
+                                        widget={dashboardWidget}
+                                        project={project}
+                                        goals={goals}
+                                        onSettingsActivated={(widget) => {
+                                            setEditingDashboardWidget(widget)
+                                            setWidgetDialogOpen(true);
+                                        }} />
+                                )
+                            })
+                        }
                     </WidgetGrid>
+                    {/* { mode: 'edit', projectId: UUID, dashboardWidget: DashboardWidget, onFormSaved: () => void } */}
+                    <Dialog.Root open={widgetDialogOpen} onOpenChange={setWidgetDialogOpen}>
+                        <Dialog.Content>
+                            <Dialog.Title size="6">Edit Widget</Dialog.Title>
+
+                            {
+                                editingDashboardWidget
+                                    ? (
+                                        <WidgetForm
+                                            mode="edit"
+                                            projectId={project.id}
+                                            dashboardWidget={editingDashboardWidget}
+                                            onFormSaved={() => setWidgetDialogOpen(false)} />
+                                    )
+                                    : (<Text color="red">No dashboard widget selected</Text>)
+                            }
+                        </Dialog.Content>
+                    </Dialog.Root>
                 </Theme>
-                <h2 className='text-3xl font-extrabold mt-8'>Time Blocks</h2>
-                <TimeBlocksList projectId={projectId} />
-
-                {/* <button
-                    className='rounded-sm bg-blue-300 p-4 m-4'
-                    onClick={() => {
-                        const id = CreateUUID();
-
-                        createTimeBlock.mutate({
-                            id: id,
-                            notes: 'Time block ' + id,
-                            projectId: projectId,
-                            amount: Math.floor(Math.random() * 7200),
-                            createdAt: IncrementDateTimeNow(),
-                            startedAt: IncrementDateTimeNow()
-                        })
-                    }}>
-                    Add Time Block
-                </button> */}
             </div>
         </div>
     )

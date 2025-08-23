@@ -3,14 +3,11 @@ import { useGoals } from "../../data/hooks/useGoals";
 import { useState } from "react";
 import { GoalForm } from "../goal-form";
 import { Pencil1Icon, PlusIcon } from "@radix-ui/react-icons";
-import type { Goal } from "../../domain/types";
+import type { Goal, Project } from "../../domain/types";
+import type { DashboardWidgetProps } from "../widget-vendor";
 
-interface GoalsListWidgetProps {
-    projectId: string;
-}
-
-export function GoalsListWidget(props: GoalsListWidgetProps) {
-    const { data = [], isLoading, isError } = useGoals(props.projectId);
+export function GoalsListWidget(props: DashboardWidgetProps) {
+    const { data = [], isLoading, isError } = useGoals(props.project.id);
     const [newGoalDialogOpen, setNewGoalDialogOpen] = useState(false);
     const [editGoalDialogOpen, setEditGoalDialogOpen] = useState(false);
     const [editingGoal, setEditingGoal] = useState<Goal | undefined>();
@@ -21,21 +18,25 @@ export function GoalsListWidget(props: GoalsListWidgetProps) {
                 <Flex direction="row" justify="between" align="center" mb="4">
                     <Heading size="5">My Goals</Heading>
 
-                    <Dialog.Root open={newGoalDialogOpen} onOpenChange={setNewGoalDialogOpen}>
-                        <Dialog.Trigger>
-                            <Button variant="soft" size="1"><PlusIcon /> New</Button>
-                        </Dialog.Trigger>
+                    <Flex direction="row" align="center" gap="3">
+                        <Dialog.Root open={newGoalDialogOpen} onOpenChange={setNewGoalDialogOpen}>
+                            <Dialog.Trigger>
+                                <Button variant="soft" size="1"><PlusIcon /> New</Button>
+                            </Dialog.Trigger>
 
-                        <Dialog.Content>
-                            <Dialog.Title size="6">New Goal</Dialog.Title>
+                            <Dialog.Content>
+                                <Dialog.Title size="6">New Goal</Dialog.Title>
 
-                            <GoalForm
-                                mode="create"
-                                projectId={props.projectId}
-                                onFormSaved={() => setNewGoalDialogOpen(false)}>
-                            </GoalForm>
-                        </Dialog.Content>
-                    </Dialog.Root>
+                                <GoalForm
+                                    mode="create"
+                                    projectId={props.project.id}
+                                    onFormSaved={() => setNewGoalDialogOpen(false)}>
+                                </GoalForm>
+                            </Dialog.Content>
+
+                            {props.menuSlot}
+                        </Dialog.Root>
+                    </Flex>
                 </Flex>
 
                 {isLoading ? <p>Loading goals…</p> : null}

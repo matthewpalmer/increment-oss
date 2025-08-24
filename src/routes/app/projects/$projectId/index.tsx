@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useCreateTimeBlock, useTimeBlocks } from '../../../../data/hooks/useTimeBlocks';
-import { CreateUUID, DashboardWidget, type Project } from '../../../../domain/types';
+import { CreateUUID, type DashboardWidget, type Project } from '../../../../domain/types';
 import { IncrementDateTimeNow, TimeDurationToString, TimestampToLocalDate, TimestampToLocalTime } from '../../../../domain/time-utils';
 import { useProject } from '../../../../data/hooks/useProjects';
 import { useCreateGoal, useDeleteGoal, useGoals } from '../../../../data/hooks/useGoals';
@@ -12,7 +12,7 @@ import { GoalForm } from '../../../../components/goal-form';
 import { GoalsListWidget } from '../../../../components/dashboard-widgets/goals-list-widget';
 import { Widget, WidgetGrid } from '../../../../components/widget-grid';
 import { TimeBlockForm } from '../../../../components/time-block-form';
-import { DashboardIcon, Pencil1Icon, PlusIcon } from '@radix-ui/react-icons';
+import { DashboardIcon, DrawingPinIcon, Pencil1Icon, PlusIcon, SewingPinFilledIcon, SewingPinIcon } from '@radix-ui/react-icons';
 import { ProgressBarWidget } from '../../../../components/dashboard-widgets/progress-bar';
 import { useDashboardWidgets } from '../../../../data/hooks/useDashboardWidgets';
 import { WidgetForm } from '../../../../components/widget-form';
@@ -82,6 +82,7 @@ function ProjectHeader({ project }: { project: Project }) {
     const [projectDialogOpen, setProjectDialogOpen] = useState(false);
     const [timeBlockDialogOpen, setTimeBlockDialogOpen] = useState(false);
     const [widgetDialogOpen, setWidgetDialogOpen] = useState(false);
+    const [goalDialogOpen, setGoalDialogOpen] = useState(false);
 
     return (
         <Flex direction="row" justify="between" align="center" mt="2" mb="6" pb="4" className='border-b-2 border-dotted' style={{ borderColor: project.color }}>
@@ -94,8 +95,9 @@ function ProjectHeader({ project }: { project: Project }) {
                     </DropdownMenu.Trigger>
 
                     <DropdownMenu.Content>
-                        <DropdownMenu.Item onClick={() => setProjectDialogOpen(!projectDialogOpen)}><Pencil1Icon /> Edit Project</DropdownMenu.Item>
-                        <DropdownMenu.Item onClick={() => setWidgetDialogOpen(!widgetDialogOpen)}><DashboardIcon /> Add Widget</DropdownMenu.Item>
+                        <DropdownMenu.Item onClick={() => setProjectDialogOpen(true)}><Pencil1Icon /> Edit Project</DropdownMenu.Item>
+                        <DropdownMenu.Item onClick={() => setGoalDialogOpen(true)}><SewingPinIcon /> Add Goal</DropdownMenu.Item>
+                        <DropdownMenu.Item onClick={() => setWidgetDialogOpen(true)}><DashboardIcon /> Add Widget</DropdownMenu.Item>
                     </DropdownMenu.Content>
                 </DropdownMenu.Root>
 
@@ -112,6 +114,17 @@ function ProjectHeader({ project }: { project: Project }) {
                     <Dialog.Content>
                         <Dialog.Title size="6">Add Widget</Dialog.Title>
                         <WidgetForm mode="create" projectId={project.id} onFormSaved={() => setWidgetDialogOpen(false)} />
+                    </Dialog.Content>
+                </Dialog.Root>
+
+                <Dialog.Root open={goalDialogOpen} onOpenChange={setGoalDialogOpen}>
+                    <Dialog.Content>
+                        <Dialog.Title size="6">Add Goal</Dialog.Title>
+                        <GoalForm
+                            mode="create"
+                            projectId={project.id}
+                            onFormSaved={() => setGoalDialogOpen(false)}>
+                        </GoalForm>
                     </Dialog.Content>
                 </Dialog.Root>
 

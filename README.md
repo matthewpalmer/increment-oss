@@ -8,6 +8,7 @@ Tech Stack
 * Tailwind
 * Radix UI
 * IndexedDB (Dexie)
+* Framer Motion
 * TanStack Router
 * TanStack Query
 * Vite

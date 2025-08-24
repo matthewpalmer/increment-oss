@@ -8,6 +8,13 @@ type GoalVersionFormProps = {
     onGoalVersionChanged: (goalVersion: GoalVersion) => void
 }
 
+const TargetUnitsLabel: Record<GoalUnit, string> = {
+    'count': 'times',
+    'meters': 'meters',
+    'words': 'words',
+    'seconds': 'seconds' // Should not be used
+};
+
 export function GoalVersionForm(props: GoalVersionFormProps) {
     const handleTimeChange = (newTime: IncrementDuration) => {
         props.onGoalVersionChanged({ ...props.goalVersion, target: newTime })
@@ -47,6 +54,7 @@ export function GoalVersionForm(props: GoalVersionFormProps) {
                         <Select.Item value="seconds">Time</Select.Item>
                         <Select.Item value="count">Count</Select.Item>
                         <Select.Item value="meters">Distance</Select.Item>
+                        <Select.Item value="words">Words</Select.Item>
                     </Select.Content>
                 </Select.Root>
             </Flex>
@@ -75,9 +83,7 @@ export function GoalVersionForm(props: GoalVersionFormProps) {
 
                                 <Text className="text-gray-500 text-sm">
                                     {
-                                        props.goalVersion.unit === 'count'
-                                            ? 'times'
-                                            : 'meters'
+                                        TargetUnitsLabel[props.goalVersion.unit]
                                     }
                                 </Text>
 

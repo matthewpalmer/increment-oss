@@ -21,7 +21,7 @@ export function GoalsListWidget(props: DashboardWidgetProps) {
                     <Flex direction="row" align="center" gap="3">
                         <Dialog.Root open={newGoalDialogOpen} onOpenChange={setNewGoalDialogOpen}>
                             <Dialog.Trigger>
-                                <Button variant="soft" size="1"><PlusIcon /> New</Button>
+                                <Button variant="soft" size="1"><PlusIcon /> Add Goal</Button>
                             </Dialog.Trigger>
 
                             <Dialog.Content>

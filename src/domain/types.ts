@@ -23,7 +23,7 @@ export const zNonEmpty = z.string().trim().min(1)
 export const zTable = z.enum(["projects", "goals", "goalVersions", "timeBlocks", "dashboardWidgets"])
 export type Table = z.infer<typeof zTable>
 
-export const zGoalUnit = z.enum(["seconds", "count", "meters"])
+export const zGoalUnit = z.enum(["seconds", "count", "meters", "words"])
 export type GoalUnit = z.infer<typeof zGoalUnit>
 
 export const zGoalCadence = z.enum(["daily", "weekly", "monthly", "lifetime"])

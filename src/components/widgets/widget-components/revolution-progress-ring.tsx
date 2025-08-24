@@ -14,6 +14,7 @@ function circleRevolutionsPath(
     centerY: number,
     radius: number,
     turns: number,
+    startAngle: number = -Math.PI / 2 // By default start from the top
 ): string {
     if (!radius || !turns) return ``;
 
@@ -21,8 +22,7 @@ function circleRevolutionsPath(
     // half-arcs linked together to form circles,
     // and then draw the fraction of a circle remaining.
 
-    // Always start from the top of the circle
-    let angle = -Math.PI / 2;
+    let angle = startAngle;
 
     let x0 = centerX + radius * Math.cos(angle);
     let y0 = centerY + radius * Math.sin(angle);
@@ -60,14 +60,15 @@ function circleRevolutionsPath(
 }
 
 export function RevolutionProgressRing(props: RevolutionProgressRingProps) {
+    const diameter = 200;
+
     const transition: Transition = {
-        duration: props.duration,
+        duration: props.turns ? props.duration : 0,
         ease: "easeInOut"
     };
 
-    const diameter = 200;
-
-    const pathCommand = circleRevolutionsPath(diameter / 2, diameter / 2, diameter / 2, props.turns);
+    const pathCommand = circleRevolutionsPath(diameter / 2, diameter / 2, diameter / 2, props.turns ? props.turns : 1);
+    const fullCircle = circleRevolutionsPath(diameter / 2, diameter / 2, diameter / 2, 2);
 
     const box: MotionStyle = {
         width: props.strokeWidth + 10,
@@ -84,16 +85,31 @@ export function RevolutionProgressRing(props: RevolutionProgressRingProps) {
         <div style={{ position: "relative" }}>
             <svg xmlns="http://www.w3.org/2000/svg" width={diameter} height={diameter} overflow="visible">
                 <motion.path
-                    d={pathCommand}
+                    d={fullCircle}
                     fill="transparent"
-                    initial={{ pathLength: 0.001 }}
-                    animate={{ pathLength: 1 }}
                     strokeWidth={props.strokeWidth}
-                    stroke={props.trailColor}
-                    strokeOpacity={props.trailOpacity}
+                    stroke={'rgba(120, 120, 150, 0.1)'}
+                    strokeOpacity={1}
                     strokeLinecap="round"
-                    transition={transition}
                 />
+
+                {
+                    props.turns
+                    ? (
+                        <motion.path
+                        d={pathCommand}
+                        fill="transparent"
+                        initial={{ pathLength: 0.001 }}
+                        animate={{ pathLength: 1 }}
+                        strokeWidth={props.strokeWidth}
+                        stroke={props.trailColor}
+                        strokeOpacity={props.trailOpacity}
+                        strokeLinecap="round"
+                        transition={transition}
+                    />
+                    )
+                    : null
+                }
             </svg>
 
             <motion.div

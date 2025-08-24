@@ -1,11 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
-import { resetDb } from '../test/dbTestUtils';
+import { resetDb } from '../../test/dbTestUtils';
 import { SyncBus } from './sync-bus';
-import { CreateUUID, SYNC_EVENT_NOT_STARTED, type Project, type SyncEvent } from '../domain/types';
+import { CreateUUID, SYNC_EVENT_NOT_STARTED, type Project, type SyncEvent } from '../../domain/types';
 
 import { SyncBusScheduler } from './sync-bus-scheduler';
-import { db } from './persistence/db';
-import { IncrementDateTimeNow } from '../domain/time-utils';
+import { db } from '../persistence/db';
+import { IncrementDateTimeNow } from '../../domain/time-utils';
 
 function setOnline(value: boolean) {
     Object.defineProperty(navigator, 'onLine', {
@@ -35,6 +35,7 @@ describe('sync bus scheduler', () => {
     it('should schedule processing on boot', async () => {
         const project: Project = {
             id: CreateUUID(),
+            createdAt: IncrementDateTimeNow(),
             name: 'My first project'
         };
 
@@ -69,6 +70,7 @@ describe('sync bus scheduler', () => {
     it('should schedule a follow up if there are no upcoming events', async () => {
         const project: Project = {
             id: CreateUUID(),
+            createdAt: IncrementDateTimeNow(),
             name: 'My first project'
         };
 
@@ -115,6 +117,7 @@ describe('sync bus scheduler', () => {
     it('should schedule future processing based on upcoming events', async () => {
         const project: Project = {
             id: CreateUUID(),
+            createdAt: IncrementDateTimeNow(),
             name: 'My first project'
         };
 
@@ -175,6 +178,7 @@ describe('sync bus scheduler', () => {
     it('should handle online and offline states', async () => {
         const project: Project = {
             id: CreateUUID(),
+            createdAt: IncrementDateTimeNow(),
             name: 'My first project'
         };
 

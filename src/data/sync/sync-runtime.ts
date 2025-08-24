@@ -1,4 +1,4 @@
-import type { SyncBus } from "../sync-bus";
+import type { SyncBus } from "./sync-bus";
 import type { InversePatchCalculator, SyncEngine, SyncPatchApplier, SyncEnginePatch } from "./sync-engine";
 import { DisplayUUID, type SyncEvent } from "../../domain/types";
 import { IncrementDateTimeNow } from "../../domain/time-utils";

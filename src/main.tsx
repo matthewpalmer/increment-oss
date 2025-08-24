@@ -7,9 +7,9 @@ import { routeTree } from './routeTree.gen'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { SyncRuntime } from './data/sync/sync-runtime'
 import { fakeSyncEngine } from './data/sync/fake-sync-engine'
-import { syncBus } from './data/sync-bus'
+import { syncBus } from './data/sync/sync-bus'
 import { createDexieApplier, dexieInverseCalculator } from './data/sync/dexie-applier'
-import { SyncBusScheduler } from './data/sync-bus-scheduler'
+import { SyncBusScheduler } from './data/sync/sync-bus-scheduler'
 
 const queryClient = new QueryClient({
     defaultOptions: {

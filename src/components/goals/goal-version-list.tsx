@@ -1,10 +1,9 @@
-import { Button, Flex, Heading, Popover, Text } from "@radix-ui/themes";
-import { CreateUUID, INCREMENT_TIMESTAMP_FOREVER, type Goal, type GoalVersion, type UUID } from "../domain/types";
-import { useGoalVersions } from "../data/hooks/useGoalVersions";
-import { ClockIcon, CounterClockwiseClockIcon, InfoCircledIcon, SewingPinIcon } from "@radix-ui/react-icons";
+import { Button, Flex, Heading, Popover } from "@radix-ui/themes";
+import { INCREMENT_TIMESTAMP_FOREVER, type Goal, type GoalVersion } from "../../domain/types";
+import { useGoalVersions } from "../../data/hooks/useGoalVersions";
+import { CounterClockwiseClockIcon, SewingPinIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { GoalVersionForm } from "./goal-version-form";
-import { IncrementDateTimeNow } from "../domain/time-utils";
 import { GoalVersionSummary } from "./goal-version-summary";
 
 export type GoalVersionListProps = {

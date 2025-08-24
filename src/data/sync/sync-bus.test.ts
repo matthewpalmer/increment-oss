@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { waitFor } from '@testing-library/react';
-import { resetDb } from '../test/dbTestUtils';
+import { resetDb } from '../../test/dbTestUtils';
 import { SyncBus } from './sync-bus';
-import { BuildNewSyncEvent, CreateUUID, type Project, type SyncEvent } from '../domain/types';
+import { BuildNewSyncEvent, CreateUUID, type Project, type SyncEvent } from '../../domain/types';
 
-import { calculateBackoff } from './sync/retry';
+import { calculateBackoff } from '../sync/retry';
+import { IncrementDateTimeNow } from '../../domain/time-utils';
 
 function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -33,16 +34,18 @@ describe('sync bus', () => {
 
         const project: Project = {
             id: CreateUUID(),
+            createdAt: IncrementDateTimeNow(),
             name: 'Test Project'
         };
 
         const failedProject: Project = {
             id: 'FAIL',
+            createdAt: IncrementDateTimeNow(),
             name: 'Failed project'
         };
 
         syncBus.addEventListener(async (event: SyncEvent) => {
-            if (event.data.id === failedProject.id) {
+            if ((event.data as any).id === failedProject.id) {
                 throw new Error('Forced failure');
             }
 
@@ -126,6 +129,7 @@ describe('sync bus', () => {
 
         const project: Project = {
             id: CreateUUID(),
+            createdAt: IncrementDateTimeNow(),
             name: 'Test Project'
         };
 

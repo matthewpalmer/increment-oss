@@ -1,4 +1,4 @@
-import type { DashboardWidget, Goal } from "../../domain/types";
+import type { DashboardWidget, Goal } from "../../../domain/types";
 
 export function goalForWidget(dashboardWidget: DashboardWidget, goals: Goal[]) {
     if (dashboardWidget.type === 'goals-list') return;

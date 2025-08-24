@@ -1,14 +1,8 @@
 import { Text } from "@radix-ui/themes";
-import { INCREMENT_TIMESTAMP_FOREVER, type GoalCadence, type GoalVersion, type IncrementDuration } from "../domain/types";
-import { convertDurationToHoursMinutes, TimestampToLocalDate } from "../domain/time-utils";
+import { INCREMENT_TIMESTAMP_FOREVER, type GoalVersion, type IncrementDuration } from "../../domain/types";
+import { convertDurationToHoursMinutes, TimestampToLocalDate } from "../../domain/time-utils";
 
 type GoalVersionSummaryPrompts = { goalVersion: GoalVersion }
-// target: zTimeBlockAmount,
-//         validFrom: zTimestamp,
-//         validTo: zTimestamp,
-//         unit: zGoalUnit,
-//         cadence: zGoalCadence,
-//         aggregation: zGoalAggregation,
 
 export const cadenceString = (goalVersion: GoalVersion) => {
     if (goalVersion.cadence === 'daily') return 'per day';

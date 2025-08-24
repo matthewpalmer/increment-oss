@@ -1,13 +1,13 @@
-import { Button, Flex, Select, Separator, TextField } from "@radix-ui/themes";
+import { Button, Flex, TextField } from "@radix-ui/themes";
 import { Label } from "radix-ui";
-import { CreateUUID, INCREMENT_TIMESTAMP_FOREVER, zGoal, zGoalVersion, type Goal, type GoalAggregation, type GoalCadence, type GoalUnit, type GoalVersion, type UUID } from "../domain/types";
+import { CreateUUID, INCREMENT_TIMESTAMP_FOREVER, zGoal, zGoalVersion, type Goal, type GoalVersion, type UUID } from "../../domain/types";
 import { useState } from "react";
-import { IncrementDateTimeNow } from "../domain/time-utils";
+import { IncrementDateTimeNow } from "../../domain/time-utils";
 import { ZodError } from "zod";
-import { useCreateGoal, useDeleteGoal, useUpdateGoal } from "../data/hooks/useGoals";
-import { ErrorsList } from "./errors-list";
+import { useCreateGoal, useDeleteGoal, useUpdateGoal } from "../../data/hooks/useGoals";
+import { ErrorsList } from "../common/errors-list";
 import { GoalVersionList } from "./goal-version-list";
-import { useReplaceActiveGoalVersion } from "../data/hooks/useGoalVersions";
+import { useReplaceActiveGoalVersion } from "../../data/hooks/useGoalVersions";
 
 export type GoalFormProps =
     | { mode: 'create', projectId: UUID, onFormSaved: () => void }

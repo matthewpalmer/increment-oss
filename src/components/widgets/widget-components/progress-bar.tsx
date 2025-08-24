@@ -1,11 +1,11 @@
 import { Flex, Progress, Text } from "@radix-ui/themes";
-import type { DashboardWidgetProps } from "../widget-vendor";
+import type { DashboardWidgetProps } from "../grid/widget-vendor";
 import { goalForWidget } from "./widget-utils";
 import { WidgetError } from "./widget-error";
 import { WidgetLoading } from "./widget-loading";
-import { useProgressForGoalAt } from "../../data/hooks/useProgress";
+import { useProgressForGoalAt } from "../../../data/hooks/useProgress";
 import { useRef } from "react";
-import { formatDuration } from "../goal-version-summary";
+import { formatDuration } from "../../goals/goal-version-summary";
 
 export function ProgressBarWidget(props: DashboardWidgetProps) {
     if (!props.dashboardWidget.goalId) {

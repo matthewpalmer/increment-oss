@@ -1,7 +1,7 @@
 import { useState } from "react"
-import { fakeSyncEngine } from "../data/sync/fake-sync-engine"
-import type { SyncEnginePatch } from "../data/sync/sync-engine";
-import type { Table } from "../domain/types";
+import { fakeSyncEngine } from "../../data/sync/fake-sync-engine"
+import type { SyncEnginePatch } from "../../data/sync/sync-engine";
+import type { Table } from "../../domain/types";
 
 function SyncResultBuilderForm(props: { onSaveResult: (action: string, table: string, data: string, throwError: boolean) => void}) {
     const [action, setAction] = useState('upsert');

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { resetDb } from '../../test/dbTestUtils';
 import type { InversePatchCalculator, SyncEngine, SyncEngineHandlerResult, SyncEnginePatch, SyncPatchApplier } from './sync-engine';
 import { BuildNewSyncEvent, type SyncEvent } from '../../domain/types';
-import { SyncBus } from '../sync-bus';
+import { SyncBus } from './sync-bus';
 import { SyncRuntime } from './sync-runtime';
 import { waitFor } from '@testing-library/dom';
 

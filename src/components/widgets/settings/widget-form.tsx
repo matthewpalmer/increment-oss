@@ -1,12 +1,11 @@
 import { Label } from "radix-ui";
 import { Button, Flex, Select, Text, TextField } from "@radix-ui/themes";
-import { CreateUUID, zDashboardWidget, type DashboardWidget, type DashboardWidgetType, type UUID } from "../domain/types";
+import { CreateUUID, zDashboardWidget, type DashboardWidget, type DashboardWidgetType, type UUID } from "../../../domain/types";
 import { useEffect, useState } from "react";
 import type { ZodError } from "zod";
-import { ErrorsList } from "./errors-list";
-import { useCreateDashboardWidget, useDeleteDashboardWidget, useUpdateDashboardWidget } from "../data/hooks/useDashboardWidgets";
-import { IncrementDateTimeNow } from "../domain/time-utils";
-import { useGoals } from "../data/hooks/useGoals";
+import { ErrorsList } from "../../common/errors-list";
+import { useCreateDashboardWidget, useDeleteDashboardWidget, useUpdateDashboardWidget } from "../../../data/hooks/useDashboardWidgets";
+import { useGoals } from "../../../data/hooks/useGoals";
 
 export type WidgetFormProps =
     | { mode: 'create', projectId: UUID, onFormSaved: () => void }

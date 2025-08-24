@@ -1,10 +1,9 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { useCreateProject, useProjectsList } from '../../data/hooks/useProjects';
-import { Flex, Text, Button, Dialog, Heading, Box, Grid } from "@radix-ui/themes";
-import { ProjectForm } from '../../components/project-form';
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useProjectsList } from '../../data/hooks/useProjects';
+import { Flex, Button, Dialog, Heading } from "@radix-ui/themes";
+import { ProjectForm } from '../../components/projects/project-form';
 import { useState } from 'react';
-import { ArrowRightIcon, CaretRightIcon, InfoCircledIcon } from '@radix-ui/react-icons';
-import { getNameForColor } from '../../components/colors';
+import { getNameForColor } from '../../components/colors/colors';
 
 export const Route = createFileRoute('/app/')({
     component: RouteComponent
@@ -12,7 +11,6 @@ export const Route = createFileRoute('/app/')({
 
 function RouteComponent() {
     const { data = [], isLoading, error } = useProjectsList();
-    const createProject = useCreateProject();
 
     const [projectDialogOpen, setProjectDialogOpen] = useState(false);
 

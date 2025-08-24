@@ -1,6 +1,6 @@
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { Flex, Spinner, Text } from "@radix-ui/themes";
-import type { DashboardWidgetProps } from "../widget-vendor";
+import type { DashboardWidgetProps } from "../grid/widget-vendor";
 
 export function WidgetLoading(props: DashboardWidgetProps) {
     return (

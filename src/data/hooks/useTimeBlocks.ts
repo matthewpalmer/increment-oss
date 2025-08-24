@@ -2,7 +2,7 @@ import { BuildNewSyncEvent, type TimeBlock, type UUID } from "../../domain/types
 import { db } from "../persistence/db";
 import { keys } from "../queries"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { syncBus } from "../sync-bus";
+import { syncBus } from "../sync/sync-bus";
 
 export function useTimeBlocks(projectId: string) {
     return useQuery({

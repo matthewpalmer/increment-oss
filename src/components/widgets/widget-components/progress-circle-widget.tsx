@@ -1,11 +1,11 @@
 import { Flex, Heading, Text } from "@radix-ui/themes";
 import { goalForWidget } from "./widget-utils";
-import type { DashboardWidgetProps } from "../widget-vendor";
+import type { DashboardWidgetProps } from "../grid/widget-vendor";
 import { WidgetError } from "./widget-error";
 import { useEffect, useRef, useState } from "react";
-import { getNameForColor } from "../colors";
+import { getNameForColor } from "../../colors/colors";
 import { RevolutionProgressRing } from "./revolution-progress-ring";
-import { useProgressForGoalAt } from "../../data/hooks/useProgress";
+import { useProgressForGoalAt } from "../../../data/hooks/useProgress";
 
 export function ProgressCircleWidget(props: DashboardWidgetProps) {
     if (!props.dashboardWidget.goalId) {

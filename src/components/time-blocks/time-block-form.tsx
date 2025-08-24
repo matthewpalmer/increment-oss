@@ -1,13 +1,13 @@
 import { Button, Flex, Select, TextField } from "@radix-ui/themes";
 import { Label } from "radix-ui";
-import { CreateUUID, zGoal, zTimeBlock, type Goal, type IncrementDuration, type TimeBlock, type TimeBlockType, type UUID } from "../domain/types";
+import { CreateUUID, zGoal, zTimeBlock, type Goal, type IncrementDuration, type TimeBlock, type TimeBlockType, type UUID } from "../../domain/types";
 import { useState } from "react";
-import { IncrementDateTimeNow } from "../domain/time-utils";
+import { IncrementDateTimeNow } from "../../domain/time-utils";
 import { ZodError } from "zod";
-import { ErrorsList } from "./errors-list";
-import { useCreateTimeBlock, useUpdateTimeBlock } from "../data/hooks/useTimeBlocks";
-import { DatePicker } from "./date-picker";
-import { TimeInput } from "./time-input";
+import { ErrorsList } from "../common/errors-list";
+import { useCreateTimeBlock, useUpdateTimeBlock } from "../../data/hooks/useTimeBlocks";
+import { DatePicker } from "../common/date-picker";
+import { TimeInput } from "../common/time-input";
 
 export type TimeBlockFormProps =
     | { mode: 'create', projectId: UUID, onFormSaved: () => void }

@@ -1,5 +1,5 @@
-import { IncrementDateTimeNow } from "../domain/time-utils";
-import { db } from "./persistence/db";
+import { IncrementDateTimeNow } from "../../domain/time-utils";
+import { db } from "../persistence/db";
 import type { SyncBus } from "./sync-bus";
 
 const SYNC_BUS_SCHEDULER_HEARTBEAT = 15 * 1000;

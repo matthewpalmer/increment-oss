@@ -1,7 +1,7 @@
 import { createRootRouteWithContext, Link, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { QueryClient } from '@tanstack/react-query'
-import { FakeSyncEngineControlPanel } from '../components/fake-sync-engine-control-panel'
+import { FakeSyncEngineControlPanel } from '../components/common/fake-sync-engine-control-panel'
 import { Theme } from "@radix-ui/themes";
 import { HomeIcon, ShadowOuterIcon } from '@radix-ui/react-icons';
 export interface AppRouterContext {

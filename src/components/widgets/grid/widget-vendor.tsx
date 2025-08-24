@@ -1,8 +1,8 @@
 import { Button, Flex } from "@radix-ui/themes";
-import type { DashboardWidget, DashboardWidgetType, Goal, Project } from "../domain/types"
-import { GoalsListWidget } from "./dashboard-widgets/goals-list-widget";
-import { ProgressBarWidget } from "./dashboard-widgets/progress-bar";
-import { ProgressCircleWidget } from "./dashboard-widgets/progress-circle-widget";
+import type { DashboardWidget, DashboardWidgetType, Goal, Project } from "../../../domain/types"
+import { GoalsListWidget } from "../widget-components/goals-list-widget";
+import { ProgressBarWidget } from "../widget-components/progress-bar";
+import { ProgressCircleWidget } from "../widget-components/progress-circle-widget";
 import { Widget } from "./widget-grid";
 import type { ComponentType, ReactNode } from "react";
 import { DotsHorizontalIcon, InfoCircledIcon } from "@radix-ui/react-icons";

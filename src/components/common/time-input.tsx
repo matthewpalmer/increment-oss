@@ -1,7 +1,7 @@
 import { Flex, Text, TextField } from "@radix-ui/themes";
-import type { IncrementDuration } from "../domain/types";
+import type { IncrementDuration } from "../../domain/types";
 import { useEffect, useState } from "react";
-import { convertDurationToHoursMinutes, convertHoursMinutesToDuration } from "../domain/time-utils";
+import { convertDurationToHoursMinutes, convertHoursMinutesToDuration } from "../../domain/time-utils";
 
 interface TimeInputProps {
     initialTime: IncrementDuration;

@@ -1,10 +1,10 @@
 import { Box, Button, Dialog, Flex, Heading, Text } from "@radix-ui/themes";
-import { useGoals } from "../../data/hooks/useGoals";
+import { useGoals } from "../../../data/hooks/useGoals";
 import { useState } from "react";
-import { GoalForm } from "../goal-form";
+import { GoalForm } from "../../goals/goal-form";
 import { Pencil1Icon, PlusIcon } from "@radix-ui/react-icons";
-import type { Goal, Project } from "../../domain/types";
-import type { DashboardWidgetProps } from "../widget-vendor";
+import type { Goal, Project } from "../../../domain/types";
+import type { DashboardWidgetProps } from "../grid/widget-vendor";
 
 export function GoalsListWidget(props: DashboardWidgetProps) {
     const { data = [], isLoading, isError } = useGoals(props.project.id);

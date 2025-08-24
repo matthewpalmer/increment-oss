@@ -2,7 +2,7 @@ import { BuildNewSyncEvent, INCREMENT_TIMESTAMP_FOREVER, type Goal, type GoalVer
 import { db } from "../persistence/db";
 import { keys } from "../queries"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { syncBus } from "../sync-bus";
+import { syncBus } from "../sync/sync-bus";
 import { IncrementDateTimeNow } from "../../domain/time-utils";
 
 export function useGoalVersions(goalId: string) {

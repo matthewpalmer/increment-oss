@@ -1,7 +1,7 @@
 import { Flex, Select, Text, TextField } from "@radix-ui/themes";
 import { Label } from "radix-ui";
-import type { GoalAggregation, GoalCadence, GoalUnit, GoalVersion, IncrementDuration } from "../domain/types";
-import { TimeInput } from "./time-input";
+import type { GoalAggregation, GoalCadence, GoalUnit, GoalVersion, IncrementDuration } from "../../domain/types";
+import { TimeInput } from "../common/time-input";
 
 type GoalVersionFormProps = {
     goalVersion: GoalVersion,

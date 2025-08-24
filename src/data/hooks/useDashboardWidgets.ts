@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { keys } from "../queries"
 import { db } from "../persistence/db"
 import { BuildNewSyncEvent, type DashboardWidget, type UUID } from "../../domain/types"
-import { syncBus } from "../sync-bus"
+import { syncBus } from "../sync/sync-bus"
 
 export function useDashboardWidgets(projectId: string) {
     return useQuery({

@@ -1,6 +1,6 @@
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { Flex, Text } from "@radix-ui/themes";
-import type { DashboardWidgetProps } from "../widget-vendor";
+import type { DashboardWidgetProps } from "../grid/widget-vendor";
 
 export function WidgetError(props: DashboardWidgetProps & { message?: string }) {
     return (

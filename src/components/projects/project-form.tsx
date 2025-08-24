@@ -1,14 +1,14 @@
 import { Button, Flex, TextField } from "@radix-ui/themes";
 import { Label } from "radix-ui";
 import { useState } from "react";
-import { ColorPicker } from "./color-picker";
-import { CreateUUID, zProject, type Project } from "../domain/types";
+import { ColorPicker } from "../colors/color-picker";
+import { CreateUUID, zProject, type Project } from "../../domain/types";
 
 import { ZodError } from "zod";
-import { useCreateProject, useDeleteProject, useUpdateProject } from "../data/hooks/useProjects";
-import { ErrorsList } from "./errors-list";
-import { userColorsList } from "./colors";
-import { IncrementDateTimeNow } from "../domain/time-utils";
+import { useCreateProject, useDeleteProject, useUpdateProject } from "../../data/hooks/useProjects";
+import { ErrorsList } from "../common/errors-list";
+import { userColorsList } from "../colors/colors";
+import { IncrementDateTimeNow } from "../../domain/time-utils";
 import { useNavigate } from "@tanstack/react-router";
 
 export type ProjectFormProps =

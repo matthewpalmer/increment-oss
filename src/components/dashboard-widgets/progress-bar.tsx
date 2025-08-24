@@ -1,60 +1,52 @@
-import { Box, Flex, Progress, Text } from "@radix-ui/themes";
-import type { DashboardWidget, Goal, Project, TimeBlock } from "../../domain/types";
-import type { WidgetProps } from "../widget-grid";
+import { Flex, Progress, Text } from "@radix-ui/themes";
 import type { DashboardWidgetProps } from "../widget-vendor";
 import { goalForWidget } from "./widget-utils";
 import { WidgetError } from "./widget-error";
-import { useTimeBlocks } from "../../data/hooks/useTimeBlocks";
 import { WidgetLoading } from "./widget-loading";
-
-
-
-const calculateProgress = (dashboardWidget: DashboardWidget, timeBlocks: TimeBlock[], goal: Goal) => {
-    // id: zUUID,
-    // projectId: zUUID,
-    // type: zTimeBlockType,
-    // amount: zTimeBlockAmount, // Varies based on `type`, either seconds or count
-    // createdAt: zTimestamp,
-    // startedAt: zTimestamp,
-    // notes: z.string().default(""),
-
-    // TODO: Get the goal version for the given date
-    // id: zUUID,
-    // goalId: zUUID,
-    // target: zTimeBlockAmount,
-    // validFrom: zTimestamp,
-    // validTo: zTimestamp,
-    // unit: zGoalUnit,
-    // cadence: zGoalCadence,
-    // aggregation: zGoalAggregation,
-    // notes: z.string().default(""),
-
-    const relevant = timeBlocks.filter(timeBlock => {
-
-    })
-};
+import { useProgressForGoalAt } from "../../data/hooks/useProgress";
+import { useRef } from "react";
+import { formatDuration } from "../goal-version-summary";
 
 export function ProgressBarWidget(props: DashboardWidgetProps) {
+    if (!props.dashboardWidget.goalId) {
+        return <WidgetError {...props} />;
+    }
+
+    const atRef = useRef(new Date());
     const goal = goalForWidget(props.dashboardWidget, props.goals);
-    
+
     const {
-        data: timeBlocks = [],
+        data: progress,
         isLoading,
         isError,
         error
-    } = useTimeBlocks(props.project.id);
+    } = useProgressForGoalAt(
+        props.project.id,
+        props.dashboardWidget.goalId,
+        atRef.current
+    );
 
     if (!goal) return <WidgetError {...props} />
     if (isLoading) return <WidgetLoading {...props} />
     if (isError) return <WidgetError {...props} />
 
-
+    if (!progress) return <WidgetError {...props} message="Unable to load progress…" />
 
     return (
         <Flex direction="row" gap="4" align="center">
-            <Text className="text-gray-400" size="2">Progress</Text>
-            <Progress size="3" value={66}></Progress>
-            { props.menuSlot }
+            <Text className="text-gray-400 font-semibold" size="2">
+                { goal.name }
+            </Text>
+            <Progress size="3" value={Math.ceil((progress.percentage || 0) * 100)}></Progress>
+            <Text className="text-gray-400" size="2">
+                { formatDuration(progress.value) }
+                {
+                    progress.target
+                    ? <span> / {formatDuration(progress.target)}</span>
+                    : null
+                }
+            </Text>
+            {props.menuSlot}
         </Flex>
     )
 }

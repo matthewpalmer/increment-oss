@@ -1,5 +1,5 @@
 import { Text } from "@radix-ui/themes";
-import { INCREMENT_TIMESTAMP_FOREVER, type GoalCadence, type GoalVersion } from "../domain/types";
+import { INCREMENT_TIMESTAMP_FOREVER, type GoalCadence, type GoalVersion, type IncrementDuration } from "../domain/types";
 import { convertDurationToHoursMinutes, TimestampToLocalDate } from "../domain/time-utils";
 
 type GoalVersionSummaryPrompts = { goalVersion: GoalVersion }
@@ -10,26 +10,30 @@ type GoalVersionSummaryPrompts = { goalVersion: GoalVersion }
 //         cadence: zGoalCadence,
 //         aggregation: zGoalAggregation,
 
-const cadenceString = (goalVersion: GoalVersion) => {
+export const cadenceString = (goalVersion: GoalVersion) => {
     if (goalVersion.cadence === 'daily') return 'per day';
     if (goalVersion.cadence === 'weekly') return 'per week';
     if (goalVersion.cadence === 'monthly') return 'per month';
     if (goalVersion.cadence === 'lifetime') return 'all time';
 };
 
-const targetString = (goalVersion: GoalVersion) => {
+export const formatDuration = (duration: IncrementDuration): string => {
+    const { hours, minutes } = convertDurationToHoursMinutes(duration);
+
+    if (hours === '0') {
+        return `${minutes}m`
+    }
+
+    if (minutes === '0') {
+        return `${hours}h`
+    }
+
+    return `${hours}h ${minutes}min`
+}
+
+export const targetString = (goalVersion: GoalVersion) => {
     if (goalVersion.unit === 'seconds') {
-        const { hours, minutes } = convertDurationToHoursMinutes(goalVersion.target);
-
-        if (hours === '0') {
-            return `${minutes} minutes`
-        }
-
-        if (minutes === '0') {
-            return `${hours} hours`
-        }
-
-        return `${hours}h ${minutes}min`
+        return formatDuration(goalVersion.target);
     }
 
     if (goalVersion.unit === 'count') {

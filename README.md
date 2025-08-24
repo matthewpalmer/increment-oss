@@ -40,6 +40,7 @@ Test:
 * Cross-platform goal and progress syncing (only web UI is open source)
 * Advanced goal and achievement history
 * Tracks daily, weekly, monthly goals 
+* Support for different types of goals – time, distance, words, count
 * Support for rest days and weekends
 * Customizable dashboard displays and theming
 * Support for levels and thresholds

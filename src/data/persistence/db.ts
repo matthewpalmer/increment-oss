@@ -12,12 +12,12 @@ const db = new Dexie('IncrementDatabase') as Dexie & {
     dashboardWidgets: EntityTable<DashboardWidget, 'id'>;
 }
 
-db.version(7).stores({
+db.version(8).stores({
     projects: 'id, name, createdAt',
     syncEvents: 'id, type, completedAt, startedAt, nextAttemptAt',
-    timeBlocks: 'id, projectId',
+    timeBlocks: 'id, projectId, [projectId+startedAt]',
     goals: 'id, projectId',
-    goalVersions: 'id, goalId',
+    goalVersions: 'id, goalId, [goalId+validFrom]',
     dashboardWidgets: 'id, projectId, goalId, order',
 })
 

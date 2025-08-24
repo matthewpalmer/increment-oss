@@ -1,3 +1,5 @@
+import type { IncrementTimestamp } from "../domain/types";
+
 export const keys = {
     projects: {
         list: () => ['projects'],
@@ -5,7 +7,10 @@ export const keys = {
     },
     timeBlocks: {
         list: () => ['timeBlocks'],
-        listInProject: (projectId: string) => ['timeBlocks', projectId]
+        listInProject: (projectId: string) => ['timeBlocks', projectId],
+        withinRangeForProject: (projectId: string, start: IncrementTimestamp, end: IncrementTimestamp) => [
+            ['timeBlocks', projectId, start, end]
+        ]
     },
     goals: {
         // TODO: Seems bad to have goals:$goalId and goals:$goalVersionId
@@ -17,10 +22,16 @@ export const keys = {
         // TODO: Seems bad to have goalVersions:$goalId and goalVersions:$goalVersionId
         list: () => ['goalVersions'],
         listInGoal: (goalId: string) => ['goalVersions', goalId],
-        get: (id: string) => ['goalVersions', id]
+        get: (id: string) => ['goalVersions', id],
     },
     dashboardWidgets: {
         // TODO: Seems bad to have goalVersions:$goalId and goalVersions:$goalVersionId
         listInProject: (projectId: string) => ['dashboardWidgets', projectId],
     },
+
+    progress: {
+        atDate: (projectId: string, goalId: string, at: IncrementTimestamp, timezoneKey: string) => [
+            'progress', projectId, goalId, at, timezoneKey
+        ]
+    }
 }

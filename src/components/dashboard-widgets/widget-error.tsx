@@ -2,7 +2,7 @@ import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { Flex, Text } from "@radix-ui/themes";
 import type { DashboardWidgetProps } from "../widget-vendor";
 
-export function WidgetError(props: DashboardWidgetProps) {
+export function WidgetError(props: DashboardWidgetProps & { message?: string }) {
     return (
         <Flex direction="column" p="2">
             <Flex direction="row" align="center" justify="between" gap="2">

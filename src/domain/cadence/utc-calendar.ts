@@ -23,6 +23,14 @@ export const CalendarUTC: Calendar = {
         return result;
     },
 
+    dayOfWeek(date) {
+        return date.getUTCDay();
+    },
+
+    dayOfMonth(date) {
+        return date.getUTCDate();
+    },
+
     addMonths(date, numberOfMonths) {
         return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + numberOfMonths, 1))
     },

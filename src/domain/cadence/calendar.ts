@@ -9,8 +9,11 @@ export interface Calendar {
     startOfISOWeek(date: Date): Date;
     startOfMonth(date: Date): Date;
 
+    dayOfWeek(date: Date): number;
+    dayOfMonth(date: Date): number;
+
     addDays(date: Date, numberOfDays: number): Date;
-    addMonths(date: Date, numberOfDays: number): Date;
+    addMonths(date: Date, numberOfMonths: number): Date;
 
     now(): Date;
 

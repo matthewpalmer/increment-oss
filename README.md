@@ -53,6 +53,6 @@ Test:
 
 ## Still need to add
 
-* Proper time zone support (everything operates off UTC time currently)
+* User configurable time zone support (everything operates off UTC time currently)
 * User configurable default units
-
+* Support for multiple goals in dashboard widgets

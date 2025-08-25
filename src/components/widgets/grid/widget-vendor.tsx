@@ -7,19 +7,21 @@ import { Widget } from "./widget-grid";
 import type { ComponentType, ReactNode } from "react";
 import { DotsHorizontalIcon, InfoCircledIcon } from "@radix-ui/react-icons";
 import { TotalTimeWidget } from "../widget-components/total-time";
+import { CalendarWidget } from "../widget-components/calendar-widget";
 
 export type DashboardWidgetProps = {
     dashboardWidget: DashboardWidget;
     project: Project;
     goals: Goal[];
-    menuSlot: ReactNode
+    menuSlot: ReactNode,
 };
 
 const WidgetComponentForType: Record<DashboardWidgetType, ComponentType<DashboardWidgetProps>> = {
     "goals-list": GoalsListWidget,
     "progress-bar": ProgressBarWidget,
     "progress-circle": ProgressCircleWidget,
-    "total-time": TotalTimeWidget
+    "total-time": TotalTimeWidget,
+    "calendar": CalendarWidget,
 };
 
 interface WidgetVendorProps {
@@ -37,15 +39,15 @@ export function WidgetVendor({ widget, project, goals, onSettingsActivated }: Wi
             size={{ columns: widget.xSize, rows: widget.ySize }}
             className="bg-slate-100/60 p-4 rounded-lg">
 
-            <WidgetComponent 
-                dashboardWidget={widget} 
-                project={project} 
+            <WidgetComponent
+                dashboardWidget={widget}
+                project={project}
                 goals={goals}
                 menuSlot={(
-                    <Button 
-                        size="1" 
-                        radius="full" 
-                        color="gray" 
+                    <Button
+                        size="1"
+                        radius="full"
+                        color="gray"
                         variant="ghost"
                         onClick={(e) => {
                             e.preventDefault();

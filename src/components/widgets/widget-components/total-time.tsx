@@ -7,8 +7,6 @@ import { useRef } from "react";
 import { formatDuration } from "../../goals/goal-version-summary";
 
 export function TotalTimeWidget(props: DashboardWidgetProps) {
-    
-
     const atRef = useRef(new Date());
     
     const {
@@ -23,7 +21,6 @@ export function TotalTimeWidget(props: DashboardWidgetProps) {
 
     if (isLoading) return <WidgetLoading {...props} />
     if (isError) return <WidgetError {...props} />
-
     if (!progress) return <WidgetError {...props} message="Unable to load progress…" />
 
     return (

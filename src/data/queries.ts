@@ -35,6 +35,9 @@ export const keys = {
         ],
         projectTotal: (projectId: string, cadence: GoalCadence, windowStart: Date, timezoneKey: string) => [
             'projectTotal', projectId, cadence, windowStart.toISOString(), timezoneKey
+        ],
+        calendar: (projectId: string, monthStart: Date, timezoneKey: string) => [
+            'calendarProgress', projectId, monthStart.toISOString(), timezoneKey
         ]
     }
 }

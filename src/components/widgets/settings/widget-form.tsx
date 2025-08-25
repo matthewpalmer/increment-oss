@@ -38,9 +38,14 @@ const SettingsConfiguration: Record<DashboardWidgetType, SettingsConfigurationTy
     },
     'total-time': {
         needsGoalId: false,
-        xSize: 1,
+        xSize: 2,
         ySize: 1
-    }
+    },
+    'calendar': {
+        needsGoalId: true,
+        xSize: 2,
+        ySize: 2
+    },
 };
 
 export function WidgetForm(props: WidgetFormProps) {
@@ -161,6 +166,7 @@ export function WidgetForm(props: WidgetFormProps) {
                             <Select.Item value="progress-circle">Progress Circle</Select.Item>
                             <Select.Item value="goals-list">Goals List</Select.Item>
                             <Select.Item value="total-time">Total Time</Select.Item>
+                            <Select.Item value="calendar">Calendar</Select.Item>
                         </Select.Content>
                     </Select.Root>
                 </Flex>

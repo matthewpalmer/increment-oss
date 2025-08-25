@@ -11,6 +11,7 @@ import type { Calendar } from "../../../domain/cadence/calendar";
 import { formatDuration } from "../../goals/goal-version-summary";
 import type { Project } from "../../../domain/types";
 import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
+import { hexToRgba } from "../../colors/colors";
 
 
 function CalendarHeadingCell(props: { children: ReactNode }) {
@@ -25,6 +26,23 @@ function CalendarEntryCell(props: {
     entry: { day: MonthMatrixEntry; result: WindowGoalResult; }
 }) {
     const hitTarget = props.entry.result.hitTarget;
+    const hasPartialProgress = props.entry.result.value > 0;
+
+    let backgroundColor = 'transparent';
+    let textColor = 'inherit';
+    let subtitleColor = '#8f8f8f';
+
+    const projectColor = props.project.color || '#0091ff';
+
+    if (hitTarget) {
+        backgroundColor = projectColor;
+        textColor = 'white';
+        subtitleColor = 'white';
+    } else if (hasPartialProgress) {
+        backgroundColor = hexToRgba(projectColor, 0.2)
+        textColor = projectColor;
+        subtitleColor = projectColor;
+    }
 
     return (
         <Flex
@@ -34,16 +52,22 @@ function CalendarEntryCell(props: {
             className="w-12 h-12 rounded-md p-0.5"
             style={{
                 opacity: props.entry.day.isInsideMonth ? '1' : '0.35',
-                backgroundColor: hitTarget ? props.project.color : 'transparent',
-                color: hitTarget ? 'white' : 'inherit'
+                backgroundColor: backgroundColor,
+                color: textColor
             }}>
             {
                 props.entry.day.isInsideMonth
                     ? (<>
-                        <Text mb="-1" size="3" weight="bold">{props.calendar.dayOfMonth(props.entry.day.start)}</Text>
+                        <Text mb="-1" size="3" className="font-semibold">{props.calendar.dayOfMonth(props.entry.day.start)}</Text>
                         <Text className="text-[11px]" style={{
-                            color: hitTarget ? 'white' : '#8f8f8f'
-                        }}>{formatDuration(props.entry.result.value)}</Text>
+                            color: subtitleColor
+                        }}>
+                            {
+                                hasPartialProgress
+                                    ? formatDuration(props.entry.result.value)
+                                    : <span>&nbsp;</span>
+                            }
+                        </Text>
                     </>
                     )
                     : null
@@ -78,21 +102,19 @@ export function CalendarWidget(props: DashboardWidgetProps) {
     return (
         <Flex direction="column" gap="1" align="center">
             <Flex className="w-full" direction="row" align="center" justify="between" gap="4" mb="3">
-                <Flex className="w-full" direction="row" align="center" justify="center" gap="4">
-                    <Button variant="ghost" onClick={() => {
-                        setVisibleDate(calendar.addMonths(visibleDate, -1))
-                    }}><ArrowLeftIcon /></Button>
+                <Button variant="ghost" onClick={() => {
+                    setVisibleDate(calendar.addMonths(visibleDate, -1))
+                }}><ArrowLeftIcon /></Button>
 
-                    <Text weight="bold">
-                        {calendar.startOfMonth(visibleDate).toLocaleString('default', { month: 'long', year: 'numeric' })}
-                    </Text>
+                <Text weight="bold">
+                    {calendar.startOfMonth(visibleDate).toLocaleString('default', { month: 'long', year: 'numeric' })}
+                </Text>
+
+                <Flex direction="row" gap="4">
                     <Button variant="ghost" onClick={() => {
                         setVisibleDate(calendar.addMonths(visibleDate, 1))
                     }}><ArrowRightIcon /></Button>
-                </Flex>
-
-                <Flex direction="row" mr="0">
-                {props.menuSlot}
+                    {props.menuSlot}
                 </Flex>
             </Flex>
 

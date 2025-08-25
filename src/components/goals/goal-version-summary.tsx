@@ -22,7 +22,7 @@ export const formatDuration = (duration: IncrementDuration): string => {
         return `${hours}h`
     }
 
-    return `${hours}h ${minutes}min`
+    return `${hours}h ${minutes}m`
 }
 
 export const targetString = (goalVersion: GoalVersion) => {

@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { getNameForColor } from "../../colors/colors";
 import { RevolutionProgressRing } from "./revolution-progress-ring";
 import { useProgressForGoalAt } from "../../../data/hooks/useProgress";
+import { formatDuration } from "../../goals/goal-version-summary";
 
 export function ProgressCircleWidget(props: DashboardWidgetProps) {
     if (!props.dashboardWidget.goalId) {
@@ -74,8 +75,9 @@ export function ProgressCircleWidget(props: DashboardWidgetProps) {
                 />
 
                 <div className="absolute w-full h-full">
-                    <Flex height="100%" direction="row" justify="center" align="center">
-                        <Text weight="bold" size="7" className="opacity-50" color={getNameForColor(props.project.color)}>{displayProgress}%</Text>
+                    <Flex height="100%" direction="column" justify="center" align="center">
+                        <Text size="7" className="opacity-80 font-black" color={getNameForColor(props.project.color)}>{displayProgress}%</Text>
+                        <Text size="1" color="gray">{formatDuration(progress.value)}</Text>
                     </Flex>
                 </div>
             </Flex>

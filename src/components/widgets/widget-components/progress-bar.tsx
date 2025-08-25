@@ -37,7 +37,7 @@ export function ProgressBarWidget(props: DashboardWidgetProps) {
             <Text className="text-gray-400 font-semibold" size="2">
                 { goal.name }
             </Text>
-            <Progress size="3" value={Math.ceil((progress.percentage || 0) * 100)}></Progress>
+            <Progress size="3" value={Math.min(Math.ceil((progress.percentage || 0) * 100), 100)}></Progress>
             <Text className="text-gray-400" size="2">
                 { formatDuration(progress.value) }
                 {

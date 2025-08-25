@@ -31,7 +31,7 @@ export const userColorsList: UserColor[] = [
 
 export function getNameForColor(hex?: string): AccentColor {
     const color = userColorsList.find(c => c.hex.toLowerCase() === hex?.toLowerCase());
-    
+
     if (!color) {
         console.log('Invalid color name given to getNameForColor', hex);
         return 'blue'
@@ -42,11 +42,18 @@ export function getNameForColor(hex?: string): AccentColor {
 
 export function getColorForName(name?: string) {
     const color = userColorsList.find(c => c.name.toLowerCase() === name?.toLowerCase());
-    
+
     if (!color) {
         console.log('Invalid color name given to getColorForName', name);
         return '#0091ff'
     }
 
     return color.hex;
+}
+
+export function hexToRgba(hex: string, alpha: number) {
+    let r = parseInt(hex.slice(1, 3), 16);
+    let g = parseInt(hex.slice(3, 5), 16);
+    let b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }

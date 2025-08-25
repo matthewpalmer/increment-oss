@@ -30,14 +30,17 @@ export const keys = {
     },
 
     progress: {
+        all: () => [
+            'progress'
+        ],
         atDate: (projectId: string, goalId: string, at: IncrementTimestamp, timezoneKey: string) => [
-            'progress', projectId, goalId, at, timezoneKey
+            'progress', 'atDate', projectId, goalId, at, timezoneKey
         ],
         projectTotal: (projectId: string, cadence: GoalCadence, windowStart: Date, timezoneKey: string) => [
-            'projectTotal', projectId, cadence, windowStart.toISOString(), timezoneKey
+            'progress', 'projectTotal', projectId, cadence, windowStart.toISOString(), timezoneKey
         ],
         calendar: (projectId: string, monthStart: Date, timezoneKey: string) => [
-            'calendarProgress', projectId, monthStart.toISOString(), timezoneKey
+            'progress', 'calendarProgress', projectId, monthStart.toISOString(), timezoneKey
         ]
     }
 }

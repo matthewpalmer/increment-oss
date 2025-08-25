@@ -26,6 +26,7 @@ export function useCreateTimeBlock() {
             if (!timeBlock) return;
 
             queryClient.invalidateQueries({ queryKey: keys.timeBlocks.listInProject(timeBlock.projectId) })
+            queryClient.invalidateQueries({ queryKey: keys.progress.all() })
             
             syncBus.dispatchEvent(BuildNewSyncEvent(
                 { type: 'create', data: timeBlock, table: 'timeBlocks' }
@@ -44,9 +45,7 @@ export function useUpdateTimeBlock() {
         },
         onSuccess: (timeBlock: TimeBlock | undefined) => {
             queryClient.invalidateQueries({ queryKey: keys.goals.list() })
-
-            // TODO: invalidate the correct queries (only this ID?)
-            // TODO: Dispatch an event to the sync bus
+            queryClient.invalidateQueries({ queryKey: keys.progress.all() })
         }
     })
 }

@@ -3,7 +3,10 @@
 **Powerful goal and progress tracker with highly customizable goal
 settings and extensive UI configuration.**
 
-Tech Stack
+![Screenshot showing the Increment web dashboard](./docs//screenshot-1.png "Increment goal and time tracking")
+
+## Tech Stack
+
 * React
 * Tailwind
 * Radix UI
@@ -13,17 +16,17 @@ Tech Stack
 * TanStack Query
 * Vite
 
-## Running
+## Get Started
 
-Install dependencies:
+**Install dependencies**
 
 `npm install`
 
-Run locally:
+**Run locally**
 
 `npm run dev`
 
-Test:
+**Run unit and integration tests**
 
 `npm test`
 
@@ -51,7 +54,7 @@ Test:
   * Levels
   * Total time
 
-## Still need to add
+## Further Improvements
 
 * User configurable time zone support (everything operates off UTC time currently)
 * User configurable default units

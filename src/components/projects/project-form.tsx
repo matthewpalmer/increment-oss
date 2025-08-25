@@ -1,4 +1,4 @@
-import { Button, Flex, TextField } from "@radix-ui/themes";
+import { Button, Flex, Text, TextField } from "@radix-ui/themes";
 import { Label } from "radix-ui";
 import { useState } from "react";
 import { ColorPicker } from "../colors/color-picker";
@@ -126,7 +126,7 @@ export function ProjectForm(props: ProjectFormProps) {
                             )
                     }
                 </Flex>
-
+                
                 { error ? <ErrorsList error={error} /> : null }
             </Flex>
         </form>

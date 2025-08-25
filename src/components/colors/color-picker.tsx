@@ -8,7 +8,7 @@ export interface ColorPickerProps {
 
 export function ColorPicker(props: ColorPickerProps) {
     return (
-        <Flex py="1" wrap={"wrap"} maxWidth={"400px"}>
+        <Flex py="1" wrap={"wrap"} maxWidth={"380px"}>
             {
                 userColorsList.map(color => {
                     const isSelected = props.selectedColor === color.hex;

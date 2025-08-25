@@ -11,6 +11,17 @@ export function relevantAmountForAggregation(block: TimeBlock, unit: GoalUnit): 
         return 0
     }
 
+    if (unit === 'meters') {
+        if (block.type === 'count') return block.amount;
+        return 0;
+    }
+
+    if (unit === 'words') {
+        if (block.type === 'count') return block.amount;
+        return 0;
+    }
+
+    console.error('Error: invalid aggregation unit -', unit);
     return 0;
 }
 

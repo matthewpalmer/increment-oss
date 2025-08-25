@@ -8,10 +8,10 @@ import { type WindowGoalResult } from "../../../domain/progress/windows";
 import { useCalendarProgress, type MonthMatrixEntry } from "../../../data/hooks/useProgress";
 import { goalForWidget } from "./widget-utils";
 import type { Calendar } from "../../../domain/cadence/calendar";
-import { formatDuration } from "../../goals/goal-version-summary";
 import type { Project } from "../../../domain/types";
 import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { hexToRgba } from "../../colors/colors";
+import { formatProgress } from "../../common/target-formatting";
 
 
 function CalendarHeadingCell(props: { children: ReactNode }) {
@@ -59,12 +59,12 @@ function CalendarEntryCell(props: {
                 props.entry.day.isInsideMonth
                     ? (<>
                         <Text mb="-1" size="3" className="font-semibold">{props.calendar.dayOfMonth(props.entry.day.start)}</Text>
-                        <Text className="text-[11px]" style={{
+                        <Text className="text-[11px] text-center" style={{
                             color: subtitleColor
                         }}>
                             {
                                 hasPartialProgress
-                                    ? formatDuration(props.entry.result.value)
+                                    ? formatProgress(props.entry.result, 'short')
                                     : <span>&nbsp;</span>
                             }
                         </Text>

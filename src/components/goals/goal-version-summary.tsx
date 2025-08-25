@@ -1,6 +1,7 @@
 import { Text } from "@radix-ui/themes";
 import { INCREMENT_TIMESTAMP_FOREVER, type GoalVersion, type IncrementDuration } from "../../domain/types";
 import { convertDurationToHoursMinutes, TimestampToLocalDate } from "../../domain/time-utils";
+import { targetString } from "../common/target-formatting";
 
 type GoalVersionSummaryPrompts = { goalVersion: GoalVersion }
 
@@ -9,34 +10,6 @@ export const cadenceString = (goalVersion: GoalVersion) => {
     if (goalVersion.cadence === 'weekly') return 'per week';
     if (goalVersion.cadence === 'monthly') return 'per month';
     if (goalVersion.cadence === 'lifetime') return 'all time';
-};
-
-export const formatDuration = (duration: IncrementDuration): string => {
-    const { hours, minutes } = convertDurationToHoursMinutes(duration);
-
-    if (hours === '0') {
-        return `${minutes}m`
-    }
-
-    if (minutes === '0') {
-        return `${hours}h`
-    }
-
-    return `${hours}h ${minutes}m`
-}
-
-export const targetString = (goalVersion: GoalVersion) => {
-    if (goalVersion.unit === 'seconds') {
-        return formatDuration(goalVersion.target);
-    }
-
-    if (goalVersion.unit === 'count') {
-        return `${goalVersion.target} times`
-    }
-
-    if (goalVersion.unit === 'meters') {
-        return `${goalVersion.target} meters`
-    }
 };
 
 const periodString = (goalVersion: GoalVersion) => {

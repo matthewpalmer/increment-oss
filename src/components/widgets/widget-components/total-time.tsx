@@ -4,7 +4,7 @@ import { WidgetError } from "./widget-error";
 import { WidgetLoading } from "./widget-loading";
 import { useLifetimeProgress } from "../../../data/hooks/useProgress";
 import { useRef } from "react";
-import { formatDuration } from "../../goals/goal-version-summary";
+import { formatProgress, formatDuration } from "../../common/target-formatting";
 
 export function TotalTimeWidget(props: DashboardWidgetProps) {
     const atRef = useRef(new Date());
@@ -35,6 +35,7 @@ export function TotalTimeWidget(props: DashboardWidgetProps) {
             
             <Flex direction="row" justify="center" align="center">
                 <Text m="4" mb="6" weight="bold" size="8">
+                    {/* { formatProgress(progress) } */}
                     { formatDuration(progress.seconds) }
                 </Text>
             </Flex>

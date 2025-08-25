@@ -14,7 +14,7 @@ export function getActiveVersion(goalVersions: GoalVersion[], at: Date): GoalVer
         if (end) {
             isWithinVersion = start <= at && at < end;
         } else {
-            isWithinVersion = start <= at;
+            isWithinVersion = true;
         }
 
         if (!isWithinVersion) continue;
@@ -23,7 +23,7 @@ export function getActiveVersion(goalVersions: GoalVersion[], at: Date): GoalVer
             bestFit = goalVersion;
         } else {
             // In case there is already an overlapping version, choose the version
-            // has the latest start date.
+            // that has the latest start date.
             if (start > new Date(bestFit.validFrom)) {
                 bestFit = goalVersion;
             }

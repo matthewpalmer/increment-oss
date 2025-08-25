@@ -8,7 +8,7 @@ export interface ProgressResult {
     target?: number;
     percentage?: number;
     window: ProgressWindow;
-    version?: GoalVersion | null;
+    goalVersion?: GoalVersion | null;
 }
 
 export function calculateProgressAt(
@@ -22,7 +22,7 @@ export function calculateProgressAt(
     if (!version) {
         const window = calendar.windowForCadence('daily', at);
         const amount = aggregateBlocks(blocksInRange, 'sum', 'seconds');
-        return { value: amount, window, version: null };
+        return { value: amount, window, goalVersion: null };
     }
 
     const earliestVersionStart = getEarliestVersionStartDate(goalVersions) || at;
@@ -33,6 +33,6 @@ export function calculateProgressAt(
     return {
         value: amount,
         target: version.target,
-        percentage, window, version
+        percentage, window, goalVersion: version
     }
 }

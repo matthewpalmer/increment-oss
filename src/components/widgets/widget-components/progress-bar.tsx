@@ -5,7 +5,7 @@ import { WidgetError } from "./widget-error";
 import { WidgetLoading } from "./widget-loading";
 import { useProgressForGoalAt } from "../../../data/hooks/useProgress";
 import { useRef } from "react";
-import { formatDuration } from "../../goals/goal-version-summary";
+import { formatDuration, formatProgress, formatProgressTarget } from "../../common/target-formatting";
 
 export function ProgressBarWidget(props: DashboardWidgetProps) {
     if (!props.dashboardWidget.goalId) {
@@ -39,10 +39,10 @@ export function ProgressBarWidget(props: DashboardWidgetProps) {
             </Text>
             <Progress size="3" value={Math.min(Math.ceil((progress.percentage || 0) * 100), 100)}></Progress>
             <Text className="text-gray-400" size="2">
-                { formatDuration(progress.value) }
+                { formatProgress(progress) }
                 {
                     progress.target
-                    ? <span> / {formatDuration(progress.target)}</span>
+                    ? <span> / {formatProgressTarget(progress)}</span>
                     : null
                 }
             </Text>

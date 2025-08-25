@@ -6,6 +6,7 @@ import { ProgressCircleWidget } from "../widget-components/progress-circle-widge
 import { Widget } from "./widget-grid";
 import type { ComponentType, ReactNode } from "react";
 import { DotsHorizontalIcon, InfoCircledIcon } from "@radix-ui/react-icons";
+import { TotalTimeWidget } from "../widget-components/total-time";
 
 export type DashboardWidgetProps = {
     dashboardWidget: DashboardWidget;
@@ -18,6 +19,7 @@ const WidgetComponentForType: Record<DashboardWidgetType, ComponentType<Dashboar
     "goals-list": GoalsListWidget,
     "progress-bar": ProgressBarWidget,
     "progress-circle": ProgressCircleWidget,
+    "total-time": TotalTimeWidget
 };
 
 interface WidgetVendorProps {

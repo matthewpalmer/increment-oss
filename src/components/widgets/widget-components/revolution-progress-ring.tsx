@@ -79,6 +79,7 @@ export function RevolutionProgressRing(props: RevolutionProgressRingProps) {
         top: 0,
         left: 0,
         offsetPath: `path("${pathCommand}")`,
+        boxShadow: '0 0 4px 0 rgba(0, 0, 0, 0.1)',
     };
 
     return (

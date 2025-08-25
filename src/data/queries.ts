@@ -1,4 +1,4 @@
-import type { IncrementTimestamp } from "../domain/types";
+import type { GoalCadence, IncrementTimestamp } from "../domain/types";
 
 export const keys = {
     projects: {
@@ -32,6 +32,9 @@ export const keys = {
     progress: {
         atDate: (projectId: string, goalId: string, at: IncrementTimestamp, timezoneKey: string) => [
             'progress', projectId, goalId, at, timezoneKey
+        ],
+        projectTotal: (projectId: string, cadence: GoalCadence, windowStart: Date, timezoneKey: string) => [
+            'projectTotal', projectId, cadence, windowStart.toISOString(), timezoneKey
         ]
     }
 }

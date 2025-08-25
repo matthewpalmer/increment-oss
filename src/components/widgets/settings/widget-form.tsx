@@ -14,25 +14,32 @@ export type WidgetFormProps =
 const zNewDashboardWidgetInput = zDashboardWidget.omit({ id: true });
 const zEditDashboardWidgetInput = zDashboardWidget.omit({ id: true }).partial();
 
-const IntrinsicSizes = {
-    'goals-list': { xSize: 2, ySize: 2 },
-    'progress-bar': { xSize: 4, ySize: 1 },
-    'progress-circle': { xSize: 2, ySize: 2 }
-};
-
 type SettingsConfigurationType = {
-    needsGoalId: boolean
+    needsGoalId: boolean,
+    xSize: number, 
+    ySize: number
 }
 
 const SettingsConfiguration: Record<DashboardWidgetType, SettingsConfigurationType> = {
     'goals-list': {
-        needsGoalId: false
+        needsGoalId: false,
+        xSize: 2,
+        ySize: 2,
     },
     'progress-bar': {
-        needsGoalId: true
+        needsGoalId: true,
+        xSize: 4, 
+        ySize: 1
     },
     'progress-circle': {
-        needsGoalId: true
+        needsGoalId: true,
+        xSize: 2, 
+        ySize: 2
+    },
+    'total-time': {
+        needsGoalId: false,
+        xSize: 1,
+        ySize: 1
     }
 };
 
@@ -52,12 +59,14 @@ export function WidgetForm(props: WidgetFormProps) {
 
     const [values, setValues] = useState(() => {
         if (isNewWidget) {
+            const type = 'progress-bar' as DashboardWidgetType
+            
             return {
-                type: 'progress-bar' as DashboardWidgetType,
+                type: type,
                 projectId: props.projectId,
                 goalId: '',
-                xSize: IntrinsicSizes['progress-bar'].xSize,
-                ySize: IntrinsicSizes['progress-bar'].ySize
+                xSize: SettingsConfiguration[type].xSize,
+                ySize: SettingsConfiguration[type].ySize
             }
         }
 
@@ -140,9 +149,9 @@ export function WidgetForm(props: WidgetFormProps) {
                         onValueChange={(type: DashboardWidgetType) => {
                             setValues({
                                 ...values,
-                                xSize: IntrinsicSizes[type].xSize,
-                                ySize: IntrinsicSizes[type].ySize,
-                                type: type as DashboardWidgetType
+                                xSize: SettingsConfiguration[type].xSize,
+                                ySize: SettingsConfiguration[type].ySize,
+                                type: type
                             })
                         }}>
                         <Select.Trigger style={{ minWidth: '212px' }} />
@@ -151,6 +160,7 @@ export function WidgetForm(props: WidgetFormProps) {
                             <Select.Item value="progress-bar">Progress Bar</Select.Item>
                             <Select.Item value="progress-circle">Progress Circle</Select.Item>
                             <Select.Item value="goals-list">Goals List</Select.Item>
+                            <Select.Item value="total-time">Total Time</Select.Item>
                         </Select.Content>
                     </Select.Root>
                 </Flex>

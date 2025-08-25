@@ -103,7 +103,13 @@ export const zGoalVersion = z
 
 export type GoalVersion = z.infer<typeof zGoalVersion>
 
-export const zDashboardWidgetType = z.enum(["goals-list", "progress-bar", "progress-circle"])
+export const zDashboardWidgetType = z.enum([
+    "goals-list", 
+    "progress-bar", 
+    "progress-circle",
+    "total-time"
+])
+
 export type DashboardWidgetType = z.infer<typeof zDashboardWidgetType>
 
 export const zDashboardWidget = z

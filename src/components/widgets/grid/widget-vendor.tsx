@@ -10,6 +10,7 @@ import { TotalTimeWidget } from "../widget-components/total-time";
 import { CalendarWidget } from "../widget-components/calendar-widget";
 import { StreaksWidget } from "../widget-components/streaks-widget";
 import { OverallTotalWidget } from "../widget-components/overall-total-widget";
+import { LifetimeLevelsWidget } from "../widget-components/lifetime-levels-widget";
 
 export type DashboardWidgetProps = {
     dashboardWidget: DashboardWidget;
@@ -25,7 +26,8 @@ const WidgetComponentForType: Record<DashboardWidgetType, ComponentType<Dashboar
     "total-time": TotalTimeWidget,
     "calendar": CalendarWidget,
     "streaks": StreaksWidget,
-    "overall-total": OverallTotalWidget
+    "overall-total": OverallTotalWidget,
+    "lifetime-levels": LifetimeLevelsWidget
 };
 
 interface WidgetVendorProps {

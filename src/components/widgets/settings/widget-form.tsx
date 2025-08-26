@@ -6,8 +6,10 @@ import type { ZodError } from "zod";
 import { ErrorsList } from "../../common/errors-list";
 import { useCreateDashboardWidget, useDeleteDashboardWidget, useUpdateDashboardWidget } from "../../../data/hooks/useDashboardWidgets";
 import { useGoals } from "../../../data/hooks/useGoals";
-import { OverallTotalFields, type WidgetConfigurationFieldsProps } from "./widget-configuration-fields";
-import { BadgeIcon, CalendarIcon, LightningBoltIcon, ListBulletIcon, StopwatchIcon, TimerIcon } from "@radix-ui/react-icons";
+import { type WidgetConfigurationFieldsProps } from "./widget-configuration-fields";
+import { BadgeIcon, BarChartIcon, CalendarIcon, LightningBoltIcon, ListBulletIcon, StopwatchIcon, TimerIcon } from "@radix-ui/react-icons";
+import { OverallTotalFields } from "./overall-total-fields";
+import { LifetimeLevelsFields } from "./lifetime-levels-fields";
 
 export type WidgetFormProps =
     | { mode: 'create', projectId: UUID, onFormSaved: () => void }
@@ -63,6 +65,22 @@ const SettingsConfiguration: Record<DashboardWidgetType, SettingsConfigurationTy
         defaultExtraFields: {
             unit: 'seconds',
             aggregation: 'sum'
+        }
+    },
+    'lifetime-levels': {
+        needsGoalId: false,
+        xSize: 2,
+        ySize: 2,
+        extraFields: LifetimeLevelsFields,
+        defaultExtraFields: {
+            unit: 'seconds',
+            aggregation: 'sum',
+            levels: [
+                { target: 3000000, label: 'Level 1' },
+                { target: 6000000, label: 'Level 2' },
+                { target: 9000000, label: 'Level 3' },
+                { target: 12000000, label: 'Level 4' },
+            ]
         }
     }
 };
@@ -236,6 +254,13 @@ export function WidgetForm(props: WidgetFormProps) {
                                 <Flex align="center" gap="2">
                                     <StopwatchIcon />
                                     <Text>Overall Total</Text>
+                                </Flex>
+                            </Select.Item>
+
+                            <Select.Item value="lifetime-levels">
+                                <Flex align="center" gap="2">
+                                    <BarChartIcon />
+                                    <Text>Levels</Text>
                                 </Flex>
                             </Select.Item>
                         </Select.Content>

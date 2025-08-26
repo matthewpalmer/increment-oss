@@ -110,20 +110,27 @@ export const zDashboardWidgetType = z.enum([
     "total-time",
     "calendar",
     "streaks",
-    "overall-total"
+    "overall-total",
+    "lifetime-levels"
 ])
 
 export type DashboardWidgetType = z.infer<typeof zDashboardWidgetType>
 
 export const zLevelsWidgetConfig = z.object({
-    levels: z.array(z.object({ target: z.number(), label: z.string() }))
+    aggregation: zGoalAggregation, 
+    unit: zGoalUnit,
+    levels: z.array(z.object({ 
+        target: z.number(), 
+        label: z.string(),
+        key: z.uuid()
+    }))
 })
 
 export type LevelsWidgetConfig = z.infer<typeof zLevelsWidgetConfig>;
 
 export const zOverallTotalWidgetConfig = z.object({
     aggregation: zGoalAggregation, 
-    unit: zGoalUnit
+    unit: zGoalUnit,
 })
 
 export type OverallTotalWidgetConfig = z.infer<typeof zOverallTotalWidgetConfig>;

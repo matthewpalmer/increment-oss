@@ -4,7 +4,7 @@ import type { DashboardWidgetProps } from "../grid/widget-vendor";
 
 export function WidgetError(props: DashboardWidgetProps & { message?: string }) {
     return (
-        <Flex direction="column" p="2">
+        <Flex direction="column" p="2" gap="2">
             <Flex direction="row" align="center" justify="between" gap="2">
                 <Flex direction="row" align="center" gap="2">
                     <ExclamationTriangleIcon width="20" height="20" color="orange" />
@@ -14,7 +14,11 @@ export function WidgetError(props: DashboardWidgetProps & { message?: string }) 
                 {props.menuSlot}
             </Flex>
 
-            <Text color="gray">Goal not found. It may have been deleted from your project.</Text>
+            <Text color="gray">
+                {
+                    props.message || 'Goal not found. It may have been deleted from your project.'
+                }
+            </Text>
         </Flex>
     )
 }

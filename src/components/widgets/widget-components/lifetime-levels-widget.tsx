@@ -41,6 +41,11 @@ export function LifetimeLevelsWidget(props: DashboardWidgetProps) {
     if (!progress) return <WidgetError {...props} message="Unable to load progress…" />
 
     const sortedLevels = [...progressConfig.levels].sort((a, b) => a.target < b.target ? -1 : 1);
+
+    if (!sortedLevels.length) {
+        return <WidgetError {...props} message="Widget does not have any levels set" />
+    }
+
     const topLevel = sortedLevels[sortedLevels.length - 1];
 
     let highestCompletedLevelIndex = -1;
@@ -94,8 +99,12 @@ export function LifetimeLevelsWidget(props: DashboardWidgetProps) {
                     }
                 </Flex>
 
-                <Text m="4" mb="6" weight="medium" size="3" color="gray">
-                    { formatNumber(progress.value, progressConfig.unit) } – { sortedLevels[currentLevelIndex].label }
+                <Text mt="4" weight="bold" size="4" color="gray" align="center">
+                    { formatNumber(progress.value, progressConfig.unit) }
+                </Text>
+
+                <Text size="2" color="gray" align="center">
+                    Current Level: { currentLevelIndex + 1 }
                 </Text>
             </Flex>
         </Flex>

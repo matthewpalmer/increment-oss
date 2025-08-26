@@ -1,10 +1,10 @@
-import { Badge, Flex, Select, Text, TextField, Separator, Button, IconButton, Popover } from "@radix-ui/themes";
+import { Badge, Flex, Select, Text, TextField, Button, IconButton, Popover } from "@radix-ui/themes";
 import { CreateUUID, type GoalAggregation, type GoalUnit, type LevelsWidgetConfig } from "../../../domain/types";
 import { Label } from "radix-ui";
 import type { WidgetConfigurationFieldsProps } from "./widget-configuration-fields";
 import { formatNumber } from "../../common/target-formatting";
-import { Cross1Icon, Cross2Icon, PlusIcon } from "@radix-ui/react-icons";
-import { useRef, useState } from "react";
+import { Cross2Icon } from "@radix-ui/react-icons";
+import { useState } from "react";
 import { TimeInput } from "../../common/time-input";
 
 interface NewLevelFormProps {
@@ -12,48 +12,82 @@ interface NewLevelFormProps {
     onNewLevelSaved(newLevel: { label: string, target: number }): void;
 }
 
+
+export type LifetimeLevelItem = {
+    target: number;
+    label: string;
+    key: string;
+}
+
+
 function NewLevelForm(props: NewLevelFormProps) {
-    const [newLevel, setNewLevel] = useState({
+    const [newLevel, setNewLevel] = useState<LifetimeLevelItem>({
         label: '',
         target: 0,
+        key: CreateUUID()
     })
 
+    const [error, setError] = useState('');
+
+    const validateLevel = (level: LifetimeLevelItem): { valid: boolean, error?: string } => {
+        if (!level.label) {
+            return { valid: false, error: 'Level must have a label'}
+        }
+        
+        if (level.target <= 0) {
+            return { valid: false, error: 'Level must be above zero' }
+        }
+
+        return { valid: true }
+    };
+
     return (
-        <Flex direction="row" align="center" gap="2">
-            <TextField.Root
-                size="2"
-                placeholder="Level name…"
-                value={newLevel.label}
-                onChange={(e) => {
-                    setNewLevel({ ...newLevel, label: e.currentTarget.value })
+        <Flex direction="column" gap="2">
+            <Flex direction="row" align="center" gap="2">
+                <TextField.Root
+                    size="2"
+                    placeholder="Level name…"
+                    value={newLevel.label}
+                    onChange={(e) => {
+                        setNewLevel({ ...newLevel, label: e.currentTarget.value })
+                    }}>
+                </TextField.Root>
+
+                {
+                    props.unit === 'seconds'
+                        ? (
+                            <TimeInput initialTime={0} onTimeChanged={(time) => {
+                                setNewLevel({ ...newLevel, target: time })
+                            }} />
+                        )
+                        : (
+                            <TextField.Root
+                                size="2"
+                                placeholder="4000 words"
+                                value={newLevel.target}
+                                onChange={(e) => {
+                                    setNewLevel({ ...newLevel, target: Number(e.currentTarget.value) })
+                                }}>
+                            </TextField.Root>
+                        )
+                }
+
+                <Button size="1" onClick={(e) => {
+                    e.preventDefault();
+
+                    const validation = validateLevel(newLevel);
+
+                    if (validation.valid) {
+                        props.onNewLevelSaved({ ...newLevel })
+                    } else {
+                        setError(validation.error || 'An error occurred');
+                    }
                 }}>
-            </TextField.Root>
+                    Save
+                </Button>
+            </Flex>
 
-            {
-                props.unit === 'seconds'
-                    ? (
-                        <TimeInput initialTime={0} onTimeChanged={(time) => {
-                            setNewLevel({ ...newLevel, target: time })
-                        }} />
-                    )
-                    : (
-                        <TextField.Root
-                            size="2"
-                            placeholder="4000 words"
-                            value={newLevel.target}
-                            onChange={(e) => {
-                                setNewLevel({ ...newLevel, target: Number(e.currentTarget.value) })
-                            }}>
-                        </TextField.Root>
-                    )
-            }
-
-            <Button size="1" onClick={(e) => {
-                e.preventDefault();
-                props.onNewLevelSaved({ ...newLevel })
-            }}>
-                Save
-            </Button>
+            <Text size="2" color="red">{error}</Text>
         </Flex>
     )
 }
@@ -67,16 +101,14 @@ interface LevelsListProps {
 
 function LevelsList(props: LevelsListProps) {
     return (
-        <Flex direction="row" justify="end" align="center" wrap="wrap" gap="1">
+        <Flex direction="row" className="w-full" justify="end" wrap="wrap" gap="1">
             {
                 props.levels.map(level => {
                     return (
                         <Badge key={level.key}>
                             <Flex direction="row" align="center" gap="2">
-                                <Text>{level.label}</Text>
-                                <Separator orientation="vertical" />
+                                <Text weight="bold">{level.label}</Text>
                                 <Text>{formatNumber(level.target, props.unit, 'short')}</Text>
-                                <Separator orientation="vertical" />
                                 <IconButton
                                     size="1"
                                     radius="full"
@@ -97,27 +129,18 @@ function LevelsList(props: LevelsListProps) {
 }
 
 export function LifetimeLevelsFields(props: WidgetConfigurationFieldsProps) {
-    const unit = props.widgetConfig?.unit ?? 'seconds';
-    const aggregation = props.widgetConfig?.aggregation ?? 'sum';
+    const config = props.widgetConfig as LevelsWidgetConfig;
 
     const [showNewLevelForm, setShowNewLevelForm] = useState(false);
 
-    const config = props.widgetConfig as LevelsWidgetConfig;
+    const unit = config.unit;
+    const aggregation = config.aggregation;
 
-    const handleLevelLabelChange = (level, newLabel) => {
-
-    };
-
-    const handleLevelTargetChange = (level, target) => {
-
-    };
-
-    const handleRemoveLevel = (level) => {
-
-    };
-
-    const handleStartNewLevel = () => {
-        setShowNewLevelForm(true);
+    const handleRemoveLevel = (level: LifetimeLevelItem) => {
+        props.onWidgetConfigChanged({
+            ...config,
+            levels: config.levels.filter(c => c.key !== level.key)
+        })
     };
 
     return (
@@ -139,20 +162,18 @@ export function LifetimeLevelsFields(props: WidgetConfigurationFieldsProps) {
                     </Popover.Trigger>
 
                     <Popover.Content align="end">
-                        <NewLevelForm unit={unit} onNewLevelSaved={(newLevel) => {
- 
-                            
-                            // TODO: Validate the level
-                            // TODO: Sort the new levels list
-                            // TODO: Save this properly
-                            // TODO: Dismiss the popover
+                        <NewLevelForm unit={unit} onNewLevelSaved={(newLevel: LifetimeLevelItem) => {
+                            console.log('SAVING LEVEL', newLevel);
 
-                            const level = {
-                                ...newLevel,
-                                key: CreateUUID()
-                            }
+                            const newLevels = config.levels.concat({ ...newLevel });
+                            newLevels.sort((a, b) => a.target < b.target ? -1 : 1);
 
-                            config.levels = [...config.levels].concat([level])
+                            props.onWidgetConfigChanged({
+                                ...config,
+                                levels: newLevels
+                            })
+
+                            setShowNewLevelForm(false);
                         }} />
                     </Popover.Content>
                 </Popover.Root>

@@ -3,7 +3,7 @@ import { syncBus } from "../sync/sync-bus";
 import { type SyncStatus } from "../../domain/types";
 
 export function useSyncStatus() {
-    const [status, setStatus] = useState<SyncStatus>('done');
+    const [status, setStatus] = useState<SyncStatus | null>(null);
 
     useEffect(() => {
         syncBus.addStatusListener(async (newStatus) => {

@@ -36,3 +36,11 @@ export function calculateProgressAt(
         percentage, window, goalVersion: version
     }
 }
+
+export function completedGoalTarget(
+    value: number,
+    goalVersion: GoalVersion
+): boolean {
+    const hitTarget = value >= goalVersion.target;
+    return hitTarget;
+}

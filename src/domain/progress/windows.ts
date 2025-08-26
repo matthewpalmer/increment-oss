@@ -1,6 +1,7 @@
 import type { Calendar, ProgressWindow } from "../cadence/calendar";
 import type { GoalVersion, TimeBlock } from "../types";
 import { aggregateBlocks } from "./aggregation";
+import { completedGoalTarget } from "./calculator";
 import { getActiveVersion } from "./choose-goal-version";
 
 export function bucketBlocksByWindows(
@@ -74,7 +75,7 @@ export function evaluateWindows(
         }
 
         const value = aggregateBlocks(blocks, goalVersion.aggregation, goalVersion.unit);
-        const hitTarget = value >= goalVersion.target;
+        const hitTarget = completedGoalTarget(value, goalVersion);
 
         return {
             window,

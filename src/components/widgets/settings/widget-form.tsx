@@ -46,6 +46,11 @@ const SettingsConfiguration: Record<DashboardWidgetType, SettingsConfigurationTy
         xSize: 2,
         ySize: 2
     },
+    'streaks': {
+        needsGoalId: true,
+        xSize: 2,
+        ySize: 1,
+    }
 };
 
 export function WidgetForm(props: WidgetFormProps) {
@@ -167,6 +172,7 @@ export function WidgetForm(props: WidgetFormProps) {
                             <Select.Item value="goals-list">Goals List</Select.Item>
                             <Select.Item value="total-time">Total Time</Select.Item>
                             <Select.Item value="calendar">Calendar</Select.Item>
+                            <Select.Item value="streaks">Streak</Select.Item>
                         </Select.Content>
                     </Select.Root>
                 </Flex>

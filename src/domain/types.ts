@@ -109,6 +109,7 @@ export const zDashboardWidgetType = z.enum([
     "progress-circle",
     "total-time",
     "calendar",
+    "streaks"
 ])
 
 export type DashboardWidgetType = z.infer<typeof zDashboardWidgetType>

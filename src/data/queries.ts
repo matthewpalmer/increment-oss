@@ -41,6 +41,9 @@ export const keys = {
         ],
         calendar: (projectId: string, monthStart: Date, timezoneKey: string) => [
             'progress', 'calendarProgress', projectId, monthStart.toISOString(), timezoneKey
-        ]
+        ],
+        streaks: (projectId: string, goalId: string, at: Date, timezoneKey: string) => [
+            'progress', 'streaks', projectId, goalId, at.toISOString(), timezoneKey
+        ],
     }
 }

@@ -1,6 +1,5 @@
 import type { SyncBus } from "./sync-bus";
-import type { InversePatchCalculator, SyncEngine, SyncPatchApplier, SyncEnginePatch } from "./sync-engine";
-import { DisplayUUID, type SyncEvent } from "../../domain/types";
+import type { InversePatchCalculator, SyncEngine, SyncPatchApplier } from "./sync-engine";
 import { IncrementDateTimeNow } from "../../domain/time-utils";
 
 export class SyncRuntime {

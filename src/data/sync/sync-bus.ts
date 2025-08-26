@@ -1,16 +1,18 @@
 import { IncrementDateTimeNow } from "../../domain/time-utils";
-import { SYNC_EVENT_NOT_STARTED, type SyncEvent } from "../../domain/types";
+import { SYNC_EVENT_NOT_STARTED, type SyncEvent, type SyncStatus } from "../../domain/types";
 import { db } from "../persistence/db";
 import { calculateBackoff } from "./retry";
 
 type SyncBusListener = (event: SyncEvent) => Promise<any>
 type SyncBusRollbackListener = (event: SyncEvent) => Promise<any>
+type SyncStatusListener = (status: SyncStatus)  => Promise<any>
 
 const SYNC_EVENT_MAX_ATTEMPTS = 5;
 
 export class SyncBus {
     private listener?: SyncBusListener
     private rollbackListener?: SyncBusRollbackListener
+    private statusListener?: SyncStatusListener
 
     async dispatchEvent(event: SyncEvent) {
         await db.syncEvents.add(event);
@@ -25,14 +27,22 @@ export class SyncBus {
         this.rollbackListener = listener;
     }
 
+    addStatusListener(listener: SyncStatusListener) {
+        this.statusListener = listener;
+    }
+
     async processWaitingEvents() {
         const now = IncrementDateTimeNow();
+
+        this.statusListener?.('in-progress');
 
         const events = await db.syncEvents
             .where('nextAttemptAt')
             .belowOrEqual(now)
             .and(e => e.status === 'pending' || e.status === 'retry-scheduled')
             .toArray();
+
+        let reportStatus: SyncStatus = 'done';
 
         for (let event of events) {
             // Claim this event in Dexie to prevent other tabs from trying to process it.
@@ -94,6 +104,8 @@ export class SyncBus {
                     }
                 } else {
                     await this.rescheduleEventWithBackoff(latest, nextAttempt, lastError);
+
+                    reportStatus = 'in-progress';
                 }
             })
 
@@ -103,8 +115,12 @@ export class SyncBus {
                 if (this.rollbackListener && latest) {
                     await this.rollbackListener(latest);
                 }
+
+                reportStatus = 'error';
             }
         }
+
+        this.statusListener?.(reportStatus);
     }
 
     private async rescheduleEventWithBackoff(event: SyncEvent, attemptCount: number, lastError: any) {

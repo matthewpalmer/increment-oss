@@ -35,7 +35,13 @@ declare module '@tanstack/react-router' {
     }
 }
 
-const syncRuntime = new SyncRuntime(fakeSyncEngine, syncBus, createDexieApplier(queryClient), dexieInverseCalculator);
+const syncRuntime = new SyncRuntime(
+    fakeSyncEngine, 
+    syncBus, 
+    createDexieApplier(queryClient), 
+    dexieInverseCalculator
+);
+
 syncRuntime.start();
 
 const syncBusScheduler = new SyncBusScheduler(syncBus);

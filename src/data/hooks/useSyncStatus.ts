@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
+import { syncBus } from "../sync/sync-bus";
+import { type SyncStatus } from "../../domain/types";
 
 export function useSyncStatus() {
-    const [status, setStatus] = useState('done');
+    const [status, setStatus] = useState<SyncStatus>('done');
 
     useEffect(() => {
-        setInterval(() => {
-            const rand = Math.random()
-            if (rand > 0.75) return setStatus('loading...');
-            if (Math.random() > 0.5) return setStatus('error...');
-            if (Math.random() > 0.25) return setStatus('done...');
-            if (Math.random() > 0) return setStatus('blahy...');
-        }, 3000)
+        syncBus.addStatusListener(async (newStatus) => {
+            setStatus(newStatus)
+        })
     }, [])
 
     return status;

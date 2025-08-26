@@ -142,6 +142,8 @@ export const zSyncEvent = z.object({
     attempts: z.number().int().min(0),
 })
 
+export type SyncStatus = 'done' | 'error' | 'in-progress';
+
 export type SyncEvent = z.infer<typeof zSyncEvent>
 
 export const zNewSyncEventInput = z.object({

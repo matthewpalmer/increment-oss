@@ -31,10 +31,11 @@
   * Total progress aggregations  
 * Theming and layout customization
 
-## Opportunities for Future Work
+## Future Work
 
 * Configurable time zone and unit defaults  
 * Multi-goal dashboard widgets and advanced filtering by tags/notes  
+* Better handling to display which sync events have failed
 
 ## Get Started
 

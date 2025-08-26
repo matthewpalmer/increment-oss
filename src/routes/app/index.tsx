@@ -6,7 +6,12 @@ import { useState } from 'react';
 import { getNameForColor } from '../../components/colors/colors';
 
 export const Route = createFileRoute('/app/')({
-    component: RouteComponent
+    component: RouteComponent,
+    head: () => ({
+        meta: [
+            { title: 'My Projects | Increment' }
+        ]
+    })
 })
 
 function RouteComponent() {

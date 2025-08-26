@@ -14,11 +14,15 @@ export function useProjectsList() {
     })
 }
 
+export async function fetchProject(projectId: string) {
+    return db.projects.get(projectId);
+};
+
 export function useProject(projectId: string) {
     return useQuery({
         queryKey: keys.projects.get(projectId),
-        queryFn: () => {
-            return db.projects.get(projectId);
+        queryFn: async () => {
+            return fetchProject(projectId)
         },
         staleTime: Infinity
     })

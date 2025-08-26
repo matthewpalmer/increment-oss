@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { type DashboardWidget } from '../../../../domain/types';
-import { useProject } from '../../../../data/hooks/useProjects';
+import { fetchProject, useProject } from '../../../../data/hooks/useProjects';
 import { useGoals } from '../../../../data/hooks/useGoals';
 import { Dialog, Text, Theme } from '@radix-ui/themes';
 import { useState } from 'react';
@@ -12,7 +12,18 @@ import { WidgetVendor } from '../../../../components/widgets/grid/widget-vendor'
 import { ProjectHeader } from '../../../../components/projects/project-header';
 
 export const Route = createFileRoute('/app/projects/$projectId/')({
-    component: ProjectDetails
+    component: ProjectDetails,
+    loader: async (ctx) => {
+        const project = await fetchProject(ctx.params.projectId);
+        return {
+            project
+        }
+    },
+    head: (ctx) => ({
+        meta: [
+            { title: `${ctx.loaderData?.project?.name || ''} | Increment` }
+        ]
+    })
 })
 
 function ProjectDetails() {

@@ -1,4 +1,4 @@
-import { createRootRouteWithContext, Link, Outlet } from '@tanstack/react-router';
+import { createRootRouteWithContext, HeadContent, Link, Outlet } from '@tanstack/react-router';
 import { QueryClient } from '@tanstack/react-query';
 import { FakeSyncEngineControlPanel } from '../components/common/fake-sync-engine-control-panel';
 import { Theme } from "@radix-ui/themes";
@@ -9,19 +9,29 @@ export interface AppRouterContext {
 }
 
 export const Route = createRootRouteWithContext<AppRouterContext>()({
+    head: () => ({
+        meta: [
+            { title: 'Increment' }
+        ]
+    }),
     component: () => (
-        <div>
-            <Theme>
-                <div className="flex gap-2  p-4 justify-between align-bottom">
-                    <Link to="/app" className="text-xs gap-1 text-gray-400 hover:text-gray-600 font-semibold flex items-center"><ShadowOuterIcon /> Increment</Link>
+        <>
+            <HeadContent />
+            
+            <div>
+                <Theme>
+                    <div className="flex gap-2  p-4 justify-between align-bottom">
+                        <Link to="/app" className="text-xs gap-1 text-gray-400 hover:text-gray-600 font-semibold flex items-center"><ShadowOuterIcon /> Increment</Link>
 
-                    <SyncStatusDisplay />
-                </div>
-                
-                <Outlet />
-                {/* <TanStackRouterDevtools /> */}
-                {/* <FakeSyncEngineControlPanel /> */}
-            </Theme>
-        </div>
+                        <SyncStatusDisplay />
+                    </div>
+
+                    <Outlet />
+
+                    {/* <TanStackRouterDevtools /> */}
+                    {/* <FakeSyncEngineControlPanel /> */}
+                </Theme>
+            </div>
+        </>
     )
 })

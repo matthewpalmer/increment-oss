@@ -122,7 +122,7 @@ export const zLevelsWidgetConfig = z.object({
     levels: z.array(z.object({ 
         target: z.number(), 
         label: z.string(),
-        key: z.uuid()
+        key: z.string()
     }))
 })
 

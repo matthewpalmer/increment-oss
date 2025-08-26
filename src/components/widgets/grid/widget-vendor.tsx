@@ -1,4 +1,4 @@
-import { Button, Flex } from "@radix-ui/themes";
+import { Button, Flex, IconButton } from "@radix-ui/themes";
 import type { DashboardWidget, DashboardWidgetType, Goal, Project } from "../../../domain/types"
 import { GoalsListWidget } from "../widget-components/goals-list-widget";
 import { ProgressBarWidget } from "../widget-components/progress-bar";
@@ -50,7 +50,7 @@ export function WidgetVendor({ widget, project, goals, onSettingsActivated }: Wi
                 project={project}
                 goals={goals}
                 menuSlot={(
-                    <Button
+                    <IconButton
                         size="1"
                         radius="full"
                         color="gray"
@@ -58,7 +58,7 @@ export function WidgetVendor({ widget, project, goals, onSettingsActivated }: Wi
                         onClick={(e) => {
                             e.preventDefault();
                             onSettingsActivated(widget, project, goals)
-                        }}><DotsHorizontalIcon /></Button>
+                        }}><DotsHorizontalIcon /></IconButton>
                 )} />
         </Widget>
     );

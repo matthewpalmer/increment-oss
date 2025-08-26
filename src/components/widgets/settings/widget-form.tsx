@@ -76,10 +76,11 @@ const SettingsConfiguration: Record<DashboardWidgetType, SettingsConfigurationTy
             unit: 'seconds',
             aggregation: 'sum',
             levels: [
-                { target: 3000000, label: 'Level 1' },
-                { target: 6000000, label: 'Level 2' },
-                { target: 9000000, label: 'Level 3' },
-                { target: 12000000, label: 'Level 4' },
+                { target: 180000, label: 'Level 1', key: 'Level 1 180000' },
+                { target: 360000, label: 'Level 2', key: 'Level 2 360000' },
+                { target: 540000, label: 'Level 3', key: 'Level 3 540000' },
+                { target: 720000, label: 'Level 4', key: 'Level 4 720000' },
+                { target: 900000, label: 'Level 5', key: 'Level 4 900000' },
             ]
         }
     }

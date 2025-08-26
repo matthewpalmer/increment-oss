@@ -36,6 +36,8 @@
 * Configurable time zone and unit defaults  
 * Multi-goal dashboard widgets and advanced filtering by tags/notes  
 * Better handling to display which sync events have failed
+* Refining how units / sessions are handled, e.g. if tracking a run, the user might want to track 
+  time spent and distance covered in a single entry
 
 ## Get Started
 

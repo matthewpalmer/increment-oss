@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, Flex, Heading, Text } from "@radix-ui/themes";
+import { Box, Button, Dialog, Flex, Heading, IconButton, Text } from "@radix-ui/themes";
 import { useGoals } from "../../../data/hooks/useGoals";
 import { useState } from "react";
 import { GoalForm } from "../../goals/goal-form";
@@ -49,10 +49,10 @@ export function GoalsListWidget(props: DashboardWidgetProps) {
                                 <Flex key={goal.id} direction="row" justify={"between"} align={"center"}>
                                     <Text weight="bold">{goal.name}</Text>
 
-                                    <Button color="gray" variant="ghost" size="1" onClick={() => {
+                                    <IconButton radius="full" color="gray" variant="ghost" size="1" onClick={() => {
                                         setEditingGoal(goal);
                                         setEditGoalDialogOpen(true);
-                                    }}><Pencil1Icon /></Button>
+                                    }}><Pencil1Icon /></IconButton>
                                 </Flex>
                             )
                         })

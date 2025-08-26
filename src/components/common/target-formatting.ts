@@ -23,6 +23,10 @@ export const formatNumber = (
     }
 
     if (unit === 'meters') {
+        if (value > 1000) {
+            return `${Math.round(value / 1000)}km`
+        }
+
         return `${value}m`
     }
 

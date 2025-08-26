@@ -29,7 +29,7 @@ export function TimeInput(props: TimeInputProps) {
         <Flex direction="row" align="center" gap="3">
             <Flex direction="row" align="center" gap="1" width="100px">
                 <TextField.Root
-                    id="timeHours" size="2"
+                    id="timeHours"
                     value={timeHours}
                     placeholder="0"
                     onChange={(e) => {
@@ -42,7 +42,7 @@ export function TimeInput(props: TimeInputProps) {
 
             <Flex direction="row" align="center" gap="1" width="100px">
                 <TextField.Root
-                    id="timeMinutes" size="2"
+                    id="timeMinutes"
                     value={timeMinutes}
                     placeholder="0"
                     onChange={(e) => {

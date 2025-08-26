@@ -32,7 +32,7 @@ export type GoalCadence = z.infer<typeof zGoalCadence>
 export const zGoalAggregation = z.enum(["sum", "count", "max"])
 export type GoalAggregation = z.infer<typeof zGoalAggregation>
 
-export const zTimeBlockType = z.enum(["time", "count"])
+export const zTimeBlockType = zGoalUnit;
 export type TimeBlockType = z.infer<typeof zTimeBlockType>
 
 export const zSyncEventType = z.enum(["create", "update", "delete"])
@@ -104,15 +104,32 @@ export const zGoalVersion = z
 export type GoalVersion = z.infer<typeof zGoalVersion>
 
 export const zDashboardWidgetType = z.enum([
-    "goals-list", 
-    "progress-bar", 
+    "goals-list",
+    "progress-bar",
     "progress-circle",
     "total-time",
     "calendar",
-    "streaks"
+    "streaks",
+    "overall-total"
 ])
 
 export type DashboardWidgetType = z.infer<typeof zDashboardWidgetType>
+
+export const zLevelsWidgetConfig = z.object({
+    levels: z.array(z.object({ target: z.number(), label: z.string() }))
+})
+
+export type LevelsWidgetConfig = z.infer<typeof zLevelsWidgetConfig>;
+
+export const zOverallTotalWidgetConfig = z.object({
+    aggregation: zGoalAggregation, 
+    unit: zGoalUnit
+})
+
+export type OverallTotalWidgetConfig = z.infer<typeof zOverallTotalWidgetConfig>;
+
+export const zWidgetConfig = z.union([zLevelsWidgetConfig, zOverallTotalWidgetConfig]);
+export type WidgetConfig = z.infer<typeof zWidgetConfig>;
 
 export const zDashboardWidget = z
     .object({
@@ -123,6 +140,7 @@ export const zDashboardWidget = z
         order: z.number().optional(),
         xSize: z.number(),
         ySize: z.number(),
+        config: zWidgetConfig.optional()
     })
 
 export type DashboardWidget = z.infer<typeof zDashboardWidget>

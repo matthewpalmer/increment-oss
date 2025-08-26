@@ -2,18 +2,12 @@ import { Flex, Select, Text, TextField } from "@radix-ui/themes";
 import { Label } from "radix-ui";
 import type { GoalAggregation, GoalCadence, GoalUnit, GoalVersion, IncrementDuration } from "../../domain/types";
 import { TimeInput } from "../common/time-input";
+import { formatUnits } from "../common/target-formatting";
 
 type GoalVersionFormProps = {
     goalVersion: GoalVersion,
     onGoalVersionChanged: (goalVersion: GoalVersion) => void
 }
-
-const TargetUnitsLabel: Record<GoalUnit, string> = {
-    'count': 'times',
-    'meters': 'meters',
-    'words': 'words',
-    'seconds': 'seconds' // Should not be used
-};
 
 export function GoalVersionForm(props: GoalVersionFormProps) {
     const handleTimeChange = (newTime: IncrementDuration) => {
@@ -25,7 +19,7 @@ export function GoalVersionForm(props: GoalVersionFormProps) {
     };
 
     const handleUnitChanged = (unit: GoalUnit) => {
-        props.onGoalVersionChanged({ ...props.goalVersion, unit })
+        props.onGoalVersionChanged({ ...props.goalVersion, unit, target: 0 })
     };
 
     const handleCadenceChanged = (cadence: GoalCadence) => {
@@ -44,7 +38,6 @@ export function GoalVersionForm(props: GoalVersionFormProps) {
                 </Label.Root>
 
                 <Select.Root
-                    size="2"
                     value={props.goalVersion.unit}
                     defaultValue={props.goalVersion.unit}
                     onValueChange={handleUnitChanged}>
@@ -83,7 +76,7 @@ export function GoalVersionForm(props: GoalVersionFormProps) {
 
                                 <Text className="text-gray-500 text-sm">
                                     {
-                                        TargetUnitsLabel[props.goalVersion.unit]
+                                        formatUnits(props.goalVersion.unit)
                                     }
                                 </Text>
 
@@ -98,7 +91,6 @@ export function GoalVersionForm(props: GoalVersionFormProps) {
                 </Label.Root>
 
                 <Select.Root
-                    size="2"
                     value={props.goalVersion.cadence}
                     defaultValue={props.goalVersion.cadence}
                     onValueChange={handleCadenceChanged}>
@@ -119,7 +111,6 @@ export function GoalVersionForm(props: GoalVersionFormProps) {
                 </Label.Root>
 
                 <Select.Root
-                    size="2"
                     value={props.goalVersion.aggregation}
                     defaultValue={props.goalVersion.aggregation}
                     onValueChange={handleAggregationChanged}>

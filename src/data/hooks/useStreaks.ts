@@ -16,7 +16,6 @@ export function useStreakAt(projectId: string, goalId: string, at: Date) {
         queryFn: async () => {
             const goalVersions = await fetchGoalVersions(goalId);
 
-            
             let currentDate = at;
             
             const streakDays = [];

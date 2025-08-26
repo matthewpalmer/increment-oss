@@ -8,6 +8,7 @@ import { calculateProgressAt } from "../../domain/progress/calculator";
 import { aggregateBlocks } from "../../domain/progress/aggregation";
 import type { ProgressWindow } from "../../domain/cadence/calendar";
 import { bucketBlocksByWindows, evaluateWindows, getGoalVersionForWindows } from "../../domain/progress/windows";
+import type { GoalAggregation, GoalUnit } from "../../domain/types";
 
 export function useProgressForGoalAt(projectId: string, goalId: string, at = new Date()) {
     const calendar = makeCalendar();
@@ -31,17 +32,24 @@ export function useProgressForGoalAt(projectId: string, goalId: string, at = new
     })
 }
 
-export function useLifetimeProgress(projectId: string, at = new Date()) {
+export function useLifetimeProgress(
+    projectId: string, 
+    at = new Date(), 
+    unit: GoalUnit = 'seconds', 
+    aggregation: GoalAggregation = 'sum'
+) {
     const calendar = makeCalendar();
     const window = calendar.windowForCadence('lifetime', at, new Date(0));
 
     return useQuery({
-        queryKey: keys.progress.projectTotal(projectId, 'lifetime', window.start, calendar.timezoneKey),
+        queryKey: keys.progress.projectTotal(projectId, 'lifetime', window.start, calendar.timezoneKey, unit, aggregation),
         staleTime: 30000,
         queryFn: async () => {
-            const blocks = await fetchTimeBlocks(projectId, window.start, window.end);
-            const seconds = aggregateBlocks(blocks, 'sum', 'seconds');
-            return { window, seconds }
+            const now = new Date();
+            const blocks = await fetchTimeBlocks(projectId, window.start, now);
+            const value = aggregateBlocks(blocks, aggregation, unit);
+            console.log("LIFETIME PROGRESS UPDATE WITH", value, window.start, now)
+            return { window, value }
         }
     })
 }

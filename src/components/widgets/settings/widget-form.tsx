@@ -1,11 +1,12 @@
 import { Label } from "radix-ui";
 import { Button, Flex, Select, Text, TextField } from "@radix-ui/themes";
-import { CreateUUID, zDashboardWidget, type DashboardWidget, type DashboardWidgetType, type UUID } from "../../../domain/types";
-import { useEffect, useState } from "react";
+import { CreateUUID, zDashboardWidget, type DashboardWidget, type DashboardWidgetType, type UUID, type WidgetConfig } from "../../../domain/types";
+import { useEffect, useState, type ReactNode, type ComponentType } from "react";
 import type { ZodError } from "zod";
 import { ErrorsList } from "../../common/errors-list";
 import { useCreateDashboardWidget, useDeleteDashboardWidget, useUpdateDashboardWidget } from "../../../data/hooks/useDashboardWidgets";
 import { useGoals } from "../../../data/hooks/useGoals";
+import { OverallTotalFields, type WidgetConfigurationFieldsProps } from "./widget-configuration-fields";
 
 export type WidgetFormProps =
     | { mode: 'create', projectId: UUID, onFormSaved: () => void }
@@ -17,7 +18,9 @@ const zEditDashboardWidgetInput = zDashboardWidget.omit({ id: true }).partial();
 type SettingsConfigurationType = {
     needsGoalId: boolean,
     xSize: number, 
-    ySize: number
+    ySize: number,
+    extraFields?: ComponentType<WidgetConfigurationFieldsProps>,
+    defaultExtraFields?: WidgetConfig
 }
 
 const SettingsConfiguration: Record<DashboardWidgetType, SettingsConfigurationType> = {
@@ -50,6 +53,16 @@ const SettingsConfiguration: Record<DashboardWidgetType, SettingsConfigurationTy
         needsGoalId: true,
         xSize: 2,
         ySize: 1,
+    },
+    'overall-total': {
+        needsGoalId: false,
+        xSize: 2,
+        ySize: 1,
+        extraFields: OverallTotalFields,
+        defaultExtraFields: {
+            unit: 'seconds',
+            aggregation: 'sum'
+        }
     }
 };
 
@@ -76,7 +89,8 @@ export function WidgetForm(props: WidgetFormProps) {
                 projectId: props.projectId,
                 goalId: '',
                 xSize: SettingsConfiguration[type].xSize,
-                ySize: SettingsConfiguration[type].ySize
+                ySize: SettingsConfiguration[type].ySize,
+                config: undefined
             }
         }
 
@@ -130,6 +144,12 @@ export function WidgetForm(props: WidgetFormProps) {
         props.onFormSaved();
     };
 
+    const handleWidgetConfigChanged = (updated: WidgetConfig) => {
+        const newValues = { ...values };
+        newValues.config = { ...updated };
+        setValues(newValues)
+    }
+
     useEffect(() => {
         if (isNewWidget && !values.goalId && goals.length > 0) {
             setValues({ ...values, goalId: goals[0].id })
@@ -144,6 +164,8 @@ export function WidgetForm(props: WidgetFormProps) {
         return <p>An error occurred: {errorGoals.message}</p>
     }
 
+    const ExtraFieldsComponent = SettingsConfiguration[values.type].extraFields;
+
     return (
         <form onSubmit={handleSave} autoComplete="off">
             <Flex direction="column" gap="4">
@@ -153,16 +175,22 @@ export function WidgetForm(props: WidgetFormProps) {
                     </Label.Root>
 
                     <Select.Root
-                        size="2"
                         value={values.type}
                         defaultValue={values.type}
                         onValueChange={(type: DashboardWidgetType) => {
-                            setValues({
-                                ...values,
-                                xSize: SettingsConfiguration[type].xSize,
-                                ySize: SettingsConfiguration[type].ySize,
-                                type: type
-                            })
+                            let defaultConfig = undefined;
+                            
+                            if (SettingsConfiguration[type].defaultExtraFields) {
+                                defaultConfig = { ...SettingsConfiguration[type].defaultExtraFields }
+                            }
+
+                            const newValues = { ...values };
+                            newValues.xSize = SettingsConfiguration[type].xSize
+                            newValues.ySize = SettingsConfiguration[type].ySize
+                            newValues.type = type;
+                            newValues.config = defaultConfig;
+
+                            setValues(newValues)
                         }}>
                         <Select.Trigger style={{ minWidth: '212px' }} />
 
@@ -173,6 +201,7 @@ export function WidgetForm(props: WidgetFormProps) {
                             <Select.Item value="total-time">Total Time</Select.Item>
                             <Select.Item value="calendar">Calendar</Select.Item>
                             <Select.Item value="streaks">Streak</Select.Item>
+                            <Select.Item value="overall-total">Overall Total</Select.Item>
                         </Select.Content>
                     </Select.Root>
                 </Flex>
@@ -222,7 +251,6 @@ export function WidgetForm(props: WidgetFormProps) {
                                         ? <Text color="red">Create a goal first…</Text>
                                         : (
                                             <Select.Root
-                                                size="2"
                                                 value={values.goalId || goals[0].id}
                                                 onValueChange={(goalId: UUID) => {
                                                     setValues({
@@ -245,6 +273,12 @@ export function WidgetForm(props: WidgetFormProps) {
                             </Flex>
                         )
                         : null
+                }
+
+                {
+                    ExtraFieldsComponent
+                    ? <ExtraFieldsComponent widgetConfig={values.config} onWidgetConfigChanged={handleWidgetConfigChanged} />
+                    : null
                 }
 
                 <Flex direction="row" justify="between" align="center">

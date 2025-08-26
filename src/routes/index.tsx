@@ -11,7 +11,7 @@ function Index() {
         <Flex direction="column" align="center" justify="center" p="4" gap="6" maxWidth={"600px"} className="m-auto">
             <Flex direction="row" align="center" gap="2">
                 <img width="40px" src="/increment-favicon.svg" />
-                <Heading align="center" size="8">
+                <Heading align="center" size="8" className="text-indigo-600">
                     Welcome to Increment
                 </Heading>
             </Flex>

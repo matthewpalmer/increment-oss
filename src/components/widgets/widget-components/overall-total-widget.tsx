@@ -4,10 +4,22 @@ import { WidgetError } from "./widget-error";
 import { WidgetLoading } from "./widget-loading";
 import { useLifetimeProgress } from "../../../data/hooks/useProgress";
 import { useRef } from "react";
-import { formatProgress, formatDuration } from "../../common/target-formatting";
+import { formatNumber } from "../../common/target-formatting";
+import type { GoalAggregation, GoalUnit, OverallTotalWidgetConfig } from "../../../domain/types";
 
-export function TotalTimeWidget(props: DashboardWidgetProps) {
+export function OverallTotalWidget(props: DashboardWidgetProps) {
     const atRef = useRef(new Date());
+
+    let progressConfig: { unit: GoalUnit, aggregation: GoalAggregation } = {
+        unit: 'seconds',
+        aggregation: 'sum'
+    };
+
+    if (props.dashboardWidget.config) {
+        const config = props.dashboardWidget.config as OverallTotalWidgetConfig;
+        progressConfig.aggregation = config.aggregation;
+        progressConfig.unit = config.unit;
+    } 
     
     const {
         data: progress,
@@ -17,6 +29,8 @@ export function TotalTimeWidget(props: DashboardWidgetProps) {
     } = useLifetimeProgress(
         props.project.id,
         atRef.current,
+        progressConfig.unit,
+        progressConfig.aggregation
     );
 
     if (isLoading) return <WidgetLoading {...props} />
@@ -27,7 +41,7 @@ export function TotalTimeWidget(props: DashboardWidgetProps) {
         <Flex direction="column" gap="4">
             <Flex direction="row" align="center" justify="between">
                 <Text className="text-gray-400 font-semibold" size="2">
-                    Total Time
+                    Lifetime Total
                 </Text>
 
                 {props.menuSlot}
@@ -35,8 +49,7 @@ export function TotalTimeWidget(props: DashboardWidgetProps) {
             
             <Flex direction="row" justify="center" align="center">
                 <Text m="4" mb="6" weight="bold" size="8">
-                    {/* { formatProgress(progress) } */}
-                    { formatDuration(progress.value) }
+                    { formatNumber(progress.value, progressConfig.unit) }
                 </Text>
             </Flex>
         </Flex>

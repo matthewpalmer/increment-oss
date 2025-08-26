@@ -1,4 +1,4 @@
-import type { GoalCadence, IncrementTimestamp } from "../domain/types";
+import type { GoalAggregation, GoalCadence, GoalUnit, IncrementTimestamp } from "../domain/types";
 
 export const keys = {
     projects: {
@@ -13,19 +13,16 @@ export const keys = {
         ]
     },
     goals: {
-        // TODO: Seems bad to have goals:$goalId and goals:$goalVersionId
         list: () => ['goals'],
         listInProject: (projectId: string) => ['goals', projectId],
         get: (id: string) => ['goals', id]
     },
     goalVersions: {
-        // TODO: Seems bad to have goalVersions:$goalId and goalVersions:$goalVersionId
         list: () => ['goalVersions'],
         listInGoal: (goalId: string) => ['goalVersions', goalId],
         get: (id: string) => ['goalVersions', id],
     },
     dashboardWidgets: {
-        // TODO: Seems bad to have goalVersions:$goalId and goalVersions:$goalVersionId
         listInProject: (projectId: string) => ['dashboardWidgets', projectId],
     },
 
@@ -36,8 +33,8 @@ export const keys = {
         atDate: (projectId: string, goalId: string, at: IncrementTimestamp, timezoneKey: string) => [
             'progress', 'atDate', projectId, goalId, at, timezoneKey
         ],
-        projectTotal: (projectId: string, cadence: GoalCadence, windowStart: Date, timezoneKey: string) => [
-            'progress', 'projectTotal', projectId, cadence, windowStart.toISOString(), timezoneKey
+        projectTotal: (projectId: string, cadence: GoalCadence, windowStart: Date, timezoneKey: string, unit: GoalUnit, aggregation: GoalAggregation) => [
+            'progress', 'projectTotal', projectId, cadence, windowStart.toISOString(), timezoneKey, unit, aggregation
         ],
         calendar: (projectId: string, monthStart: Date, timezoneKey: string) => [
             'progress', 'calendarProgress', projectId, monthStart.toISOString(), timezoneKey

@@ -65,6 +65,17 @@ export const formatDuration = (duration: IncrementDuration): string => {
     return `${hours}h ${minutes}m`
 }
 
+const TargetUnitsLabel: Record<GoalUnit, string> = {
+    'count': 'times',
+    'meters': 'meters',
+    'words': 'words',
+    'seconds': 'seconds'
+};
+
+export const formatUnits = (unit: GoalUnit): string => {
+    return TargetUnitsLabel[unit]
+}
+
 export const targetString = (goalVersion: GoalVersion) => {
     if (goalVersion.unit === 'seconds') {
         return formatDuration(goalVersion.target);

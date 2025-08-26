@@ -1,27 +1,7 @@
 import type { GoalAggregation, GoalUnit, TimeBlock } from "../types";
 
 export function relevantAmountForAggregation(block: TimeBlock, unit: GoalUnit): number {
-    if (unit === 'seconds') {
-        if (block.type === 'time') return block.amount
-        return 0;
-    }
-
-    if (unit === 'count') {
-        if (block.type === 'count') return block.amount;
-        return 0
-    }
-
-    if (unit === 'meters') {
-        if (block.type === 'count') return block.amount;
-        return 0;
-    }
-
-    if (unit === 'words') {
-        if (block.type === 'count') return block.amount;
-        return 0;
-    }
-
-    console.error('Error: invalid aggregation unit -', unit);
+    if (block.type === unit) return block.amount;
     return 0;
 }
 
@@ -35,11 +15,12 @@ export function aggregateBlocks(
     }
 
     if (aggregation === 'count') {
-        return blocks.reduce((acc, cur) => {
-            const amount = relevantAmountForAggregation(cur, unit);
-            if (amount > 0) return acc + 1;
-            return acc
-        }, 0);
+        // return blocks.reduce((acc, cur) => {
+        //     const amount = relevantAmountForAggregation(cur, unit);
+        //     if (amount > 0) return acc + 1;
+        //     return acc
+        // }, 0);
+        return blocks.length;
     }
 
     if (aggregation === 'max') {

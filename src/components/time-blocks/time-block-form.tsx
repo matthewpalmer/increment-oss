@@ -1,6 +1,6 @@
-import { Button, Flex, Select, TextField } from "@radix-ui/themes";
+import { Button, Flex, Select, TextField, Text } from "@radix-ui/themes";
 import { Label } from "radix-ui";
-import { CreateUUID, zGoal, zTimeBlock, type Goal, type IncrementDuration, type TimeBlock, type TimeBlockType, type UUID } from "../../domain/types";
+import { CreateUUID, zTimeBlock, type GoalUnit, type IncrementDuration, type TimeBlock, type TimeBlockType, type UUID } from "../../domain/types";
 import { useState } from "react";
 import { IncrementDateTimeNow } from "../../domain/time-utils";
 import { ZodError } from "zod";
@@ -8,6 +8,7 @@ import { ErrorsList } from "../common/errors-list";
 import { useCreateTimeBlock, useUpdateTimeBlock } from "../../data/hooks/useTimeBlocks";
 import { DatePicker } from "../common/date-picker";
 import { TimeInput } from "../common/time-input";
+import { formatUnits } from "../common/target-formatting";
 
 export type TimeBlockFormProps =
     | { mode: 'create', projectId: UUID, onFormSaved: () => void }
@@ -28,7 +29,7 @@ export function TimeBlockForm(props: TimeBlockFormProps) {
                 id: CreateUUID(),
                 projectId: props.projectId,
                 startedAt: IncrementDateTimeNow(),
-                type: 'time',
+                type: 'seconds',
                 amount: 0,
                 notes: ''
             }
@@ -70,11 +71,7 @@ export function TimeBlockForm(props: TimeBlockFormProps) {
     };
 
     const handleTypeChanged = (newValue: TimeBlockType) => {
-        if (newValue === 'time') {
-            setValues({ ...values, type: 'time', amount: 0 })
-        } else {
-            setValues({ ...values, type: 'count', amount: 1 })
-        }
+        setValues({ ...values, type: newValue, amount: 0 })
     };
 
     const handleTimeChanged = (time: IncrementDuration) => {
@@ -89,31 +86,37 @@ export function TimeBlockForm(props: TimeBlockFormProps) {
                         Type
                     </Label.Root>
 
-                    <Select.Root size="2" value={values.type} defaultValue={values.type} onValueChange={handleTypeChanged}>
+                    <Select.Root value={values.type} defaultValue={values.type} onValueChange={handleTypeChanged}>
                         <Select.Trigger style={{ minWidth: '212px' }} />
                         <Select.Content>
-                            <Select.Item value="time">Time</Select.Item>
+                            <Select.Item value="seconds">Time</Select.Item>
                             <Select.Item value="count">Count</Select.Item>
+                            <Select.Item value="words">Words</Select.Item>
+                            <Select.Item value="meters">Meters</Select.Item>
                         </Select.Content>
                     </Select.Root>
                 </Flex>
 
                 <Flex direction="row" justify="between" align="center">
                     <Label.Root className="text-md" htmlFor="type">
-                        {values.type === 'time' ? 'Duration' : 'Amount'}
+                        {values.type === 'seconds' ? 'Duration' : 'Amount'}
                     </Label.Root>
 
                     {
-                        values.type === 'time'
+                        values.type === 'seconds'
                             ? <TimeInput onTimeChanged={handleTimeChanged} initialTime={values.amount} />
                             : (
-                                <TextField.Root
-                                    id="countAmount" size="3"
-                                    value={values.amount}
-                                    onChange={(e) => {
-                                        setValues({ ...values, amount: Number(e.target.value) })
-                                    }}>
-                                </TextField.Root>
+                                <Flex align="center" gap="2">
+                                    <TextField.Root
+                                        id="countAmount" size="3"
+                                        value={values.amount}
+                                        onChange={(e) => {
+                                            setValues({ ...values, amount: Number(e.target.value) })
+                                        }}>
+                                    </TextField.Root>
+
+                                    <Text size="2" color="gray">{formatUnits(values.type as GoalUnit)}</Text>
+                                </Flex>
                             )
                     }
                 </Flex>

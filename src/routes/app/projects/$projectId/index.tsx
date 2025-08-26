@@ -61,7 +61,7 @@ function ProjectDetails() {
 
     return (
         <div className='bg-white w-screen h-screen'>
-            <div className='max-w-4xl m-auto px-2'>
+            <div className='max-w-4xl m-auto px-2 pb-24 pt-6'>
                 <Theme accentColor={getNameForColor(project.color)}>
 
                     <ProjectHeader project={project} />

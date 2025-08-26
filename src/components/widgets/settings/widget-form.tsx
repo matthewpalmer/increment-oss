@@ -7,6 +7,7 @@ import { ErrorsList } from "../../common/errors-list";
 import { useCreateDashboardWidget, useDeleteDashboardWidget, useUpdateDashboardWidget } from "../../../data/hooks/useDashboardWidgets";
 import { useGoals } from "../../../data/hooks/useGoals";
 import { OverallTotalFields, type WidgetConfigurationFieldsProps } from "./widget-configuration-fields";
+import { BadgeIcon, CalendarIcon, LightningBoltIcon, ListBulletIcon, StopwatchIcon, TimerIcon } from "@radix-ui/react-icons";
 
 export type WidgetFormProps =
     | { mode: 'create', projectId: UUID, onFormSaved: () => void }
@@ -195,13 +196,48 @@ export function WidgetForm(props: WidgetFormProps) {
                         <Select.Trigger style={{ minWidth: '212px' }} />
 
                         <Select.Content>
-                            <Select.Item value="progress-bar">Progress Bar</Select.Item>
-                            <Select.Item value="progress-circle">Progress Circle</Select.Item>
-                            <Select.Item value="goals-list">Goals List</Select.Item>
-                            <Select.Item value="total-time">Total Time</Select.Item>
-                            <Select.Item value="calendar">Calendar</Select.Item>
-                            <Select.Item value="streaks">Streak</Select.Item>
-                            <Select.Item value="overall-total">Overall Total</Select.Item>
+                            <Select.Item value="progress-bar">
+                                <Flex align="center" gap="2">
+                                    <BadgeIcon />
+                                    <Text>Progress Bar</Text>
+                                </Flex>
+                            </Select.Item>
+                            
+                            <Select.Item value="progress-circle">
+                                <Flex align="center" gap="2">
+                                    <TimerIcon />
+                                    <Text>Progress Ring</Text>
+                                </Flex>
+                            </Select.Item>
+                            
+                            <Select.Item value="goals-list">
+                                <Flex align="center" gap="2">
+                                    <ListBulletIcon />
+                                    <Text>Goals List</Text>
+                                </Flex>
+                            </Select.Item>
+
+                            
+                            <Select.Item value="calendar">
+                                <Flex align="center" gap="2">
+                                    <CalendarIcon />
+                                    <Text>Calendar</Text>
+                                </Flex>
+                            </Select.Item>
+
+                            <Select.Item value="streaks">
+                                <Flex align="center" gap="2">
+                                    <LightningBoltIcon />
+                                    <Text>Streaks</Text>
+                                </Flex>
+                            </Select.Item>
+
+                            <Select.Item value="overall-total">
+                                <Flex align="center" gap="2">
+                                    <StopwatchIcon />
+                                    <Text>Overall Total</Text>
+                                </Flex>
+                            </Select.Item>
                         </Select.Content>
                     </Select.Root>
                 </Flex>

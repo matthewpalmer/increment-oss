@@ -9,7 +9,13 @@ export const Route = createFileRoute('/')({
 function Index() {
     return (
         <Flex direction="column" align="center" justify="center" p="4" gap="6" maxWidth={"600px"} className="m-auto">
-            <Heading align="center" size="8">Welcome to Increment</Heading>
+            <Flex direction="row" align="center" gap="2">
+                <img width="40px" src="/increment-favicon.svg" />
+                <Heading align="center" size="8">
+                    Welcome to Increment
+                </Heading>
+            </Flex>
+
 
             <Text align="center" size="4">Increment is a powerful, customizable tracker for your time, goals, and progress. It’s useful for tracking your work, reading, exercise… or any other long-term goal.</Text>
 
@@ -17,9 +23,9 @@ function Index() {
                 <Callout.Icon>
                     <InfoCircledIcon />
                 </Callout.Icon>
-                    
+
                 <Callout.Text>
-                In this mode, Increment can <strong>only be used offline</strong>. In production, data is synced using CloudKit.
+                    In this mode, Increment can <strong>only be used offline</strong>. In production, data is synced using CloudKit.
                 </Callout.Text>
             </Callout.Root>
 

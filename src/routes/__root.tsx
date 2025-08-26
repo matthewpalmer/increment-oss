@@ -21,7 +21,10 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
             <div>
                 <Theme>
                     <div className="flex gap-2  p-4 justify-between align-bottom">
-                        <Link to="/app" className="text-xs gap-1 text-gray-400 hover:text-gray-600 font-semibold flex items-center"><ShadowOuterIcon /> Increment</Link>
+                        <Link to="/app" className="text-xs gap-1 text-gray-600 hover:text-gray-800 font-semibold flex items-center">
+                            <img className='opacity' width="20" src="/increment-favicon.svg"></img>
+                             Increment
+                        </Link>
 
                         <SyncStatusDisplay />
                     </div>

@@ -19,8 +19,6 @@ export interface Calendar {
     now(): Date;
 
     windowForCadence(cadence: GoalCadence, at: Date, startOfLifetime?: Date): ProgressWindow;
-
-
 }
 
 export function iterateWindows(

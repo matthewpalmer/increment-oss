@@ -118,18 +118,19 @@ describe('sync runtime', () => {
         await vi.advanceTimersByTimeAsync(1300);
         syncBus.processWaitingEvents();
         await vi.runAllTimersAsync();
+        expect(inverseCallEvent).toBeUndefined();
 
-        // Next retry in ~2s
+        // Go through the backoff flow
         await vi.advanceTimersByTimeAsync(2500);
         syncBus.processWaitingEvents();
         await vi.runAllTimersAsync();
+        expect(inverseCallEvent).toBeUndefined();
 
-        // Next retry in ~4s
         await vi.advanceTimersByTimeAsync(5500);
         syncBus.processWaitingEvents();
         await vi.runAllTimersAsync();
+        expect(inverseCallEvent).toBeUndefined();
 
-        // Next retry in ~8s
         await vi.advanceTimersByTimeAsync(14000);
         syncBus.processWaitingEvents();
         await vi.runAllTimersAsync();

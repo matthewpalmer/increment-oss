@@ -28,7 +28,7 @@ function RouteComponent() {
     }
 
     return (
-        <div className='max-w-4xl m-auto p-2 pt-8'>
+        <div className='max-w-4xl m-auto p-2 pt-8 pb-24'>
             <Flex mb="6" direction="row" align="center" justify="between">
                 <Heading size="8">
                     My Projects

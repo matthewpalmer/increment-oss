@@ -70,7 +70,7 @@ export function ProjectForm(props: ProjectFormProps) {
                 projectId: newProject.id,
                 type: 'overall-total',
                 xSize: 2,
-                ySize: 1,
+                ySize: 2,
                 config: {
                     aggregation: 'sum',
                     unit: 'seconds'

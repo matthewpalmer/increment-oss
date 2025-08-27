@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { resetDb } from '../../test/dbTestUtils';
-import { db } from '../persistence/db';
-import { useProjectsList, useCreateProject, useDeleteProject } from '../hooks/useProjects';
+import { db } from '../../data/persistence/db';
+import { useProjectsList, useCreateProject, useDeleteProject } from '../../data/hooks/useProjects';
 import { TestQueryClientProvider } from '../../test/TestQueryClientProvider';
 import { IncrementDateTimeNow } from '../../domain/time-utils';
 

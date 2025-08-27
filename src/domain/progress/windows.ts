@@ -5,8 +5,8 @@ import { completedGoalTarget } from "./calculator";
 import { getActiveVersion } from "./choose-goal-version";
 
 export function bucketBlocksByWindows(
-    calendar: Calendar, 
-    windows: ProgressWindow[], 
+    calendar: Calendar,
+    windows: ProgressWindow[],
     blocks: TimeBlock[]
 ): TimeBlock[][] {
     if (!windows.length) return []

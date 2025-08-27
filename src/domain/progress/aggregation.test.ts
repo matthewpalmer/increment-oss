@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { aggregateBlocks } from './aggregation';
-import { CreateUUID, type GoalUnit, type TimeBlock, type UUID } from '../types';
-import { IncrementDateTimeNow } from '../time-utils';
+import { type TimeBlock } from '../types';
 import { makeTimeBlocks } from './progress-test-utils';
 
 describe('domain/progress/aggregation', () => {

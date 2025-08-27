@@ -1,59 +1,56 @@
 import { describe, expect, it } from 'vitest';
-import { CreateUUID, type GoalVersion, type TimeBlock } from '../types';
-import { calculateProgressAt } from './calculator';
-import { makeCalendar } from '../../data/calendar-context';
-import { makeTimeBlocks } from './progress-test-utils';
-import { getActiveVersion } from './choose-goal-version';
+import { CreateUUID, type GoalVersion } from '../types';
+import { getActiveVersion, getEarliestVersionStartDate } from './choose-goal-version';
 
 describe('domain/progress/choose-goal-version', () => {
-    it('selects the correct goal version for a given date', () => {
-        const goalVersions: GoalVersion[] = [
-            {
-                id: CreateUUID(),
-                goalId: CreateUUID(),
-                target: 3600,
-                validFrom: (new Date('2025-08-20')).getTime(),
-                validTo: -1,
-                unit: 'seconds',
-                cadence: 'daily',
-                aggregation: 'sum',
-                notes: ''
-            },
-            {
-                id: CreateUUID(),
-                goalId: CreateUUID(),
-                target: 3600,
-                validFrom: (new Date('2025-08-15')).getTime(),
-                validTo: (new Date('2025-08-20')).getTime(),
-                unit: 'seconds',
-                cadence: 'daily',
-                aggregation: 'sum',
-                notes: ''
-            },
-            {
-                id: CreateUUID(),
-                goalId: CreateUUID(),
-                target: 3600,
-                validFrom: (new Date('2025-08-10')).getTime(),
-                validTo: (new Date('2025-08-15')).getTime(),
-                unit: 'seconds',
-                cadence: 'daily',
-                aggregation: 'sum',
-                notes: ''
-            },
-            {
-                id: CreateUUID(),
-                goalId: CreateUUID(),
-                target: 3600,
-                validFrom: (new Date('2025-08-05')).getTime(),
-                validTo: (new Date('2025-08-10')).getTime(),
-                unit: 'seconds',
-                cadence: 'daily',
-                aggregation: 'sum',
-                notes: ''
-            },
-        ]
+    const goalVersions: GoalVersion[] = [
+        {
+            id: CreateUUID(),
+            goalId: CreateUUID(),
+            target: 3600,
+            validFrom: (new Date('2025-08-20')).getTime(),
+            validTo: -1,
+            unit: 'seconds',
+            cadence: 'daily',
+            aggregation: 'sum',
+            notes: ''
+        },
+        {
+            id: CreateUUID(),
+            goalId: CreateUUID(),
+            target: 3600,
+            validFrom: (new Date('2025-08-15')).getTime(),
+            validTo: (new Date('2025-08-20')).getTime(),
+            unit: 'seconds',
+            cadence: 'daily',
+            aggregation: 'sum',
+            notes: ''
+        },
+        {
+            id: CreateUUID(),
+            goalId: CreateUUID(),
+            target: 3600,
+            validFrom: (new Date('2025-08-10')).getTime(),
+            validTo: (new Date('2025-08-15')).getTime(),
+            unit: 'seconds',
+            cadence: 'daily',
+            aggregation: 'sum',
+            notes: ''
+        },
+        {
+            id: CreateUUID(),
+            goalId: CreateUUID(),
+            target: 3600,
+            validFrom: (new Date('2025-08-05')).getTime(),
+            validTo: (new Date('2025-08-10')).getTime(),
+            unit: 'seconds',
+            cadence: 'daily',
+            aggregation: 'sum',
+            notes: ''
+        },
+    ]
 
+    it('selects the correct goal version for a given date', () => {
         const actual0 = getActiveVersion(goalVersions, new Date('2025-08-29'));
         expect(actual0?.id).toBe(goalVersions[0].id);
 
@@ -87,6 +84,7 @@ describe('domain/progress/choose-goal-version', () => {
     });
 
     it('gets the earliest start date from the versions list', () => {
-
+        const earliest = getEarliestVersionStartDate(goalVersions);
+        expect(earliest?.getTime()).toBe(new Date('2025-08-05').getTime());
     });
 });

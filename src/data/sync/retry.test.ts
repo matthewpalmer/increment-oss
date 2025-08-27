@@ -3,10 +3,6 @@ import { resetDb } from '../../test/dbTestUtils';
 import { calculateBackoff } from './retry';
 
 describe('retry calculator', () => {
-    beforeEach(async () => {
-        await resetDb();
-    });
-
     it('calculates retry backoff', async () => {
         const attempt0 = calculateBackoff(0);
         expect(attempt0).toBeGreaterThanOrEqual(0);

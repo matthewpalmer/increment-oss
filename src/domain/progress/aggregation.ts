@@ -1,6 +1,6 @@
 import type { GoalAggregation, GoalUnit, TimeBlock } from "../types";
 
-export function relevantAmountForAggregation(block: TimeBlock, unit: GoalUnit): number {
+function relevantAmountForAggregation(block: TimeBlock, unit: GoalUnit): number {
     if (block.type === unit) return block.amount;
     return 0;
 }
@@ -15,7 +15,7 @@ export function aggregateBlocks(
     }
 
     if (aggregation === 'count') {
-        return blocks.length;
+        return blocks.filter(block => block.type === unit).length;
     }
 
     if (aggregation === 'max') {

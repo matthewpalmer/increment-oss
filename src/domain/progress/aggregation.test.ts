@@ -1,22 +1,8 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { resetDb } from '../../test/dbTestUtils';
+import { describe, expect, it } from 'vitest';
 import { aggregateBlocks } from './aggregation';
 import { CreateUUID, type GoalUnit, type TimeBlock, type UUID } from '../types';
 import { IncrementDateTimeNow } from '../time-utils';
-
-function makeTimeBlocks(projectId: UUID, type: GoalUnit, amounts: number[]): TimeBlock[] {
-    return amounts.map(amount => {
-        return {
-            id: CreateUUID(),
-            projectId: projectId,
-            type: type,
-            amount: amount,
-            createdAt: IncrementDateTimeNow(),
-            startedAt: IncrementDateTimeNow(),
-            notes: ''
-        }
-    })
-}
+import { makeTimeBlocks } from './progress-test-utils';
 
 describe('domain/progress/aggregation', () => {
     it('aggregates blocks for seconds', async () => {
@@ -60,7 +46,7 @@ describe('domain/progress/aggregation', () => {
         expect(count).toBe(8);
 
         const max = aggregateBlocks(blocks, 'max', 'words')
-        expect(max).toBe(5000);  
+        expect(max).toBe(5000);
     });
 
     it('aggregates blocks for counts', async () => {
@@ -87,7 +73,7 @@ describe('domain/progress/aggregation', () => {
         const max = aggregateBlocks(blocks, 'max', 'count')
         expect(max).toBe(1000);
     });
-    
+
     it('ignores irrelevant values', async () => {
         const timeBlocks = makeTimeBlocks('abc', 'seconds', [120, 130, 140]);
         const countBlocks = makeTimeBlocks('abc', 'count', [3, 5, 6]);

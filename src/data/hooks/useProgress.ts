@@ -78,7 +78,6 @@ export function useCalendarProgress(projectId: string, goalId: string, at = new 
             );
 
             const goalVersions = await fetchGoalVersions(goalId);
-
             const bucketedBlocks = bucketBlocksByWindows(calendar, windows, timeBlocks);
             const windowGoalVersions = getGoalVersionForWindows(goalVersions, windows);
             const evaluated = evaluateWindows(windows, bucketedBlocks, windowGoalVersions);

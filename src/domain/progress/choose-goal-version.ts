@@ -1,7 +1,12 @@
 import { INCREMENT_TIMESTAMP_FOREVER, type GoalVersion } from "../types";
 
-export function getActiveVersion(goalVersions: GoalVersion[], at: Date): GoalVersion | null {
+export function getActiveVersion(
+    goalVersions: GoalVersion[], 
+    at: Date
+): GoalVersion | null {
+    
     let bestFit: GoalVersion | null = null;
+    let lastUnendingVersion: GoalVersion | null = null;
 
     for (let goalVersion of goalVersions) {
         const start = new Date(goalVersion.validFrom);
@@ -14,7 +19,11 @@ export function getActiveVersion(goalVersions: GoalVersion[], at: Date): GoalVer
         if (end) {
             isWithinVersion = start <= at && at < end;
         } else {
-            isWithinVersion = true;
+            isWithinVersion = at >= start;
+
+            if (!lastUnendingVersion || start.getTime() > lastUnendingVersion.validFrom) {
+                lastUnendingVersion = goalVersion;
+            }
         }
 
         if (!isWithinVersion) continue;
@@ -29,6 +38,8 @@ export function getActiveVersion(goalVersions: GoalVersion[], at: Date): GoalVer
             }
         }
     }
+
+    if (!bestFit) return lastUnendingVersion;
 
     return bestFit;
 }

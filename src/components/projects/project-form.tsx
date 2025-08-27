@@ -1,4 +1,4 @@
-import { Button, Flex, Text, TextField } from "@radix-ui/themes";
+import { Button, Flex, TextField } from "@radix-ui/themes";
 import { Label } from "radix-ui";
 import { useState } from "react";
 import { ColorPicker } from "../colors/color-picker";
@@ -10,6 +10,7 @@ import { ErrorsList } from "../common/errors-list";
 import { userColorsList } from "../colors/colors";
 import { IncrementDateTimeNow } from "../../domain/time-utils";
 import { useNavigate } from "@tanstack/react-router";
+import { useCreateDashboardWidget } from "../../data/hooks/useDashboardWidgets";
 
 export type ProjectFormProps =
     | { mode: 'create', onFormSaved: () => void }
@@ -24,6 +25,7 @@ export function ProjectForm(props: ProjectFormProps) {
     const createProject = useCreateProject();
     const updateProject = useUpdateProject();
     const deleteProject = useDeleteProject();
+    const createDashboardWidget = useCreateDashboardWidget();
 
     const navigate = useNavigate();
 
@@ -37,7 +39,7 @@ export function ProjectForm(props: ProjectFormProps) {
 
     const [error, setError] = useState<ZodError | undefined>(undefined);
 
-    const handleSave = (event: React.FormEvent) => {
+    const handleSave = async (event: React.FormEvent) => {
         event.preventDefault();
 
         if (isNewProject) {
@@ -47,10 +49,40 @@ export function ProjectForm(props: ProjectFormProps) {
                 return setError(parsed.error);
             }
 
-            createProject.mutate({
+            const newProject = await createProject.mutateAsync({
                 id: CreateUUID(),
                 createdAt: IncrementDateTimeNow(),
                 ...parsed.data
+            })
+
+            if (!newProject) {
+                return setError(new ZodError([
+                    {
+                        code: 'custom',
+                        path: [],
+                        message: 'Unable to create project'
+                    }
+                ]));
+            }
+
+            await createDashboardWidget.mutateAsync({
+                id: CreateUUID(),
+                projectId: newProject.id,
+                type: 'overall-total',
+                xSize: 2,
+                ySize: 1,
+                config: {
+                    aggregation: 'sum',
+                    unit: 'seconds'
+                }
+            })
+
+            await createDashboardWidget.mutateAsync({
+                id: CreateUUID(),
+                projectId: newProject.id,
+                type: 'goals-list',
+                xSize: 2,
+                ySize: 2
             })
 
             return props.onFormSaved();

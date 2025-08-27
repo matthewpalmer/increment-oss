@@ -48,7 +48,6 @@ export function useLifetimeProgress(
             const now = new Date();
             const blocks = await fetchTimeBlocks(projectId, window.start, now);
             const value = aggregateBlocks(blocks, aggregation, unit);
-            console.log("LIFETIME PROGRESS UPDATE WITH", value, window.start, now)
             return { window, value }
         }
     })
@@ -58,7 +57,7 @@ export function useCalendarProgress(projectId: string, goalId: string, at = new 
     const calendar = makeCalendar();
 
     return useQuery({
-        queryKey: keys.progress.calendar(projectId, calendar.startOfMonth(at), calendar.timezoneKey),
+        queryKey: keys.progress.calendar(projectId, goalId, calendar.startOfMonth(at), calendar.timezoneKey),
         staleTime: 30000,
         queryFn: async () => {
             const calendarMatrix = buildCalendarMatrix(at)

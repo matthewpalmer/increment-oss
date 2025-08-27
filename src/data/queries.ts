@@ -36,8 +36,8 @@ export const keys = {
         projectTotal: (projectId: string, cadence: GoalCadence, windowStart: Date, timezoneKey: string, unit: GoalUnit, aggregation: GoalAggregation) => [
             'progress', 'projectTotal', projectId, cadence, windowStart.toISOString(), timezoneKey, unit, aggregation
         ],
-        calendar: (projectId: string, monthStart: Date, timezoneKey: string) => [
-            'progress', 'calendarProgress', projectId, monthStart.toISOString(), timezoneKey
+        calendar: (projectId: string, goalId: string, monthStart: Date, timezoneKey: string) => [
+            'progress', 'calendarProgress', projectId, goalId, monthStart.toISOString(), timezoneKey
         ],
         streaks: (projectId: string, goalId: string, at: Date, timezoneKey: string) => [
             'progress', 'streaks', projectId, goalId, at.toISOString(), timezoneKey

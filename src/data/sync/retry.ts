@@ -8,5 +8,5 @@ export function calculateBackoff(attempt: number) {
     // Add a bit of noise to prevent thundering horde.
     const jitter = Math.floor(Math.random() * baseWaitTime * 0.25);
 
-    return exponentialWaitTime + jitter;
+    return baseWaitTime + jitter;
 }

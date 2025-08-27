@@ -4,11 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "test": "vitest"
+    "dev": "vite --config config/vite.config.ts",
+    "build": "tsc -b config/tsconfig.json && vite build --config config/vite.config.ts",
+    "lint": "eslint . --config config/eslint.config.js",
+    "preview": "vite preview --config config/vite.config.ts",
+    "test": "vitest --config config/vitest.config.ts"
   },
   "dependencies": {
     "@radix-ui/react-icons": "^1.3.2",

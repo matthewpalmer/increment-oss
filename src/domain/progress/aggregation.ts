@@ -15,11 +15,6 @@ export function aggregateBlocks(
     }
 
     if (aggregation === 'count') {
-        // return blocks.reduce((acc, cur) => {
-        //     const amount = relevantAmountForAggregation(cur, unit);
-        //     if (amount > 0) return acc + 1;
-        //     return acc
-        // }, 0);
         return blocks.length;
     }
 

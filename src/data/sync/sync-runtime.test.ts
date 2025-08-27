@@ -1,16 +1,9 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { resetDb } from '../../test/dbTestUtils';
 import type { InversePatchCalculator, SyncEngine, SyncEngineHandlerResult, SyncEnginePatch, SyncPatchApplier } from './sync-engine';
 import { BuildNewSyncEvent, type SyncEvent } from '../../domain/types';
 import { SyncBus } from './sync-bus';
 import { SyncRuntime } from './sync-runtime';
-import { waitFor } from '@testing-library/dom';
-
-import { calculateBackoff } from './retry';
-
-function sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 class StubEngine implements SyncEngine {
     name = "stub-engine";
@@ -43,12 +36,6 @@ describe('sync runtime', () => {
     beforeEach(async () => {
         await resetDb();
 
-        vi.mock('../sync/retry', () => ({
-            calculateBackoff: vi.fn(() => {
-                return 1;
-            }),
-        }));
-
         inverseCallEvent = undefined;
         syncEngine = new StubEngine();
         syncBus = new SyncBus();
@@ -67,6 +54,10 @@ describe('sync runtime', () => {
         }
     });
 
+    afterEach(() => {
+        vi.useRealTimers();
+    })
+
     it('sets up the sync runtime', async () => {
         const syncRuntime = new SyncRuntime(
             syncEngine,
@@ -77,12 +68,15 @@ describe('sync runtime', () => {
 
         syncRuntime.start();
 
-        await waitFor(() => expect(syncEngine.events.length).toBe(0));
+        expect(syncEngine.events.length).toBe(0);
 
         // When an event is added to the sync bus, it's processed 
         // and delivered to the sync engine. The sync engine 
         // patches are applied.
-        await syncBus.dispatchEvent(BuildNewSyncEvent({
+        
+        vi.useFakeTimers();
+
+        syncBus.dispatchEvent(BuildNewSyncEvent({
             type: 'create',
             data: {
                 test: 'data'
@@ -90,7 +84,8 @@ describe('sync runtime', () => {
             table: 'projects'
         }))
 
-        await waitFor(() => expect(syncEngine.events.length).toBe(1));
+        await vi.runAllTimersAsync();
+        expect(syncEngine.events.length).toBe(1)
     });
 
     it('handles rollbacks after sync failure', async () => {
@@ -103,30 +98,44 @@ describe('sync runtime', () => {
 
         syncRuntime.start();
 
-        await waitFor(() => expect(syncEngine.events.length).toBe(0));
+        expect(syncEngine.events.length).toBe(0);
 
         syncEngine.throwSyncFailure = true;
 
         const syncEvent = BuildNewSyncEvent({
             type: 'create',
             data: {
-                test: 'data'
+                test: 'fail to create'
             },
             table: 'projects'
         })
 
-        await syncBus.dispatchEvent(syncEvent);
+        vi.useFakeTimers();
 
-        await waitFor(() => expect(syncEngine.events.length).toBe(1));
+        // This fails immediately, and schedules a retry for ~1s
+        syncBus.dispatchEvent(syncEvent);
 
-        await syncBus.processWaitingEvents();
-        await sleep(20);
-        await syncBus.processWaitingEvents();
-        await sleep(20);
-        await syncBus.processWaitingEvents();
-        await sleep(20);
-        await syncBus.processWaitingEvents();
+        await vi.advanceTimersByTimeAsync(1300);
+        syncBus.processWaitingEvents();
+        await vi.runAllTimersAsync();
 
+        // Next retry in ~2s
+        await vi.advanceTimersByTimeAsync(2500);
+        syncBus.processWaitingEvents();
+        await vi.runAllTimersAsync();
+
+        // Next retry in ~4s
+        await vi.advanceTimersByTimeAsync(5500);
+        syncBus.processWaitingEvents();
+        await vi.runAllTimersAsync();
+
+        // Next retry in ~8s
+        await vi.advanceTimersByTimeAsync(14000);
+        syncBus.processWaitingEvents();
+        await vi.runAllTimersAsync();
+
+        expect(syncEngine.events.length).toBe(5);
+        expect(inverseCallEvent).toBeDefined();
         expect(inverseCallEvent.id).toBe(syncEvent.id);        
         expect(inverseCallEvent.status).toBe('failed');
         expect(inverseCallEvent.attempts).toBe(5);

@@ -23,12 +23,24 @@ export class SyncBus {
         this.listener = listener;
     }
 
+    removeEventListener() {
+        this.listener = undefined;
+    }
+
     addRollbackListener(listener: SyncBusRollbackListener) {
         this.rollbackListener = listener;
     }
 
+    removeRollbackListener() {
+        this.rollbackListener = undefined;
+    }
+
     addStatusListener(listener: SyncStatusListener) {
         this.statusListener = listener;
+    }
+
+    removeStatusListener() {
+        this.statusListener = undefined;
     }
 
     async processWaitingEvents() {

@@ -28,6 +28,12 @@ export class SyncRuntime {
         });
     }
 
+    stop() {
+        this.bus.removeEventListener();
+        this.bus.removeRollbackListener();
+        this.bus.removeStatusListener();
+    }
+
     private async applyAndDispatch(patches: SyncEnginePatch[], followUps: SyncEvent[]) {
         await this.apply(patches);
 

@@ -22,7 +22,7 @@
 
 * Cross-platform goal and progress syncing (only web UI open source)  
 * Tracks daily, weekly, and monthly goals with support for different units (time, distance, words, count)  
-* Support for rest days, weekends, levels, thresholds, and streaks  
+* Support for levels, thresholds, and streaks  
 * Highly customizable dashboard with multiple widgets:
   * Calendar view  
   * Streak tracker  
@@ -33,6 +33,7 @@
 
 ## Future Work
 
+* Setting rest days, weekends
 * Configurable time zone and unit defaults  
 * Multi-goal dashboard widgets and advanced filtering by tags/notes  
 * Better handling to display which sync events have failed

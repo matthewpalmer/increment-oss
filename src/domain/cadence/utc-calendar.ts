@@ -31,6 +31,10 @@ export const CalendarUTC: Calendar = {
         return date.getUTCDate();
     },
 
+    monthOfYear(date) {
+        return date.getUTCMonth();
+    },
+
     addMonths(date, numberOfMonths) {
         return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + numberOfMonths, 1))
     },

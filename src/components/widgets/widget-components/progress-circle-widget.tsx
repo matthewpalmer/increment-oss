@@ -76,7 +76,7 @@ export function ProgressCircleWidget(props: DashboardWidgetProps) {
 
                 <div className="absolute w-full h-full">
                     <Flex height="100%" direction="column" justify="center" align="center">
-                        <Text className="opacity-80 font-bold text-5xl" color={getNameForColor(props.project.color)}>{displayProgress}%</Text>
+                        <Text className="opacity-80 font-bold text-4xl" color={getNameForColor(props.project.color)}>{displayProgress}%</Text>
                         <Text size="1" color="gray">{formatProgress(progress)}</Text>
                     </Flex>
                 </div>

@@ -52,7 +52,7 @@ function CalendarEntryCell(props: {
             className="w-12 h-12 rounded-md p-0.5"
             style={{
                 opacity: props.entry.day.isInsideMonth ? '1' : '0.35',
-                backgroundColor: backgroundColor,
+                backgroundColor: props.entry.day.isInsideMonth ? backgroundColor : 'transparent',
                 color: textColor
             }}>
             {

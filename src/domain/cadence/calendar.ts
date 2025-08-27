@@ -11,6 +11,7 @@ export interface Calendar {
 
     dayOfWeek(date: Date): number;
     dayOfMonth(date: Date): number;
+    monthOfYear(date: Date): number;
 
     addDays(date: Date, numberOfDays: number): Date;
     addMonths(date: Date, numberOfMonths: number): Date;
@@ -18,6 +19,8 @@ export interface Calendar {
     now(): Date;
 
     windowForCadence(cadence: GoalCadence, at: Date, startOfLifetime?: Date): ProgressWindow;
+
+
 }
 
 export function iterateWindows(

@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { CreateUUID, type TimeBlock } from '../types';
-import { makeTimeBlocks } from './progress-test-utils';
-import { bucketBlocksByWindows } from './windows';
+import { CreateUUID, type TimeBlock } from '../../domain/types';
+import { makeTimeBlocks } from '../../domain/progress/progress-test-utils';
+import { bucketBlocksByWindows } from '../../domain/progress/windows';
 import { makeCalendar } from '../../data/calendar-context';
-import type { ProgressWindow } from '../cadence/calendar';
+import type { ProgressWindow } from '../../domain/cadence/calendar';
 
 describe('domain/progress/windows', () => {
     it('buckets time blocks into windows', () => {

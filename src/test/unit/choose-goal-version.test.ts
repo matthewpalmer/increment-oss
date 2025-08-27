@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { CreateUUID, type GoalVersion } from '../types';
-import { getActiveVersion, getEarliestVersionStartDate } from './choose-goal-version';
+import { CreateUUID, type GoalVersion } from '../../domain/types';
+import { getActiveVersion, getEarliestVersionStartDate } from '../../domain/progress/choose-goal-version';
 
 describe('domain/progress/choose-goal-version', () => {
     const goalVersions: GoalVersion[] = [

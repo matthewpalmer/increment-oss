@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { resetDb } from '../../test/dbTestUtils';
-import { calculateBackoff } from './retry';
+import { describe, expect, it } from 'vitest';
+import { calculateBackoff } from '../../data/sync/retry';
 
 describe('retry calculator', () => {
     it('calculates retry backoff', async () => {

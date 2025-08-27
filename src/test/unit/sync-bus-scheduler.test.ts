@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
-import { resetDb } from '../../test/dbTestUtils';
-import { SyncBus } from './sync-bus';
+import { resetDb } from '../dbTestUtils';
+import { SyncBus } from '../../data/sync/sync-bus';
 import { CreateUUID, SYNC_EVENT_NOT_STARTED, type Project, type SyncEvent } from '../../domain/types';
 
-import { SyncBusScheduler } from './sync-bus-scheduler';
-import { db } from '../persistence/db';
+import { SyncBusScheduler } from '../../data/sync/sync-bus-scheduler';
+import { db } from '../../data/persistence/db';
 import { IncrementDateTimeNow } from '../../domain/time-utils';
 
 function setOnline(value: boolean) {

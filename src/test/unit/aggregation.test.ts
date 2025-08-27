@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { aggregateBlocks } from './aggregation';
-import { type TimeBlock } from '../types';
-import { makeTimeBlocks } from './progress-test-utils';
+import { aggregateBlocks } from '../../domain/progress/aggregation';
+import { type TimeBlock } from '../../domain/types';
+import { makeTimeBlocks } from '../../domain/progress/progress-test-utils';
 
 describe('domain/progress/aggregation', () => {
     it('aggregates blocks for seconds', async () => {

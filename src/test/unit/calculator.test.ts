@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { CreateUUID, type GoalVersion, type TimeBlock } from '../types';
-import { calculateProgressAt } from './calculator';
+import { CreateUUID, type GoalVersion, type TimeBlock } from '../../domain/types';
+import { calculateProgressAt } from '../../domain/progress/calculator';
 import { makeCalendar } from '../../data/calendar-context';
-import { makeTimeBlocks } from './progress-test-utils';
+import { makeTimeBlocks } from '../../domain/progress/progress-test-utils';
 
 describe('domain/progress/calculator', () => {
     it('calculates progress on a single day', async () => {

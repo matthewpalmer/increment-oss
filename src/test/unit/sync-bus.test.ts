@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { waitFor } from '@testing-library/react';
-import { resetDb } from '../../test/dbTestUtils';
-import { SyncBus } from './sync-bus';
+import { resetDb } from '../dbTestUtils';
+import { SyncBus } from '../../data/sync/sync-bus';
 import { BuildNewSyncEvent, CreateUUID, type Project, type SyncEvent } from '../../domain/types';
 
 import { IncrementDateTimeNow } from '../../domain/time-utils';

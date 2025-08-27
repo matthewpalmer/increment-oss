@@ -17,7 +17,7 @@
 
 * **Offline-first architecture** with IndexedDB local persistence and sync backends  
 * **Custom sync engine** with plug-in architecture, conflict/race condition handling, and offline support
-* **High-performance UI**: optimistic UI updates, Radix UI components, and Framer Motion animations  
+* **High-performance UI** with optimistic UI updates, Radix UI components, and Framer Motion animations  
 * **Thorough test coverage** unit and integration tests
 
 ## Screenshots

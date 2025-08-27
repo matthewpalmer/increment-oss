@@ -1,9 +1,9 @@
-import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { resetDb } from '../../test/dbTestUtils';
-import type { InversePatchCalculator, SyncEngine, SyncEngineHandlerResult, SyncEnginePatch, SyncPatchApplier } from './sync-engine';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { resetDb } from '../dbTestUtils';
+import type { InversePatchCalculator, SyncEngine, SyncEngineHandlerResult, SyncEnginePatch, SyncPatchApplier } from '../../data/sync/sync-engine';
 import { BuildNewSyncEvent, type SyncEvent } from '../../domain/types';
-import { SyncBus } from './sync-bus';
-import { SyncRuntime } from './sync-runtime';
+import { SyncBus } from '../../data/sync/sync-bus';
+import { SyncRuntime } from '../../data/sync/sync-runtime';
 
 class StubEngine implements SyncEngine {
     name = "stub-engine";

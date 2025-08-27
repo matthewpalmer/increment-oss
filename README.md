@@ -1,3 +1,5 @@
+![Project banner for increment](./docs/project-banner-lg.png "Increment project banner")
+
 # Increment
 
 **A powerful offline-first goal and progress tracker with advanced customization, real-time sync, and a polished React UI.**  
@@ -17,6 +19,15 @@
 * **Custom sync engine** with plug-in architecture, conflict/race condition handling, and offline support
 * **High-performance UI**: optimistic UI updates, Radix UI components, and Framer Motion animations  
 * **Thorough test coverage** unit and integration tests
+
+## Screenshots
+
+![Screenshot showing the Increment web dashboard](./docs/project-dashboard-1.png "Increment goal and time tracking dashboard overview")
+![Screenshot showing the project dashboard with various widgets](./docs/project-dashboard-3.png "Increment project dashboard")
+![Screenshot showing a user adding a widget to the Increment dashboard](./docs/add-widget.png "Adding a dashboard widget to Increment")
+![Screenshot showing a user editing a project information and color](./docs/edit-project.png "Adding a project to Increment")
+![Screenshot showing the user's list of projects in Increment](./docs/projects-list.png "Projects list in Increment")
+
 
 ## Product Features
 

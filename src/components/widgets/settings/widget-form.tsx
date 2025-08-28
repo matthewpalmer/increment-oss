@@ -212,7 +212,10 @@ export function WidgetForm(props: WidgetFormProps) {
 
                             setValues(newValues)
                         }}>
-                        <Select.Trigger style={{ minWidth: '212px' }} />
+                        
+                        <Select.Trigger 
+                            aria-label="Widget Type" 
+                            style={{ minWidth: '212px' }} />
 
                         <Select.Content>
                             <Select.Item value="progress-bar">

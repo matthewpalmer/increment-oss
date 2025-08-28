@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { screen, waitForElementToBeRemoved } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { renderApp } from '../render';
 import { userEvent } from '@testing-library/user-event';
 
@@ -19,8 +19,8 @@ describe('Create and view project', () => {
 
         await user.click(screen.getByRole('button', { name: /new project/i }))
 
-        expect(await screen.getByLabelText(/project name/i)).toBeInTheDocument();
-        expect(await screen.getByRole('button', { name: /color blue/i }));
+        expect(screen.getByLabelText(/project name/i)).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /color blue/i }));
 
         const textInput = screen.getByRole('textbox', { name: 'Project Name' });
         await userEvent.type(textInput, 'My test project');
@@ -39,13 +39,14 @@ describe('Create and view project', () => {
         await userEvent.click(projectLink);
 
         expect(await screen.findByRole('heading', { name: /my goals/i })).toBeInTheDocument();
-        expect(await screen.getByRole('heading', { name: /my test project/i })).toBeInTheDocument();
-        expect(await screen.findByText(/lifetime total/i)).toBeInTheDocument();
-        expect(await screen.getByText(/0m/i)).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: /my test project/i })).toBeInTheDocument();
 
-        expect(await screen.getByRole('button', { name: /customize/i })).toBeInTheDocument();
-        expect(await screen.getByRole('button', { name: /add entry/i })).toBeInTheDocument();
-        expect(await screen.getByRole('button', { name: /add goal/i })).toBeInTheDocument();
+        expect(await screen.findByText(/lifetime total/i)).toBeInTheDocument();
+        expect(screen.getByText(/0m/i)).toBeInTheDocument();
+
+        expect(screen.getByRole('button', { name: /customize/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /add entry/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /add goal/i })).toBeInTheDocument();
 
         cleanupApp();
     });

@@ -214,7 +214,7 @@ export function WidgetForm(props: WidgetFormProps) {
                         }}>
                         
                         <Select.Trigger 
-                            aria-label="Widget Type" 
+                            aria-label="Widget Type"
                             style={{ minWidth: '212px' }} />
 
                         <Select.Content>

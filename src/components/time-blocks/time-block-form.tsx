@@ -87,7 +87,7 @@ export function TimeBlockForm(props: TimeBlockFormProps) {
                     </Label.Root>
 
                     <Select.Root value={values.type} defaultValue={values.type} onValueChange={handleTypeChanged}>
-                        <Select.Trigger style={{ minWidth: '212px' }} />
+                        <Select.Trigger aria-label="Entry Type" style={{ minWidth: '212px' }} />
                         <Select.Content>
                             <Select.Item value="seconds">Time</Select.Item>
                             <Select.Item value="count">Count</Select.Item>
@@ -98,7 +98,7 @@ export function TimeBlockForm(props: TimeBlockFormProps) {
                 </Flex>
 
                 <Flex direction="row" justify="between" align="center">
-                    <Label.Root className="text-md" htmlFor="type">
+                    <Label.Root className="text-md" htmlFor="amount">
                         {values.type === 'seconds' ? 'Duration' : 'Amount'}
                     </Label.Root>
 
@@ -108,7 +108,7 @@ export function TimeBlockForm(props: TimeBlockFormProps) {
                             : (
                                 <Flex align="center" gap="2">
                                     <TextField.Root
-                                        id="countAmount" size="3"
+                                        id="amount" size="3"
                                         value={values.amount}
                                         onChange={(e) => {
                                             setValues({ ...values, amount: Number(e.target.value) })

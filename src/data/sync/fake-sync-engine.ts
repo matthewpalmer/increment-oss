@@ -72,15 +72,11 @@ export class FakeSyncEngine implements SyncEngine {
     }
 
     async handle(event: SyncEvent) {
-        console.log('FakeSyncEngine handle', event);
-
         if (this.isOffline) {
             throw new Error('FakeSyncEngineOffline')
         }
 
         if (!this.trapNextEvent) {
-            console.log('FakeSyncEngine simple resolve');    
-            
             return {
                 patches: [],
                 followUps: []

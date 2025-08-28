@@ -24,9 +24,8 @@ export function GoalsListWidget(props: DashboardWidgetProps) {
                                 <Button variant="soft" size="1"><PlusIcon /> Add Goal</Button>
                             </Dialog.Trigger>
 
-                            <Dialog.Content>
+                            <Dialog.Content aria-describedby={undefined}>
                                 <Dialog.Title size="6">New Goal</Dialog.Title>
-                                <Dialog.Description>Add a goal to the project</Dialog.Description>
                                 <GoalForm
                                     mode="create"
                                     projectId={props.project.id}
@@ -61,9 +60,9 @@ export function GoalsListWidget(props: DashboardWidgetProps) {
             </Flex>
 
             <Dialog.Root open={editGoalDialogOpen} onOpenChange={setEditGoalDialogOpen}>
-                <Dialog.Content>
+                <Dialog.Content aria-describedby={undefined}>
                     <Dialog.Title size="6">Edit Goal</Dialog.Title>
-                    <Dialog.Description>Edit your goal</Dialog.Description>
+
                     {
                         editingGoal
                             ? (

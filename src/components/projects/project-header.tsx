@@ -34,25 +34,22 @@ export function ProjectHeader({ project }: { project: Project }) {
                 <Button size="2" onClick={() => setTimeBlockDialogOpen(!timeBlockDialogOpen)}><PlusIcon /> Add Entry</Button>
 
                 <Dialog.Root open={projectDialogOpen} onOpenChange={setProjectDialogOpen}>
-                    <Dialog.Content>
+                    <Dialog.Content aria-describedby={undefined}>
                         <Dialog.Title size="6">{project?.name}</Dialog.Title>
-                        <Dialog.Description>Edit the project details</Dialog.Description>
                         <ProjectForm mode="edit" onFormSaved={() => setProjectDialogOpen(false)} project={project}></ProjectForm>
                     </Dialog.Content>
                 </Dialog.Root>
 
                 <Dialog.Root open={widgetDialogOpen} onOpenChange={setWidgetDialogOpen}>
-                    <Dialog.Content>
+                    <Dialog.Content aria-describedby={undefined}>
                         <Dialog.Title size="6">Add Widget</Dialog.Title>
-                        <Dialog.Description>Add a widget to the project dashboard</Dialog.Description>
                         <WidgetForm mode="create" projectId={project.id} onFormSaved={() => setWidgetDialogOpen(false)} />
                     </Dialog.Content>
                 </Dialog.Root>
 
                 <Dialog.Root open={goalDialogOpen} onOpenChange={setGoalDialogOpen}>
-                    <Dialog.Content>
+                    <Dialog.Content aria-describedby={undefined}>
                         <Dialog.Title size="6">Add Goal</Dialog.Title>
-                        <Dialog.Description>Add goal to the project</Dialog.Description>
                         <GoalForm
                             mode="create"
                             projectId={project.id}
@@ -62,9 +59,8 @@ export function ProjectHeader({ project }: { project: Project }) {
                 </Dialog.Root>
 
                 <Dialog.Root open={timeBlockDialogOpen} onOpenChange={setTimeBlockDialogOpen}>
-                    <Dialog.Content>
+                    <Dialog.Content aria-describedby={undefined}>
                         <Dialog.Title size="6">Add Entry</Dialog.Title>
-                        <Dialog.Description>Add an entry to track time in the project</Dialog.Description>
                         <TimeBlockForm mode="create" onFormSaved={() => setTimeBlockDialogOpen(false)} projectId={project.id}></TimeBlockForm>
                     </Dialog.Content>
                 </Dialog.Root>

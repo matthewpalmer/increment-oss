@@ -39,9 +39,8 @@ function RouteComponent() {
                         <Button size="3">New Project</Button>
                     </Dialog.Trigger>
 
-                    <Dialog.Content>
+                    <Dialog.Content aria-describedby={undefined}>
                         <Dialog.Title size="6">New Project</Dialog.Title>
-                        <Dialog.Description>Create a new project</Dialog.Description>
                         <ProjectForm mode="create" onFormSaved={() => setProjectDialogOpen(false)}></ProjectForm>
                     </Dialog.Content>
                 </Dialog.Root>

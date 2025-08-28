@@ -13,6 +13,8 @@
 - 🏗️ **Architecture:** Offline-first with custom sync engine (CloudKit in production; pluggable for serverless/cloud backends or a REST API)  
 - 🛠️ **Tooling:** Vitest, React Testing Library (unit + integration test coverage) 
 
+![CI](https://github.com/matthewpalmer/increment-oss/actions/workflows/ci.yml/badge.svg)
+
 ## Key Technical Features
 
 * **Offline-first architecture** with IndexedDB local persistence and sync backends  

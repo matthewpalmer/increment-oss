@@ -12,18 +12,21 @@ export function ColorPicker(props: ColorPickerProps) {
             {
                 userColorsList.map(color => {
                     const isSelected = props.selectedColor === color.hex;
-                    
+
                     const colorTabStyle: any = { backgroundColor: color.hex };
                     const containerStyle: any = { borderColor: isSelected ? color.hex : 'transparent' }
 
                     return (
-                        <Box key={color.hex} 
+                        <Box key={color.hex}
+                            aria-label={`Color ${color.name}`}
+                            role="button"
+                            tabIndex={0}
                             style={containerStyle}
                             className={`rounded-[5px] border-2 w-9 h-9 p-0.5`}
                             onClick={() => props.colorChanged(color.hex)}>
-                                <div className="rounded-[2px] w-full h-full" style={colorTabStyle}>
+                            <div className="rounded-[2px] w-full h-full" style={colorTabStyle}>
 
-                                </div>
+                            </div>
                         </Box>
                     )
                 })

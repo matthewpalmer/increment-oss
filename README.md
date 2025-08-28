@@ -4,7 +4,10 @@
 
 **A powerful offline-first goal and progress tracker with advanced customization, real-time sync, and a polished React UI.**  
 
-<!-- ![Screenshot showing the Increment web dashboard](./docs/project-dashboard-2.png "Increment goal and time tracking") -->
+![CI](https://github.com/matthewpalmer/increment-oss/actions/workflows/ci.yml/badge.svg)
+![Node](https://img.shields.io/badge/node-20.x-green)
+![React](https://img.shields.io/badge/react-19-blue?logo=react)
+![TypeScript](https://img.shields.io/badge/typescript-5.x-blue?logo=typescript)
 
 ## Tech Stack
 
@@ -13,7 +16,6 @@
 - 🏗️ **Architecture:** Offline-first with custom sync engine (CloudKit in production; pluggable for serverless/cloud backends or a REST API)  
 - 🛠️ **Tooling:** Vitest, React Testing Library (unit + integration test coverage) 
 
-![CI](https://github.com/matthewpalmer/increment-oss/actions/workflows/ci.yml/badge.svg)
 
 ## Key Technical Features
 

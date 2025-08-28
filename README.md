@@ -4,11 +4,11 @@
 
 **A powerful offline-first goal and progress tracker with advanced customization, real-time sync, and a polished React UI.**  
 
-![Screenshot showing the Increment web dashboard](./docs/project-dashboard-2.png "Increment goal and time tracking")
+<!-- ![Screenshot showing the Increment web dashboard](./docs/project-dashboard-2.png "Increment goal and time tracking") -->
 
 ## Tech Stack
 
-- ✨ **Frontend:** React, TypeScript, Tailwind, Radix UI, Framer Motion  
+- ✨ **Frontend:** React, TypeScript, Vite, Tailwind, Radix UI, Framer Motion  
 - 📊 **State & Data:** TanStack Query, TanStack Router, IndexedDB (Dexie)  
 - 🏗️ **Architecture:** Offline-first with custom sync engine (CloudKit in production; pluggable for serverless/cloud backends or a REST API)  
 - 🛠️ **Tooling:** Vitest, React Testing Library (unit + integration test coverage) 

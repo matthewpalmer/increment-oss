@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { aggregateBlocks } from '../../domain/progress/aggregation';
 import { type TimeBlock } from '../../domain/types';
-import { makeTimeBlocks } from '../../domain/progress/progress-test-utils';
+import { buildTimeBlocks } from '../factories';
 
 describe('domain/progress/aggregation', () => {
     it('aggregates blocks for seconds', async () => {
-        const blocks: TimeBlock[] = makeTimeBlocks('abc', 'seconds', [
+        const blocks: TimeBlock[] = buildTimeBlocks('abc', 'seconds', [
             10,
             30,
             90,
@@ -27,7 +27,7 @@ describe('domain/progress/aggregation', () => {
     });
 
     it('aggregates blocks for words', async () => {
-        const blocks: TimeBlock[] = makeTimeBlocks('abc', 'words', [
+        const blocks: TimeBlock[] = buildTimeBlocks('abc', 'words', [
             5000,
             1000,
             2500,
@@ -49,7 +49,7 @@ describe('domain/progress/aggregation', () => {
     });
 
     it('aggregates blocks for counts', async () => {
-        const blocks: TimeBlock[] = makeTimeBlocks('abc', 'count', [
+        const blocks: TimeBlock[] = buildTimeBlocks('abc', 'count', [
             233,
             310,
             1000,
@@ -74,10 +74,10 @@ describe('domain/progress/aggregation', () => {
     });
 
     it('ignores irrelevant values', async () => {
-        const timeBlocks = makeTimeBlocks('abc', 'seconds', [120, 130, 140]);
-        const countBlocks = makeTimeBlocks('abc', 'count', [3, 5, 6]);
-        const wordBlocks = makeTimeBlocks('abc', 'words', [1000, 2000, 4000]);
-        const distanceBlocks = makeTimeBlocks('abc', 'meters', [5000, 10000, 7500]);
+        const timeBlocks = buildTimeBlocks('abc', 'seconds', [120, 130, 140]);
+        const countBlocks = buildTimeBlocks('abc', 'count', [3, 5, 6]);
+        const wordBlocks = buildTimeBlocks('abc', 'words', [1000, 2000, 4000]);
+        const distanceBlocks = buildTimeBlocks('abc', 'meters', [5000, 10000, 7500]);
 
         expect(aggregateBlocks(timeBlocks, 'count', 'seconds')).toBe(3)
         expect(aggregateBlocks(timeBlocks, 'count', 'meters')).toBe(0)

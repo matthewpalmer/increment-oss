@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { screen } from '@testing-library/react';
 import { renderApp } from '../render';
 import { resetDb } from '../dbTestUtils';
-import { makeGoal, makeGoalVersion, makeProject, makeWidget } from './factories';
+import { makeGoal, makeGoalVersion, makeProject, makeWidget } from '../factories';
 import { makeCalendar } from '../../data/calendar-context';
 import userEvent from '@testing-library/user-event';
 

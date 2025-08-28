@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { CreateUUID, type TimeBlock } from '../../domain/types';
-import { makeTimeBlocks } from '../../domain/progress/progress-test-utils';
 import { bucketBlocksByWindows } from '../../domain/progress/windows';
 import { makeCalendar } from '../../data/calendar-context';
 import type { ProgressWindow } from '../../domain/cadence/calendar';
+import { buildTimeBlocks } from '../factories';
 
 describe('domain/progress/windows', () => {
     it('buckets time blocks into windows', () => {
@@ -15,7 +15,7 @@ describe('domain/progress/windows', () => {
             { start: new Date('2025-08-10'), end: new Date('2025-08-12') },
         ]
 
-        const timeBlocks: TimeBlock[] = makeTimeBlocks(
+        const timeBlocks: TimeBlock[] = buildTimeBlocks(
             CreateUUID(),
             'seconds',
             [400, 700, 900, 1300, 300, 500, 600]

@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { screen, within } from '@testing-library/react';
 import { renderApp } from '../render';
 import { resetDb } from '../dbTestUtils';
-import { makeGoal, makeGoalVersion, makeProject, makeWidget } from './factories';
+import { makeGoal, makeGoalVersion, makeProject, makeWidget } from '../factories';
 import userEvent from '@testing-library/user-event';
 
 async function addTime(hours: string, minutes: string) {

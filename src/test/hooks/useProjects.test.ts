@@ -20,7 +20,7 @@ describe('useProjects hooks', () => {
         const { result } = renderHook(useProjectsList, { wrapper: TestQueryClientProvider() });
 
         await waitFor(() => expect(result.current.isSuccess).toBe(true));
-        
+
         expect(result.current.data?.length).toBe(2);
         expect((result.current.data || [])[0].id).toEqual('a');
         expect((result.current.data || [])[1].name).toEqual('B');

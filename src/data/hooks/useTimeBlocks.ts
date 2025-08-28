@@ -3,12 +3,17 @@ import { db } from "../persistence/db";
 import { keys } from "../queries"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { syncBus } from "../sync/sync-bus";
+import Dexie from "dexie";
 
 export function useTimeBlocks(projectId: string) {
     return useQuery({
         queryKey: keys.timeBlocks.listInProject(projectId),
         queryFn: () => {
-            return db.timeBlocks.where('projectId').equals(projectId).toArray()
+            return db.timeBlocks
+            .where("[projectId+startedAt]")
+                .between([projectId, Dexie.minKey], [projectId, Dexie.maxKey])
+                .reverse() // newest → oldest
+                .toArray()
         },
         staleTime: Infinity
     })
@@ -27,7 +32,7 @@ export function useCreateTimeBlock() {
 
             queryClient.invalidateQueries({ queryKey: keys.timeBlocks.listInProject(timeBlock.projectId) })
             queryClient.invalidateQueries({ queryKey: keys.progress.all() })
-            
+
             syncBus.dispatchEvent(BuildNewSyncEvent(
                 { type: 'create', data: timeBlock, table: 'timeBlocks' }
             ))
@@ -39,7 +44,7 @@ export function useUpdateTimeBlock() {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: async ({ id, patch }: { id: UUID, patch: Partial<TimeBlock>}) => {
+        mutationFn: async ({ id, patch }: { id: UUID, patch: Partial<TimeBlock> }) => {
             await db.timeBlocks.update(id, patch);
             return db.timeBlocks.get(id)
         },

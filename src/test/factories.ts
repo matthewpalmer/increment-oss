@@ -1,6 +1,7 @@
-import { db } from "../../data/persistence/db";
-import { IncrementDateTimeNow } from "../../domain/time-utils";
-import { CreateUUID, type DashboardWidget, type DashboardWidgetType, type Goal, type GoalVersion, type IncrementTimestamp, type Project } from "../../domain/types";
+import type { UUID } from "crypto";
+import { db } from "../data/persistence/db";
+import { IncrementDateTimeNow } from "../domain/time-utils";
+import { CreateUUID, type DashboardWidget, type DashboardWidgetType, type Goal, type GoalUnit, type GoalVersion, type IncrementTimestamp, type Project, type TimeBlock } from "../domain/types";
 
 export async function makeProject(partial: Partial<Project> = {}) {
     const project: Project = {
@@ -66,4 +67,41 @@ export async function makeWidget(projectId: string, goalId: string, type: Dashbo
     };
     await db.dashboardWidgets.put(widget);
     return widget;
+}
+
+export async function makeTimeBlock(projectId: string, type: GoalUnit, amount: number, partial: Partial<TimeBlock> = {}) {
+    const timeBlock: TimeBlock = {
+        id: CreateUUID(),
+        projectId,
+        type,
+        amount,
+        createdAt: IncrementDateTimeNow(),
+        startedAt: IncrementDateTimeNow(),
+        notes: '',
+        ...partial
+    }
+
+    await db.timeBlocks.put(timeBlock);
+
+    return timeBlock;
+}
+
+export function buildTimeBlocks(projectId: string, type: GoalUnit, amounts: number[]): TimeBlock[] {
+    return amounts.map(amount => {
+        return {
+            id: CreateUUID(),
+            projectId: projectId,
+            type: type,
+            amount: amount,
+            createdAt: IncrementDateTimeNow(),
+            startedAt: IncrementDateTimeNow(),
+            notes: ''
+        }
+    })
+}
+
+export async function makeTimeBlocks(projectId: string, type: GoalUnit, amounts: number[]): Promise<TimeBlock[]> {
+    const blocks = buildTimeBlocks(projectId, type, amounts);
+    await db.timeBlocks.bulkPut(blocks);
+    return blocks;
 }

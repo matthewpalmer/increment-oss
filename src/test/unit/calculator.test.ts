@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { CreateUUID, type GoalVersion, type TimeBlock } from '../../domain/types';
 import { calculateProgressAt } from '../../domain/progress/calculator';
 import { makeCalendar } from '../../data/calendar-context';
-import { makeTimeBlocks } from '../../domain/progress/progress-test-utils';
+import { buildTimeBlocks } from '../factories';
 
 describe('domain/progress/calculator', () => {
     it('calculates progress on a single day', async () => {
@@ -24,7 +24,7 @@ describe('domain/progress/calculator', () => {
             }
         ]
 
-        const timeBlocks: TimeBlock[] = makeTimeBlocks(
+        const timeBlocks: TimeBlock[] = buildTimeBlocks(
             CreateUUID(),
             'seconds',
             [300, 300, 600, 450]
@@ -63,7 +63,7 @@ describe('domain/progress/calculator', () => {
             }
         ]
 
-        const timeBlocks: TimeBlock[] = makeTimeBlocks(
+        const timeBlocks: TimeBlock[] = buildTimeBlocks(
             CreateUUID(),
             'seconds',
             [400, 700, 900, 1300, 300, 500, 600]

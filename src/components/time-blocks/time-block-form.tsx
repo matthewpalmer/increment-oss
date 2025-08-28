@@ -79,7 +79,7 @@ export function TimeBlockForm(props: TimeBlockFormProps) {
     };
 
     return (
-        <form onSubmit={handleSave} autoComplete="off">
+        <form onSubmit={handleSave} autoComplete="off" aria-label="Add time block form">
             <Flex direction="column" gap="4">
                 <Flex direction="row" justify="between" align="center">
                     <Label.Root className="text-md" htmlFor="type">

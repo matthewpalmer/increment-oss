@@ -26,7 +26,7 @@ export function GoalsListWidget(props: DashboardWidgetProps) {
 
                             <Dialog.Content>
                                 <Dialog.Title size="6">New Goal</Dialog.Title>
-
+                                <Dialog.Description>Add a goal to the project</Dialog.Description>
                                 <GoalForm
                                     mode="create"
                                     projectId={props.project.id}
@@ -63,7 +63,7 @@ export function GoalsListWidget(props: DashboardWidgetProps) {
             <Dialog.Root open={editGoalDialogOpen} onOpenChange={setEditGoalDialogOpen}>
                 <Dialog.Content>
                     <Dialog.Title size="6">Edit Goal</Dialog.Title>
-
+                    <Dialog.Description>Edit your goal</Dialog.Description>
                     {
                         editingGoal
                             ? (

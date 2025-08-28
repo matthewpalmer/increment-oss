@@ -87,6 +87,7 @@ function ProjectDetails() {
                     <Dialog.Root open={widgetDialogOpen} onOpenChange={setWidgetDialogOpen}>
                         <Dialog.Content>
                             <Dialog.Title size="6">Edit Widget</Dialog.Title>
+                            <Dialog.Description>Edit your dashboard widget</Dialog.Description>
 
                             {
                                 editingDashboardWidget

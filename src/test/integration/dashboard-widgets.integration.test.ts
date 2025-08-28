@@ -77,7 +77,6 @@ describe('Project dashboard widgets', () => {
 
         const customizeMenu = await screen.findByRole('button', { name: 'Customize' })
         expect(customizeMenu).toBeInTheDocument();
-
         await userEvent.click(customizeMenu);
 
         const addWidgetItem = await screen.findByRole('menuitem', { name: /add widget/i });

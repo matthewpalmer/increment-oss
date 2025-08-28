@@ -2,6 +2,7 @@ import { Flex, Text, TextField } from "@radix-ui/themes";
 import type { IncrementDuration } from "../../domain/types";
 import { useEffect, useState } from "react";
 import { convertDurationToHoursMinutes, convertHoursMinutesToDuration } from "../../domain/time-utils";
+import { Label } from "radix-ui";
 
 interface TimeInputProps {
     initialTime: IncrementDuration;
@@ -37,7 +38,7 @@ export function TimeInput(props: TimeInputProps) {
                         handleChange(e.target.value, timeMinutes);
                     }}>
                 </TextField.Root>
-                <Text color="gray" className="text-sm">hours</Text>
+                <Label.Root htmlFor="timeHours" color="gray" className="text-sm">hours</Label.Root>
             </Flex>
 
             <Flex direction="row" align="center" gap="1" width="100px">
@@ -50,7 +51,7 @@ export function TimeInput(props: TimeInputProps) {
                         handleChange(timeHours, e.target.value);
                     }}>
                 </TextField.Root>
-                <Text color="gray" className="text-sm">mins</Text>
+                <Label.Root htmlFor="timeMinutes" color="gray" className="text-sm">mins</Label.Root>
             </Flex>
         </Flex>
     )

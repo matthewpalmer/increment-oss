@@ -14,7 +14,6 @@ describe('App route', () => {
             await screen.findByRole('button', { name: /new project/i })
         ).toBeInTheDocument();
 
-
         cleanupApp();
     });
 });
